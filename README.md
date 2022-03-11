@@ -1,3 +1,3 @@
-# Beaker.dev
+# Nomad.dev
 
-Uses [Hugo](https://gohugo.io/) to build.
+Uses [Hugo 0.65.0](https://gohugo.io/) to build.
