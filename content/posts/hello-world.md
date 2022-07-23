@@ -1,9 +1,9 @@
 ---
 categories:
-- Announcements
+  - Announcements
 date: "2020-04-15"
-description: Announcing the Beaker developer portal.
-title: Beaker.dev is online
+description: Announcing the Nomad developer portal.
+title: Nomad.pages.dev is online
 ---
 
-The [beaker.dev](https://beaker.dev) developer portal is online! This site will be a place for developers to get help, find useful resources like [templates](/docs/templates), and get developer-focused news for [Beaker Browser](https://beakerbrowser.com).
+The [Nomad.dev](https://nomad.pages.dev) developer portal is online! This site will be a place for developers to get help, find useful resources like [templates](/docs/templates), and get developer-focused news for [Nomad Browser](https://beakerbrowser.com).

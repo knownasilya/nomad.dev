@@ -1,12 +1,12 @@
 ---
 categories:
-- Announcements
+  - Announcements
 date: "2020-06-01"
-description: The Beaker Developer Portal has added a couple new templates for quickly creating code-focused Hyperdrives.
+description: The Nomad Developer Portal has added a couple new templates for quickly creating code-focused Hyperdrives.
 title: "Two new templates: Codesnip and Module"
 ---
 
-[Templates](/docs/templates/) are a fast way to create new Hyperdrives in Beaker. They typically provide a nice UI which you can then fill with your content.
+[Templates](/docs/templates/) are a fast way to create new Hyperdrives in Nomad. They typically provide a nice UI which you can then fill with your content.
 
 Today we're happy to add two new templates: [Codesnip](/docs/templates/codesnip) and [Module](/docs/templates/module).
 
@@ -24,7 +24,6 @@ Today we're happy to add two new templates: [Codesnip](/docs/templates/codesnip)
 ---
 
 ## The Module Template
-
 
 {{< imgcard relref="../docs/templates/module" img="/templates/module.png" class="centered" >}}
 {{< /imgcard >}}

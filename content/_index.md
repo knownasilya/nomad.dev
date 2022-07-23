@@ -1,9 +1,8 @@
 ---
-title: Beaker Developer Portal
+title: Nomad Developer Portal
 BookToC: false
 ---
 
-# Beaker Developer Portal
+# Nomad Developer Portal
 
-Resources for [Beaker Browser](https://beakerbrowser.com).
-
+Resources for [Nomad Browser](https://github.com/knownasilya/nomad).

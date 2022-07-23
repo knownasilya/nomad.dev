@@ -9,4 +9,4 @@ headless = true
   - [Photo Album]({{< relref "/docs/templates/photo-album" >}})
   - [Chat Room]({{< relref "/docs/templates/chat-room" >}})
   - [Video Chat]({{< relref "/docs/templates/video-chat" >}})
-- **[Beaker Documentation](https://docs.beakerbrowser.com/)**
+- **[Nomad Documentation](https://docs.beakerbrowser.com/)**

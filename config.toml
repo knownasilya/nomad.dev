@@ -1,6 +1,6 @@
-baseURL = "https://beaker.dev/"
+baseURL = "https://nomad.pages.dev/"
 languageCode = "en-us"
-title = "Beaker.dev"
+title = "Nomad.dev"
 theme = "book"
 
 # (Optional) Set Google Analytics if you use it to track your website.
@@ -23,9 +23,9 @@ enableGitInfo = true
 #disableKinds = ['taxonomy', 'taxonomyTerm']
   
 [params]
-  description = "A collection of resources for developers using Beaker Browser"
+  description = "A collection of resources for developers using Nomad Browser"
   images = ["opengraph-logo.png"]
-  title = "The Beaker Developer Portal"
+  title = "The Nomad Developer Portal"
 
   # (Optional, default true) Controls table of contents visibility on right side of pages.
   # Start and end levels can be controlled with markup.tableOfContents setting.
@@ -46,7 +46,7 @@ enableGitInfo = true
   
   # Set source repository location.
   # Used for 'Last Modified' and 'Edit this page' links.
-  BookRepo = 'https://github.com/beakerbrowser/beaker.dev'
+  BookRepo = 'https://github.com/knownasilya/nomad.dev'
   
   # Enable 'Edit this page' links for 'doc' page type.
   # Disabled by default. Uncomment to enable. Requires 'BookRepo' param.

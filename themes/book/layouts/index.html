@@ -1,24 +1,22 @@
-
 {{ define "main" }}
 
 <div class="title-banner home">
   <div class="content-container">
-    <div class="markdown">
-      {{ .Content }}
-    </div>
+    <div class="markdown">{{ .Content }}</div>
 
     <div class="book-columns flex flex-wrap colorful">
-      
       <a href="/docs/templates" class="flex-even markdown-inner">
         <span class="title">Templates</span>
         <span class="fas fa-arrow-right"></span>
       </a>
-      
-      <a href="https://docs.beakerbrowser.com/" class="flex-even markdown-inner">
-        <span class="title">Beaker Documentation</span>
+
+      <a
+        href="https://docs.beakerbrowser.com/"
+        class="flex-even markdown-inner"
+      >
+        <span class="title">Nomad Documentation</span>
         <span class="fas fa-arrow-right"></span>
       </a>
-      
     </div>
   </div>
 </div>
@@ -33,7 +31,6 @@
       {{ partial "docs/post-meta" . }}
     </article>
     {{ end }}
-
   </div>
 </div>
 {{ end }}
