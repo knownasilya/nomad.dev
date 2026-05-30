@@ -13,5 +13,5 @@ headless = true
   - [Getting Started]({{< relref "/docs/api/getting-started-with-beaker" >}})
   - [FAQ]({{< relref "/docs/api/faq" >}})
   - [Beginner Guides]({{< relref "/docs/api/beginner/creating-new-hyperdrives" >}})
-  - [APIs]({{< relref "/docs/api/apis/beaker.hyperdrive" >}})
-  - [Developer Reference]({{< relref "/docs/api/developers/introduction-to-hyperdrive" >}})
+  - [APIs](/docs/api/apis/beaker.hyperdrive/)
+  - [Developer Reference](/docs/api/developers/introduction-to-hyperdrive/)
