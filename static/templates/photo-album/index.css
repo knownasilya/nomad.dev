@@ -99,6 +99,10 @@ photo-album-app dialog[open] {
   padding: 0;
 }
 
+photo-album-app dialog::backdrop {
+  background: rgba(0, 0, 0, 0.75);
+}
+
 photo-album-app dialog > div {
   display: grid;
   grid-template-columns: auto 300px;

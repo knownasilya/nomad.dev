@@ -156,7 +156,7 @@ customElements.define('photo-album-app', class extends HTMLElement {
 
 document.body.addEventListener('click', e => {
   var existingDialog = document.querySelector('dialog')
-  if (existingDialog && e.path[0] === existingDialog) {
+  if (existingDialog && e.target === existingDialog) {
     existingDialog.remove()
   }
 })
