@@ -10,7 +10,7 @@ headless = true
   - [Chat Room]({{< relref "/docs/templates/chat-room" >}})
   - [Video Chat]({{< relref "/docs/templates/video-chat" >}})
 - **[API Documentation]({{< relref "/docs/api" >}})**
-  - [Getting Started]({{< relref "/docs/api/getting-started-with-beaker" >}})
+  - [Getting Started]({{< relref "/docs/api/getting-started-with-nomad" >}})
   - [FAQ]({{< relref "/docs/api/faq" >}})
   - [Beginner Guides]({{< relref "/docs/api/beginner/creating-new-hyperdrives" >}})
   - [APIs](/docs/api/apis/beaker.hyperdrive/)

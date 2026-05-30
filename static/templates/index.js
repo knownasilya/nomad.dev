@@ -20,6 +20,6 @@ if (typeof beaker !== 'undefined' && typeof beaker.hyperdrive !== 'undefined') {
 } else {
   createDriveButton.textContent = 'Get Beaker to Create This Site'
   createDriveButton.addEventListener('click', e => {
-    window.open('https://beakerbrowser.com/')
+    window.open('https://nomad.pages.dev/docs/getting-started/install-beaker')
   })
 }
