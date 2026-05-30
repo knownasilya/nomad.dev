@@ -108,11 +108,56 @@ photo-album-app dialog > div {
   grid-template-columns: auto 300px;
 }
 
+photo-album-app dialog .img-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 photo-album-app dialog img {
   max-width: 60vw;
   height: 80vh;
   object-fit: contain;
   background: #f3f3f8;
+}
+
+photo-album-app dialog .nav-btn {
+  position: absolute;
+  z-index: 1;
+  border: 0;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 24px;
+  width: 44px;
+  height: 64px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+photo-album-app dialog .img-wrap:hover .nav-btn:not(:disabled) {
+  opacity: 1;
+}
+
+photo-album-app dialog .nav-btn:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+photo-album-app dialog .nav-btn:disabled {
+  pointer-events: none;
+}
+
+photo-album-app dialog .prev-btn {
+  left: 10px;
+}
+
+photo-album-app dialog .next-btn {
+  right: 10px;
 }
 
 photo-album-app dialog .ctrls {

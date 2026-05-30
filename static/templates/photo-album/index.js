@@ -89,29 +89,47 @@ customElements.define('photo-album-app', class extends HTMLElement {
 
   async doViewModal (e, photo) {
     e.stopPropagation()
+    await this.openModal(this.photos.indexOf(photo))
+  }
+
+  async openModal (index) {
+    this._openingIndex = index
 
     var existingDialog = this.querySelector('dialog')
-    if (existingDialog) existingDialog.remove()
+    if (existingDialog) {
+      existingDialog.close()
+      existingDialog.remove()
+    }
 
-    var description = (await beaker.hyperdrive.stat(`/photos/${photo}`).catch(e => {}))?.metadata?.description
+    var photo = this.photos[index]
+
+    var prevBtn = h('button', {class: 'nav-btn prev-btn', click: e => { e.stopPropagation(); this.openModal(index - 1) }}, '❮')
+    var nextBtn = h('button', {class: 'nav-btn next-btn', click: e => { e.stopPropagation(); this.openModal(index + 1) }}, '❯')
+    if (index === 0) prevBtn.disabled = true
+    if (index === this.photos.length - 1) nextBtn.disabled = true
+
+    var descriptionEl = h('div', {class: 'description'}, h('em', {}, ''))
+    var textarea = h('textarea', {})
 
     var dialog = h('dialog', {},
       h('div', {},
-        h('img', {src: `/photos/${photo}`}),
+        h('div', {class: 'img-wrap'},
+          prevBtn,
+          h('img', {src: `/photos/${photo}`}),
+          nextBtn
+        ),
         h('div', {},
           this.siteInfo.writable
             ? h('div', {class: 'ctrls'},
               h('button', {class: 'red', click: onDelete}, 'Delete Photo')
             )
             : '',
-          h('div', {class: 'description'},
-            description ? description : h('em', {}, 'No description'),
-          ),
+          descriptionEl,
           this.siteInfo.writable
             ? h('div', {class: 'description'}, h('a', {href: '#', click: onShowEditDescription}, 'Edit'))
             : '',
           h('form', {class: 'edit-description'},
-            h('textarea', {}, description || ''),
+            textarea,
             h('div', {class: 'form-actions'},
               h('button', {class: 'noborder', click: onHideEditDescription}, 'Cancel'),
               h('button', {click: onSaveEditDescription}, 'Save')
@@ -124,7 +142,7 @@ customElements.define('photo-album-app', class extends HTMLElement {
     function onShowEditDescription (e) {
       e.preventDefault()
       dialog.classList.add('editing-description')
-      dialog.querySelector('.edit-description textarea').focus()
+      textarea.focus()
     }
 
     function onHideEditDescription (e) {
@@ -135,10 +153,9 @@ customElements.define('photo-album-app', class extends HTMLElement {
     async function onSaveEditDescription (e) {
       e.preventDefault()
       dialog.classList.remove('editing-description')
-
-      description = dialog.querySelector('.edit-description textarea').value
-      dialog.querySelector('.description').textContent = description
-      await beaker.hyperdrive.updateMetadata(`/photos/${photo}`, {description})
+      var desc = textarea.value
+      descriptionEl.textContent = desc
+      await beaker.hyperdrive.updateMetadata(`/photos/${photo}`, {description: desc})
     }
 
     async function onDelete (e) {
@@ -149,14 +166,29 @@ customElements.define('photo-album-app', class extends HTMLElement {
       location.reload()
     }
 
+    const onKeyDown = (e) => {
+      if (e.key === 'ArrowLeft' && index > 0) this.openModal(index - 1)
+      if (e.key === 'ArrowRight' && index < this.photos.length - 1) this.openModal(index + 1)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    dialog.addEventListener('close', () => document.removeEventListener('keydown', onKeyDown))
+
     this.append(dialog)
     dialog.showModal()
+
+    // Load description after dialog is visible so the backdrop never flashes
+    var description = (await beaker.hyperdrive.stat(`/photos/${photo}`).catch(e => {}))?.metadata?.description
+    if (this._openingIndex !== index) return
+    descriptionEl.innerHTML = ''
+    descriptionEl.append(description ? description : h('em', {}, 'No description'))
+    textarea.value = description || ''
   }
 })
 
 document.body.addEventListener('click', e => {
   var existingDialog = document.querySelector('dialog')
   if (existingDialog && e.target === existingDialog) {
+    existingDialog.close()
     existingDialog.remove()
   }
 })
