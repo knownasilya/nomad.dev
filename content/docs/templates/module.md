@@ -33,7 +33,7 @@ title: Module Template
 {{< /rawhtml >}}
 
 A module with tools for a readme, tests suite, demo, and build tools.
-Also includes webterm [page commands](https://docs.beakerbrowser.com/advanced/webterm#page-commands) for running tests, build scripts, and more.
+Also includes webterm [page commands](/docs/api/advanced/webterm#page-commands) for running tests, build scripts, and more.
 
 ## Source
 

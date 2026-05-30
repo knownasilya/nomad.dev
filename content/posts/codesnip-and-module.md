@@ -28,7 +28,7 @@ Today we're happy to add two new templates: [Codesnip](/docs/templates/codesnip)
 {{< imgcard relref="../docs/templates/module" img="/templates/module.png" class="centered" >}}
 {{< /imgcard >}}
 
-"Modules" are like Git repos. They provide a number of tools that are ideal for sharing code, including a files-listing UI, a tests suite, a demo-viewer, and build tooling. This template uses [page commands](https://docs.beakerbrowser.com/advanced/webterm#page-commands) to make it possible to run custom scripts using the terminal.
+"Modules" are like Git repos. They provide a number of tools that are ideal for sharing code, including a files-listing UI, a tests suite, a demo-viewer, and build tooling. This template uses [page commands](/docs/api/advanced/webterm#page-commands) to make it possible to run custom scripts using the terminal.
 
 [Try it now &raquo;](/docs/templates/module)
 

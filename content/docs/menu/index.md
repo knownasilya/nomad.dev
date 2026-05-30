@@ -9,4 +9,9 @@ headless = true
   - [Photo Album]({{< relref "/docs/templates/photo-album" >}})
   - [Chat Room]({{< relref "/docs/templates/chat-room" >}})
   - [Video Chat]({{< relref "/docs/templates/video-chat" >}})
-- **[Nomad Documentation](https://docs.beakerbrowser.com/)**
+- **[API Documentation]({{< relref "/docs/api" >}})**
+  - [Getting Started]({{< relref "/docs/api/getting-started-with-beaker" >}})
+  - [FAQ]({{< relref "/docs/api/faq" >}})
+  - [Beginner Guides]({{< relref "/docs/api/beginner/creating-new-hyperdrives" >}})
+  - [APIs]({{< relref "/docs/api/apis/beaker.hyperdrive" >}})
+  - [Developer Reference]({{< relref "/docs/api/developers/introduction-to-hyperdrive" >}})
