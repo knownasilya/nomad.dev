@@ -12,6 +12,6 @@ headless = true
 - **[API Documentation]({{< relref "/docs/api" >}})**
   - [Getting Started]({{< relref "/docs/api/getting-started-with-nomad" >}})
   - [FAQ]({{< relref "/docs/api/faq" >}})
-  - [Beginner Guides]({{< relref "/docs/api/beginner/creating-new-hyperdrives" >}})
-  - [APIs](/docs/api/apis/beaker.hyperdrive/)
-  - [Developer Reference](/docs/api/developers/introduction-to-hyperdrive/)
+  - [Beginner Guides]({{< relref "/docs/api/beginner" >}})
+  - [APIs]({{< relref "/docs/api/apis" >}})
+  - [Developer Reference]({{< relref "/docs/api/developers" >}})
