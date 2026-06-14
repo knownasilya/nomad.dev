@@ -8,6 +8,10 @@ JavaScript APIs available in Nomad.
 beaker.hyperdrive
 {{< /linkcard >}}
 
+{{< linkcard href="/docs/api/apis/private-drive/" icon="fas fa-arrow-right" >}}
+Private Drive
+{{< /linkcard >}}
+
 {{< linkcard href="/docs/api/apis/beaker.shell/" icon="fas fa-arrow-right" >}}
 beaker.shell
 {{< /linkcard >}}
