@@ -5,9 +5,12 @@ if (typeof beaker !== 'undefined' && typeof beaker.hyperdrive !== 'undefined') {
     createDriveButton.disabled = true
     createDriveButton.textContent = 'Creating…'
     try {
-      var drive = await beaker.hyperdrive.createDrive({
-        title: TEMPLATE_TITLE
-      })
+      var drive
+      if (window.TEMPLATE_DRIVE_TYPE === 'autobase') {
+        drive = await beaker.autobase.createCollaborativeDrive({ title: TEMPLATE_TITLE })
+      } else {
+        drive = await beaker.hyperdrive.createDrive({ title: TEMPLATE_TITLE })
+      }
       for (let path of TEMPLATE_FILES) {
         try {
           let v = await fetch(TEMPLATE_ROOT + path).then(res => {

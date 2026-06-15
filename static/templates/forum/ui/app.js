@@ -24,7 +24,12 @@ let state = {
 
 customElements.define('forum-app', class extends HTMLElement {
   async connectedCallback() {
-    await boot(this)
+    try {
+      await boot(this)
+    } catch (err) {
+      this.innerHTML = `<p style="color:red;padding:20px;font-family:monospace">Forum error: ${err.message}</p>`
+      console.error('[forum-app] boot error:', err)
+    }
   }
 })
 
@@ -39,7 +44,6 @@ async function boot(el) {
   } catch {}
 
   if (state.isWriter) {
-    const info = await drive.getInfo()
     // writerKey is the local autobase writer key — exposed via listWriters
     const writers = await drive.listWriters()
     state.writers = writers
@@ -50,19 +54,19 @@ async function boot(el) {
   }
 
   state.loading = false
-  render(el)
+  await render(el)
 }
 
 // ── Router ─────────────────────────────────────────────────────────────────────
 
 function navigate(view, extra = {}) {
   Object.assign(state, { view, ...extra })
-  render(document.querySelector('forum-app'))
+  render(document.querySelector('forum-app')).catch(err => console.error('[forum-app] render error:', err))
 }
 
 // ── Render ─────────────────────────────────────────────────────────────────────
 
-function render(el) {
+async function render(el) {
   el.innerHTML = ''
   if (state.loading) {
     el.append(h('p', { style: 'padding:40px;text-align:center' }, 'Loading…'))
@@ -75,10 +79,10 @@ function render(el) {
   const main = h('main')
   el.append(main)
 
-  if (state.view === 'list') renderList(main)
-  else if (state.view === 'thread') renderThread(main)
+  if (state.view === 'list') await renderList(main)
+  else if (state.view === 'thread') await renderThread(main)
   else if (state.view === 'new-post') renderNewPost(main)
-  else if (state.view === 'writers') renderWriters(main)
+  else if (state.view === 'writers') await renderWriters(main)
 }
 
 function renderHeader() {
@@ -266,10 +270,8 @@ async function openThread(post) {
 }
 
 async function openWriters() {
-  navigate('writers')
-  const main = document.querySelector('main')
-  main.innerHTML = ''
-  await renderWriters(main)
+  Object.assign(state, { view: 'writers' })
+  await render(document.querySelector('forum-app'))
 }
 
 async function submitPost(e) {
@@ -290,10 +292,8 @@ async function submitPost(e) {
 
   const slug = `${Date.now()}-${post.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)}`
   await drive.put(`/posts/${slug}.json`, JSON.stringify(post, null, 2))
-  navigate('list')
-  const main = document.querySelector('main')
-  main.innerHTML = ''
-  await renderList(main)
+  Object.assign(state, { view: 'list' })
+  await render(document.querySelector('forum-app'))
 }
 
 async function submitComment(e, postSlug) {
@@ -309,10 +309,8 @@ async function submitComment(e, postSlug) {
   }
   const slug = Date.now().toString()
   await drive.put(`/comments/${postSlug}/${slug}.json`, JSON.stringify(comment, null, 2))
-  navigate('thread', { activePost: state.activePost })
-  const main = document.querySelector('main')
-  main.innerHTML = ''
-  await renderThread(main)
+  Object.assign(state, { view: 'thread', activePost: state.activePost })
+  await render(document.querySelector('forum-app'))
 }
 
 async function requestAccess() {

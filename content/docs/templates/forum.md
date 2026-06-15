@@ -11,6 +11,7 @@ description: A multi-writer discussion board template demonstrating beaker.autob
 <script>
   const TEMPLATE_ROOT = '/templates/forum'
   const TEMPLATE_TITLE = 'My Forum'
+  window.TEMPLATE_DRIVE_TYPE = 'autobase'
   window.TEMPLATE_FILES = [
     '/index.html',
     '/index.json',
