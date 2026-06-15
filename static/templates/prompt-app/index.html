@@ -18,12 +18,37 @@
     }
 
     header {
-      padding: 14px 20px;
+      padding: 10px 16px;
       background: #fff;
       border-bottom: 1px solid #e5e5ea;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header span {
       font-weight: 600;
       font-size: 15px;
+      flex: 1;
     }
+
+    header .session-id {
+      font-size: 11px;
+      color: #999;
+      font-family: monospace;
+    }
+
+    header button {
+      font-size: 12px;
+      padding: 4px 10px;
+      border: 1px solid #d1d1d6;
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      color: #444;
+    }
+
+    header button:hover { background: #f5f5f7; }
 
     #messages {
       flex: 1;
@@ -100,9 +125,7 @@
       transition: border-color 0.15s;
     }
 
-    #prompt:focus {
-      border-color: #0a84ff;
-    }
+    #prompt:focus { border-color: #0a84ff; }
 
     #send {
       padding: 0 16px;
@@ -122,7 +145,11 @@
   </style>
 </head>
 <body>
-  <header>Prompt App</header>
+  <header>
+    <span>Prompt App</span>
+    <span class="session-id" id="session-label"></span>
+    <button id="new-session">New chat</button>
+  </header>
   <div id="messages"></div>
   <div id="input-row">
     <textarea id="prompt" placeholder="Ask something…" rows="1"></textarea>
@@ -131,16 +158,98 @@
 
   <script>
     const messagesEl = document.getElementById('messages')
-    const promptEl = document.getElementById('prompt')
-    const sendEl = document.getElementById('send')
-    const history = []
+    const promptEl   = document.getElementById('prompt')
+    const sendEl     = document.getElementById('send')
+    const labelEl    = document.getElementById('session-label')
+
+    let sessionId = null
+    let history   = []
+
+    // — Session ID —
+
+    function newSessionId() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
+    }
+
+    function setSession(id) {
+      sessionId = id
+      labelEl.textContent = id
+      const url = new URL(location.href)
+      url.searchParams.set('session', id)
+      history_.replaceState({}, '', url)
+    }
+
+    // alias to avoid shadowing the `history` messages array
+    const history_ = window.history
+
+    // — Persistence —
+
+    function historyPath() {
+      return '/history/' + sessionId + '.json'
+    }
+
+    async function loadHistory() {
+      try {
+        const text = await beaker.hyperdrive.readFile(historyPath())
+        return JSON.parse(text)
+      } catch {
+        return []
+      }
+    }
+
+    async function saveHistory() {
+      try {
+        await beaker.hyperdrive.writeFile(historyPath(), JSON.stringify(history, null, 2))
+      } catch (err) {
+        console.warn('[prompt-app] could not save history:', err.message)
+      }
+    }
+
+    // — Render —
+
+    function renderHistory() {
+      messagesEl.innerHTML = ''
+      for (const msg of history) {
+        if (msg.role === 'user' || msg.role === 'assistant') {
+          appendMessage(msg.role, msg.content)
+        }
+      }
+    }
+
+    function appendMessage(role, text) {
+      const el = document.createElement('div')
+      el.className = `message ${role}`
+      el.textContent = text
+      messagesEl.appendChild(el)
+      messagesEl.scrollTop = messagesEl.scrollHeight
+      return el
+    }
+
+    // — Init —
+
+    async function init() {
+      const params = new URLSearchParams(location.search)
+      const existing = params.get('session')
+      if (existing) {
+        setSession(existing)
+        history = await loadHistory()
+        renderHistory()
+      } else {
+        setSession(newSessionId())
+      }
+    }
+
+    // — Send —
 
     sendEl.addEventListener('click', send)
     promptEl.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault()
-        send()
-      }
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }
+    })
+
+    document.getElementById('new-session').addEventListener('click', () => {
+      history = []
+      messagesEl.innerHTML = ''
+      setSession(newSessionId())
     })
 
     async function send() {
@@ -164,6 +273,7 @@
           messagesEl.scrollTop = messagesEl.scrollHeight
         }
         history.push({ role: 'assistant', content: reply })
+        await saveHistory()
       } catch (err) {
         replyEl.remove()
         appendMessage('error', `Error: ${err.message}`)
@@ -174,14 +284,7 @@
       }
     }
 
-    function appendMessage(role, text) {
-      const el = document.createElement('div')
-      el.className = `message ${role}`
-      el.textContent = text
-      messagesEl.appendChild(el)
-      messagesEl.scrollTop = messagesEl.scrollHeight
-      return el
-    }
+    init()
   </script>
 </body>
 </html>
