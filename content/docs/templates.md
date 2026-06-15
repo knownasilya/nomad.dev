@@ -27,4 +27,7 @@ Templates are a quick way to start with new apps and projects.
 {{< imgcard relref="./templates/prompt-app" img="/templates/prompt-app.png" >}}
 {{< /imgcard >}}
 
+{{< imgcard relref="./templates/forum" img="/templates/forum.png" >}}
+{{< /imgcard >}}
+
 {{< /linkcardgrid >}}
