@@ -13,6 +13,11 @@ if (typeof beaker !== 'undefined' && typeof beaker.hyperdrive !== 'undefined') {
         // -prf
         path = '/.ui/' + path.slice('/ui/'.length)
       }
+      // ensure parent directory exists before writing
+      var dir = path.split('/').slice(0, -1).join('/')
+      if (dir && dir !== '/') {
+        try { await drive.mkdir(dir) } catch (e) { /* already exists */ }
+      }
       await drive.writeFile(path, v)
     }
     window.open(drive.url)
