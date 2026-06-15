@@ -4,6 +4,10 @@ title: APIs
 
 JavaScript APIs available in Nomad.
 
+{{< linkcard href="/docs/api/apis/beaker.ai/" icon="fas fa-arrow-right" >}}
+beaker.ai
+{{< /linkcard >}}
+
 {{< linkcard href="/docs/api/apis/beaker.hyperdrive/" icon="fas fa-arrow-right" >}}
 beaker.hyperdrive
 {{< /linkcard >}}
