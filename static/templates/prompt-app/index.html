@@ -184,13 +184,14 @@
 
     // — Persistence —
 
-    function historyPath() {
-      return '/history/' + sessionId + '.json'
+    // beaker.hyperdrive requires a full hyper:// URL; plain paths don't resolve
+    function historyUrl() {
+      return new URL('/history/' + sessionId + '.json', location.href).href
     }
 
     async function loadHistory() {
       try {
-        const text = await beaker.hyperdrive.readFile(historyPath())
+        const text = await beaker.hyperdrive.readFile(historyUrl())
         return JSON.parse(text)
       } catch {
         return []
@@ -199,7 +200,7 @@
 
     async function saveHistory() {
       try {
-        await beaker.hyperdrive.writeFile(historyPath(), JSON.stringify(history, null, 2))
+        await beaker.hyperdrive.writeFile(historyUrl(), JSON.stringify(history, null, 2))
       } catch (err) {
         console.warn('[prompt-app] could not save history:', err.message)
       }
@@ -236,6 +237,7 @@
         renderHistory()
       } else {
         setSession(newSessionId())
+        // create history dir implicitly on first save; nothing to load yet
       }
     }
 
