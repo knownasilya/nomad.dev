@@ -165,6 +165,12 @@
     let sessionId = null
     let history   = []
 
+    // alias to avoid shadowing the `history` messages array
+    const history_ = window.history
+
+    // Scoped to the current drive — plain paths work on drive instances
+    const drive = beaker.hyperdrive.drive(location.href)
+
     // — Session ID —
 
     function newSessionId() {
@@ -179,19 +185,11 @@
       history_.replaceState({}, '', url)
     }
 
-    // alias to avoid shadowing the `history` messages array
-    const history_ = window.history
-
     // — Persistence —
-
-    // beaker.hyperdrive requires a full hyper:// URL; plain paths don't resolve
-    function historyUrl() {
-      return new URL('/history/' + sessionId + '.json', location.href).href
-    }
 
     async function loadHistory() {
       try {
-        const text = await beaker.hyperdrive.readFile(historyUrl())
+        const text = await drive.readFile('/history/' + sessionId + '.json')
         return JSON.parse(text)
       } catch {
         return []
@@ -200,7 +198,7 @@
 
     async function saveHistory() {
       try {
-        await beaker.hyperdrive.writeFile(historyUrl(), JSON.stringify(history, null, 2))
+        await drive.writeFile('/history/' + sessionId + '.json', JSON.stringify(history, null, 2))
       } catch (err) {
         console.warn('[prompt-app] could not save history:', err.message)
       }
