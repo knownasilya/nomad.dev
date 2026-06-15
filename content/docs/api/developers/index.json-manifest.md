@@ -47,6 +47,26 @@ The explorer sidebar and drive view use this image to represent the drive. If om
 
 **csp** String. A [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) header value applied to all pages served from the drive.
 
+**ai** Object or String. Opts this Drive into the [`beaker.ai`](/docs/api/apis/beaker.ai/) API. See the `beaker.ai` docs for the full resolution order (Drive → Space default → global fallback).
+
+- **Inline** — specify a model directly. Nomad uses the Drive's own `/ai/system.md` and `/ai/tools/` as the AI Config.
+```json
+{ "ai": { "model": "llama3.2:3b" } }
+```
+
+- **Pointer** — delegate to another Drive's AI Config entirely.
+```json
+{ "ai": "hyper://abc123..." }
+```
+
+**chatBubble** Boolean. When `true`, Nomad injects a floating chat bubble into every page on this Drive. Clicking the bubble opens an Intercom-style overlay that lets visitors chat with the Drive's AI (resolved via the `ai` field above, or the Space/global default). The Drive does not need to build any chat UI of its own.
+
+```json
+{ "chatBubble": true }
+```
+
+Requires the `ai` field to be set (or a Space/global AI default to be configured) — otherwise the bubble will open but `beaker.ai` calls will fail with a "no model configured" error.
+
 ## Full example
 
 ```json
@@ -59,6 +79,8 @@ The explorer sidebar and drive view use this image to represent the drive. If om
   "links": {
     "license": [{ "href": "https://creativecommons.org/licenses/by/4.0/" }]
   },
-  "csp": "default-src 'self'"
+  "csp": "default-src 'self'",
+  "ai": { "model": "llama3.2:3b" },
+  "chatBubble": true
 }
 ```
