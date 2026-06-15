@@ -5,7 +5,7 @@ description: Multi-writer drives backed by Autobase — how to create them, invi
 
 A **Collaborative Drive** is a multi-writer Drive backed by [Autobase](https://github.com/holepunchto/autobase). Multiple Writers can append to it; reads are linearised across all writers into an eventually-consistent view. The API mirrors `beaker.hyperdrive` so building a collaborative app is a near-drop-in rewrite of a single-writer one.
 
-See the [beaker.autobase API reference]({{< relref "/docs/api/apis/beaker.autobase" >}}) for the full method list.
+See the [beaker.autobase API reference](/docs/api/apis/beaker.autobase/) for the full method list.
 
 ---
 

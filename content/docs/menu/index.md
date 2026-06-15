@@ -17,8 +17,8 @@ headless = true
   - **[Advanced]({{< relref "/docs/api/advanced" >}})**
     - [Collaborative Drives]({{< relref "/docs/api/advanced/collaborative-drives" >}})
   - [APIs]({{< relref "/docs/api/apis" >}})
-    - [beaker.autobase]({{< relref "/docs/api/apis/beaker.autobase" >}})
-    - [beaker.schemas]({{< relref "/docs/api/apis/beaker.schemas" >}})
+    - [beaker.autobase](/docs/api/apis/beaker.autobase/)
+    - [beaker.schemas](/docs/api/apis/beaker.schemas/)
   - **[Developer Reference]({{< relref "/docs/api/developers" >}})**
-    - [Profile Drives]({{< relref "/docs/api/developers/profile-drives" >}})
-    - [walled.garden Schemas]({{< relref "/docs/api/developers/walled-garden-schemas" >}})
+    - [Profile Drives](/docs/api/developers/profile-drives/)
+    - [walled.garden Schemas](/docs/api/developers/walled-garden-schemas/)

@@ -3,7 +3,7 @@ title: walled.garden Schemas
 description: Social data schemas for Nomad — Zod-backed, Standard Schema compliant.
 ---
 
-`walled.garden` schemas define the shape of social data stored in Drives. They are [Zod](https://zod.dev)-backed, [Standard Schema](https://standardschema.dev) compliant, and exposed to template apps via [`beaker.schemas`]({{< relref "/docs/api/apis/beaker.schemas" >}}).
+`walled.garden` schemas define the shape of social data stored in Drives. They are [Zod](https://zod.dev)-backed, [Standard Schema](https://standardschema.dev) compliant, and exposed to template apps via [`beaker.schemas`](/docs/api/apis/beaker.schemas/).
 
 These schemas are **content conventions** — apps store `walled.garden` data wherever makes sense (there is no enforced directory path). The type string in each record identifies the schema.
 
@@ -13,7 +13,7 @@ These schemas are **content conventions** — apps store `walled.garden` data wh
 
 Identifies a Drive as a public social profile. Lives in the drive's `/index.json`.
 
-See the [Profile Drives guide]({{< relref "/docs/api/developers/profile-drives" >}}) for full documentation.
+See the [Profile Drives guide](/docs/api/developers/profile-drives/) for full documentation.
 
 ```json
 {

@@ -3,7 +3,7 @@ title: beaker.schemas
 description: Validate data against walled.garden schemas.
 ---
 
-The schemas API exposes [walled.garden schema]({{< relref "/docs/api/developers/walled-garden-schemas" >}}) validation to template apps. Schemas are [Zod](https://zod.dev)-backed and [Standard Schema](https://standardschema.dev) compliant. Templates running in sandboxed Drive contexts can't import npm modules directly — this API bridges that gap.
+The schemas API exposes [walled.garden schema](/docs/api/developers/walled-garden-schemas/) validation to template apps. Schemas are [Zod](https://zod.dev)-backed and [Standard Schema](https://standardschema.dev) compliant. Templates running in sandboxed Drive contexts can't import npm modules directly — this API bridges that gap.
 
 ## API
 

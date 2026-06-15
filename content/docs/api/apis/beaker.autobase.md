@@ -5,7 +5,7 @@ description: Multi-writer Collaborative Drives backed by Autobase.
 
 The Autobase API provides multi-writer Collaborative Drives. Multiple Writers can append to a Collaborative Drive; reads are linearised across all writers. The API shape mirrors `beaker.hyperdrive` so template authors work with a familiar interface.
 
-See the [Collaborative Drives guide]({{< relref "/docs/api/advanced/collaborative-drives" >}}) for a full walkthrough.
+See the [Collaborative Drives guide](/docs/api/advanced/collaborative-drives/) for a full walkthrough.
 
 ## API
 

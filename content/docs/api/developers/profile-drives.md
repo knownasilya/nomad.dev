@@ -107,4 +107,4 @@ for (const { writerKey, profileUrl } of writers) {
 }
 ```
 
-See also: [walled.garden schemas]({{< relref "/docs/api/developers/walled-garden-schemas" >}})
+See also: [walled.garden schemas](/docs/api/developers/walled-garden-schemas/)

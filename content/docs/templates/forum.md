@@ -3,7 +3,7 @@ title: Forum Template
 description: A multi-writer discussion board template demonstrating beaker.autobase.
 ---
 
-The forum template is a ready-to-use discussion board that demonstrates [Collaborative Drives]({{< relref "/docs/api/advanced/collaborative-drives" >}}), [Profile Drives]({{< relref "/docs/api/developers/profile-drives" >}}), and [walled.garden schemas]({{< relref "/docs/api/developers/walled-garden-schemas" >}}). It is the best starting point for any multi-writer app.
+The forum template is a ready-to-use discussion board that demonstrates [Collaborative Drives](/docs/api/advanced/collaborative-drives/), [Profile Drives](/docs/api/developers/profile-drives/), and [walled.garden schemas](/docs/api/developers/walled-garden-schemas/). It is the best starting point for any multi-writer app.
 
 **Location:** `nomad://template/forum`
 
