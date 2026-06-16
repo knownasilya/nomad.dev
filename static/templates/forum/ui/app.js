@@ -41,7 +41,9 @@ async function boot(el) {
   try {
     const ab = await beaker.hyperdrive.readFile('hyper://private/address-book.json').then(JSON.parse)
     state.myProfileUrl = ab?.profiles?.[0]?.key ? `hyper://${ab.profiles[0].key}/` : null
-  } catch {}
+  } catch(e) {
+    console.log('No address book found', e);
+  }
 
   if (state.isWriter) {
     // writerKey is the local autobase writer key — exposed via listWriters
