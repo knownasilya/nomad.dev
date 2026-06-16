@@ -40,6 +40,7 @@ async function boot(el) {
   // Load the user's profile from address book
   try {
     const ab = await beaker.hyperdrive.readFile('hyper://private/address-book.json').then(JSON.parse)
+    console.log('Address book', ab);
     state.myProfileUrl = ab?.profiles?.[0]?.key ? `hyper://${ab.profiles[0].key}/` : null
   } catch(e) {
     console.log('No address book found', e);
