@@ -63,7 +63,9 @@
       gap: 6px;
       font-size: 12px;
       color: #555;
+      text-decoration: none;
     }
+    a.profile-chip:hover { color: #2563eb; text-decoration: underline; }
     .profile-chip img { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
     form.post-form, form.comment-form {
       background: #fff;
@@ -114,5 +116,7 @@
     .empty { color: #888; font-style: italic; padding: 20px 0; text-align: center; }
     a.back { color: #2563eb; text-decoration: none; font-size: 13px; cursor: pointer; }
     a.back:hover { text-decoration: underline; }
+    .no-profile-hint { font-size: 12px; color: #92400e; background: #fef3c7; border: 1px solid #fcd34d; border-radius: 4px; padding: 3px 8px; }
+    .no-profile-hint a { color: inherit; font-weight: 600; }
   </style>
 </html>

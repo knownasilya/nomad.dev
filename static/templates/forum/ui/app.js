@@ -99,6 +99,9 @@ function renderHeader() {
       hdr.append(h('button', { class: 'btn btn-primary', click: () => navigate('new-post') }, '+ New Post'))
     }
     hdr.append(h('button', { class: 'btn', click: () => openWriters() }, 'Writers' + (state.requests.length ? ` (${state.requests.length})` : '')))
+    if (!state.myProfileUrl) {
+      hdr.append(h('span', { class: 'no-profile-hint' }, '⚠ ', h('a', { href: '#', click: (e) => { e.preventDefault(); showProfileHelp() } }, 'Set up your profile')))
+    }
   }
   return hdr
 }
@@ -313,6 +316,18 @@ async function submitComment(e, postSlug) {
   await render(document.querySelector('forum-app'))
 }
 
+function showProfileHelp() {
+  alert(
+    'To set up your profile:\n\n' +
+    '1. Open the Nomad explorer and create a new drive.\n' +
+    '2. Set the drive title to your name.\n' +
+    '3. Edit /index.json and add:  "type": "walled.garden/person"\n' +
+    '4. Open hyper://private/address-book.json and add:\n' +
+    '   { "profiles": [{ "key": "<your-drive-key>" }] }\n\n' +
+    'After that, reload this page — your name will appear on your posts.'
+  )
+}
+
 async function requestAccess() {
   const profileUrl = state.myProfileUrl
   const result = await beaker.autobase.requestAccess(location.href, { profileUrl })
@@ -353,20 +368,26 @@ async function resolveAuthor(writerKey, profileUrl) {
     profileCache[cacheKey] = _fetchProfile(profileUrl)
   }
   const profile = await profileCache[cacheKey]
-  const chip = h('span', { class: 'profile-chip' })
+
+  const chip = profileUrl
+    ? h('a', { class: 'profile-chip', href: profileUrl, click: (e) => { e.stopPropagation(); window.open(profileUrl) } })
+    : h('span', { class: 'profile-chip' })
+
   if (profile?.thumb) {
-    const img = h('img', { src: profileUrl ? profileUrl + profile.thumb : profile.thumb, alt: '' })
-    chip.append(img)
+    const thumbSrc = profile.thumb.startsWith('/')
+      ? profileUrl.replace(/\/$/, '') + profile.thumb
+      : profileUrl + profile.thumb
+    chip.append(h('img', { src: thumbSrc, alt: '' }))
   }
-  chip.append(profile?.title || writerKey?.slice(0, 8) || 'Unknown')
+  const label = profile?.title || (writerKey ? writerKey.slice(0, 8) + '…' : 'Unknown')
+  chip.append(label)
   return chip
 }
 
 async function _fetchProfile(profileUrl) {
   if (!profileUrl) return null
   try {
-    const info = await beaker.hyperdrive.drive(profileUrl).getInfo()
-    return info
+    return await beaker.hyperdrive.drive(profileUrl).getInfo()
   } catch { return null }
 }
 
