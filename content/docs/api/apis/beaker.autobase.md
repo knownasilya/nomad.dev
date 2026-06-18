@@ -24,17 +24,22 @@ Returns a **CollaborativeDrive** instance with all the read/write methods below,
 
 ### beaker.autobase.createCollaborativeDrive(\[opts\])
 
-Create a new Collaborative Drive.
+Create a new Collaborative Drive. By default this opens the create-drive modal so the user can review or edit the title and description. Pass `prompt: false` to skip the modal and create immediately (useful when building your own UI, e.g. a template page).
 
 * **opts** Object.
   * **title** String.
   * **description** String.
   * **type** String. e.g. `"walled.garden/forum"`
+  * **prompt** `false`. Set to `false` to bypass the modal and create the drive immediately.
 * Returns **Promise&lt;CollaborativeDrive&gt;**.
 
 ```javascript
+// Opens the create-drive modal (default)
 var drive = await beaker.autobase.createCollaborativeDrive({ title: 'My Forum' })
 console.log(drive.url) // hyper://...
+
+// Skip the modal — create directly
+var drive = await beaker.autobase.createCollaborativeDrive({ title: 'My Forum', prompt: false })
 ```
 
 ---
@@ -65,7 +70,10 @@ Only Writers can call write methods. Non-writers receive an `ArchiveNotWritableE
 ### drive.del(path\[, opts\])
 ### drive.mkdir(path\[, opts\])
 ### drive.rmdir(path\[, opts\])
+### drive.copy(srcPath, dstPath\[, opts\])
+### drive.rename(srcPath, dstPath\[, opts\])
 ### drive.updateMetadata(path, metadata\[, opts\])
+### drive.deleteMetadata(path, keys\[, opts\])
 ### drive.configure(settings\[, opts\])
 ### drive.writeFile(path, data\[, opts\])
 ### drive.unlink(path\[, opts\])
