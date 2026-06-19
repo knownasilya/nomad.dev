@@ -129,6 +129,22 @@ for (const req of requests) {
 }
 ```
 
+### drive.watchRequests(\[onRequest\])
+
+Watch for writer-access requests arriving over the network. Emits a `changed` event each
+time a new request is received, so an owner's UI can refresh `listRequests()` live instead
+of polling.
+
+* **onRequest** Function (optional). Called on each `changed` event.
+* Returns an **EventTarget** that emits `changed`.
+
+```javascript
+drive.watchRequests(async () => {
+  var requests = await drive.listRequests()
+  // re-render your approve/deny UI
+})
+```
+
 ### drive.approveRequest(writerKey\[, opts\])
 
 Approve a pending writer request. Only the drive owner can call this.

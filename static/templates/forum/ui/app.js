@@ -54,6 +54,12 @@ async function boot(el) {
     // Find our writer key from the list that has no profileUrl but matches our profile
     const myWriter = writers.find(w => w.profileUrl === state.myProfileUrl) || writers[0]
     state.myWriterKey = myWriter?.writerKey
+
+    // Live-refresh pending requests as they arrive over the network (no polling)
+    drive.watchRequests(async () => {
+      state.requests = await drive.listRequests()
+      await render(el)
+    })
   }
 
   state.loading = false
