@@ -35,8 +35,10 @@ A titled post — the building block of a forum or blog.
 {
   "type": "walled.garden/post",
   "title": "Hello world",
+  "summary": "A short teaser shown in feed lists.",
   "body": "This is the full post content.",
   "category": "general",
+  "tags": ["p2p", "hypercore"],
   "createdAt": "2026-06-15T12:00:00.000Z",
   "author": { "url": "hyper://profile/", "writerKey": "abc..." }
 }
@@ -46,12 +48,49 @@ A titled post — the building block of a forum or blog.
 |-------|------|----------|
 | `type` | `"walled.garden/post"` | ✓ |
 | `title` | String (max 280) | ✓ |
-| `body` | String | ✓ |
 | `createdAt` | ISO 8601 datetime | ✓ |
+| `summary` | String (max 560) | |
+| `body` | String | |
 | `category` | String (max 100) | |
+| `tags` | Array of strings | |
+| `draft` | Boolean | |
 | `updatedAt` | ISO 8601 datetime | |
 | `author.url` | Profile Drive URL | |
 | `author.writerKey` | Hex string | |
+
+`body` is optional. When a post is stored as its own directory (`/posts/<slug>/post.json`), the body can instead live alongside it as `index.md`, `index.html`, or `index.txt` — the file extension determines how it renders, and the post stays readable even without a custom frontend. `draft: true` hides a post from feeds and readers.
+
+---
+
+## feed
+
+Declares a drive as a **feed** — a blog or other stream of items that a [Reader](/docs/templates/blog/) can subscribe to. Lives in the drive's `/index.json`.
+
+```json
+{
+  "type": "walled.garden/feed",
+  "title": "Ilya's Blog",
+  "description": "Notes on peer-to-peer software.",
+  "author": { "url": "hyper://my-profile/" },
+  "itemsPath": "/posts/",
+  "itemType": "walled.garden/post",
+  "language": "en",
+  "icon": "icon.png"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | `"walled.garden/feed"` | ✓ | Identifies this drive as a feed |
+| `title` | String (max 280) | ✓ | Channel title |
+| `description` | String (max 1000) | | Channel description |
+| `author.url` | Profile Drive URL | | Identity behind the feed |
+| `itemsPath` | String | | Directory holding items (default `/posts/`) |
+| `itemType` | String | | Schema type of items (default `walled.garden/post`) |
+| `language` | String | | BCP-47 language tag, e.g. `en` |
+| `icon` | String | | Path within the drive to a feed icon |
+
+A **blog** is a feed whose items are posts: each post is a directory under `itemsPath` (e.g. `/posts/2026-06-15-hello/`) holding a `post.json` plus an `index.md` (or `index.html`/`index.txt`) body. See the [Blog template](/docs/templates/blog/).
 
 ---
 
