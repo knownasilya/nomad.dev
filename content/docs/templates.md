@@ -30,4 +30,7 @@ Templates are a quick way to start with new apps and projects.
 {{< imgcard relref="./templates/forum" img="/templates/forum.png" >}}
 {{< /imgcard >}}
 
+{{< imgcard relref="./templates/blog" img="/templates/blog.png" >}}
+{{< /imgcard >}}
+
 {{< /linkcardgrid >}}
