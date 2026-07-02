@@ -24,7 +24,7 @@ Create a new capability mapping to the target URL.
 
 ```javascript
 var capUrl = await beaker.capabilities.create('hyper://12345..af')
-await beaker.hyperdrive.drive(capUrl).readdir('/')
+await beaker.fs.drive(capUrl).readdir('/')
 ```
 
 ### beaker.capabilities.modify(capUrl, targetUrl)
@@ -37,7 +37,7 @@ Modify an existing capability's mapping.
 
 ```javascript
 await beaker.capabilities.modify(capUrl, 'hyper://fedcb..21')
-await beaker.hyperdrive.drive(capUrl).readdir('/')
+await beaker.fs.drive(capUrl).readdir('/')
 ```
 
 ### beaker.capabilities.delete(capUrl)

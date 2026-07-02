@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="400" fill="#fbfbfd"/>
+
+  <!-- header -->
+  <text x="140" y="74" font-size="30" font-weight="700" fill="#1f2330">Ilya&#8217;s Blog</text>
+  <text x="141" y="98" font-size="14" fill="#6b7280">Notes on peer-to-peer software.</text>
+  <rect x="548" y="52" width="112" height="32" rx="6" fill="#2563eb"/>
+  <text x="604" y="73" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle">+ New post</text>
+  <line x1="140" y1="120" x2="660" y2="120" stroke="#e5e7eb" stroke-width="1"/>
+
+  <!-- post 1 -->
+  <text x="140" y="160" font-size="19" font-weight="700" fill="#1f2330">Building a P2P blog</text>
+  <text x="140" y="183" font-size="14" fill="#4b5563">How directory-per-post keeps multi-device writes conflict-free.</text>
+  <text x="140" y="205" font-size="12" fill="#9097a3">June 20, 2026</text>
+  <rect x="226" y="195" width="40" height="16" rx="8" fill="#eef2ff"/>
+  <text x="246" y="207" font-size="11" fill="#4f46e5" text-anchor="middle">p2p</text>
+  <line x1="140" y1="226" x2="660" y2="226" stroke="#ececf0" stroke-width="1"/>
+
+  <!-- post 2 -->
+  <text x="140" y="262" font-size="19" font-weight="700" fill="#1f2330">Why Autobase for the feed</text>
+  <text x="140" y="285" font-size="14" fill="#4b5563">One stable URL, and every device is a writer.</text>
+  <text x="140" y="307" font-size="12" fill="#9097a3">June 18, 2026</text>
+  <rect x="226" y="297" width="66" height="16" rx="8" fill="#eef2ff"/>
+  <text x="259" y="309" font-size="11" fill="#4f46e5" text-anchor="middle">hypercore</text>
+  <line x1="140" y1="328" x2="660" y2="328" stroke="#ececf0" stroke-width="1"/>
+
+  <!-- post 3 -->
+  <text x="140" y="364" font-size="19" font-weight="700" fill="#1f2330">Reading feeds in the browser</text>
+  <text x="140" y="387" font-size="14" fill="#4b5563">An RSS-like reader that aggregates every feed you follow.</text>
+</svg>

@@ -1,4 +1,4 @@
-var infoPromise = beaker.hyperdrive.getInfo()
+var infoPromise = beaker.fs.getInfo()
 
 function h (tag, attrs, ...children) {
   var el = document.createElement(tag)
@@ -24,8 +24,8 @@ customElements.define('module-header', class extends HTMLElement {
   async render () {
     var [info, hasTests, hasDemo] = await Promise.all([
        infoPromise,
-       beaker.hyperdrive.stat('/tests/index.html').catch(e => false),
-       beaker.hyperdrive.stat('/demo/index.html').catch(e => false)
+       beaker.fs.stat('/tests/index.html').catch(e => false),
+       beaker.fs.stat('/demo/index.html').catch(e => false)
      ])
 
     this.append(h('h1', {}, h('a', {href: '/'}, info.title)))
@@ -80,7 +80,7 @@ class ModuleDirectoryView extends HTMLElement {
   }
 
   async render () {
-    var entries = await beaker.hyperdrive.readdir(location.pathname, {includeStats: true})
+    var entries = await beaker.fs.readdir(location.pathname, {includeStats: true})
     entries.sort((a, b) => {
       if (a.stat.isDirectory() && !b.stat.isDirectory()) return -1
       if (!a.stat.isDirectory() && b.stat.isDirectory()) return 1
@@ -113,7 +113,7 @@ class ModuleFileView extends HTMLElement {
   }
   async render (pathname, renderHTML = false) {
     // check existence
-    let stat = await beaker.hyperdrive.stat(pathname).catch(e => undefined)
+    let stat = await beaker.fs.stat(pathname).catch(e => undefined)
     if (!stat) {
       // 404
       this.append(h('div', {class: 'empty'}, h('h2', {}, '404 File Not Found')))
@@ -129,7 +129,7 @@ class ModuleFileView extends HTMLElement {
       this.append(h('audio', {controls: true}, h('source', {src: pathname})))
     } else {
       // render content
-      let content = await beaker.hyperdrive.readFile(pathname)
+      let content = await beaker.fs.readFile(pathname)
       if (renderHTML && /\.(md|html)$/i.test(pathname)) {
         if (pathname.endsWith('.md')) {
           content = beaker.markdown.toHTML(content)
@@ -154,7 +154,7 @@ class ModuleReadmeView extends HTMLElement {
     this.render()
   }
   async render () {
-    let files = await beaker.hyperdrive.readdir(location.pathname).catch(e => ([]))
+    let files = await beaker.fs.readdir(location.pathname).catch(e => ([]))
     files = files.filter(f => ['index.html', 'index.md'].includes(f.toLowerCase()))
     if (files[0]) {
       this.append(new ModuleFileView(location.pathname + files[0], true))

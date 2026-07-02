@@ -1,15 +1,18 @@
 var createDriveButton = document.querySelector('.create-drive')
-if (typeof beaker !== 'undefined' && typeof beaker.hyperdrive !== 'undefined') {
+if (typeof beaker !== 'undefined' && typeof beaker.fs !== 'undefined') {
   createDriveButton.textContent = 'Create Drive From This Template'
   createDriveButton.addEventListener('click', async (e) => {
     createDriveButton.disabled = true
     createDriveButton.textContent = 'Creating…'
     try {
+      // ADR-0010: every drive is an Autobase. `TEMPLATE_DRIVE_TYPE === 'autobase'` means the
+      // template wants a collaborative (multi-writer) drive, so create it unlocked; otherwise a
+      // locked / single-writer drive. Both return a scoped beaker.fs drive handle.
       var drive
       if (window.TEMPLATE_DRIVE_TYPE === 'autobase') {
-        drive = await beaker.autobase.createCollaborativeDrive({ title: TEMPLATE_TITLE })
+        drive = await beaker.fs.createCollaborativeDrive({ title: TEMPLATE_TITLE, collaborative: true })
       } else {
-        drive = await beaker.hyperdrive.createDrive({ title: TEMPLATE_TITLE })
+        drive = await beaker.fs.createDrive({ title: TEMPLATE_TITLE })
       }
       for (let path of TEMPLATE_FILES) {
         try {

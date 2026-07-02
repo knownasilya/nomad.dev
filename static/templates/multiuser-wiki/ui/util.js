@@ -23,13 +23,13 @@ export function slugify (str = '') {
 
 export async function getSiteMeta () {
   var [info, authors] = await Promise.all([
-    beaker.hyperdrive.getInfo(),
-    beaker.hyperdrive.readdir('/users', {includeStats: true}).catch(e => ([]))
+    beaker.fs.getInfo(),
+    beaker.fs.readdir('/users', {includeStats: true}).catch(e => ([]))
   ])
   var userIsAuthor = false
   for (let author of authors) {
     if (!author.stat.mount?.key) continue
-    let info = await beaker.hyperdrive.getInfo(author.stat.mount.key).catch(e => undefined)
+    let info = await beaker.fs.getInfo(author.stat.mount.key).catch(e => undefined)
     if (info?.writable) {
       author.writable = true
       userIsAuthor = true
@@ -47,7 +47,7 @@ export async function queryForPage (path) {
     path = joinPath(path, 'index.md')
   }
   console.debug('Querying', joinPath(QUERY_ROOT_PATH, path))
-  var files = await beaker.hyperdrive.query({
+  var files = await beaker.fs.query({
     path: joinPath(QUERY_ROOT_PATH, path),
     sort: 'mtime',
     reverse: true
@@ -61,5 +61,5 @@ export async function writeFile (author, path, content) {
   }
   console.log('writing to', joinPath(ROOT_PATH(author.name), path))
   var filePath = joinPath('beaker-wiki', WIKI_KEY, path)
-  await beaker.hyperdrive.drive(author.key).writeFile(filePath, content, {ensureParent: true})
+  await beaker.fs.drive(author.key).writeFile(filePath, content, {ensureParent: true})
 }

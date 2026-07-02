@@ -1,6 +1,6 @@
 ---
 title: Blog Template
-description: A multi-device, URL-addressable blog built on beaker.autobase and walled.garden/feed.
+description: A multi-device, URL-addressable blog built on beaker.fs and walled.garden/feed.
 ---
 
 {{< rawhtml >}}
@@ -22,7 +22,7 @@ description: A multi-device, URL-addressable blog built on beaker.autobase and w
 <script src="/templates/index.js"></script>
 {{< /rawhtml >}}
 
-A personal blog you can write from any of your devices. The drive is an [Autobase Collaborative Drive](/docs/api/apis/beaker.autobase/), so each Device you add is a Writer of the **same** drive under one stable `hyper://` URL — no follower-breaking key changes. The drive declares itself a [`walled.garden/feed`](/docs/api/developers/walled-garden-schemas/#feed) so the in-browser Reader can subscribe to it.
+A personal blog you can write from any of your devices. The drive is an [Autobase Collaborative Drive](/docs/api/apis/beaker.fs/), so each Device you add is a Writer of the **same** drive under one stable `hyper://` URL — no follower-breaking key changes. The drive declares itself a [`walled.garden/feed`](/docs/api/developers/walled-garden-schemas/#feed) so the in-browser Reader can subscribe to it.
 
 ## How it works
 

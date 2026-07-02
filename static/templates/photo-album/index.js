@@ -23,8 +23,8 @@ customElements.define('photo-album-app', class extends HTMLElement {
   }
 
   async load () {
-    this.siteInfo = await beaker.hyperdrive.getInfo()
-    this.photos = await beaker.hyperdrive.readdir('/photos').catch(e => ([]))
+    this.siteInfo = await beaker.fs.getInfo()
+    this.photos = await beaker.fs.readdir('/photos').catch(e => ([]))
 
     this.append(h('header', {}, 
       h('h1', {},
@@ -72,8 +72,8 @@ customElements.define('photo-album-app', class extends HTMLElement {
     fr.onload = async () => {
       var ext = file.name.split('.').pop()
       var name = `${Date.now()}.${ext}`
-      await beaker.hyperdrive.mkdir('/photos').catch(e => undefined)
-      await beaker.hyperdrive.writeFile(`/photos/${name}`, fr.result, 'binary')
+      await beaker.fs.mkdir('/photos').catch(e => undefined)
+      await beaker.fs.writeFile(`/photos/${name}`, fr.result, 'binary')
       this.photos.push(name)
       this.renderPhotos()
 
@@ -155,14 +155,14 @@ customElements.define('photo-album-app', class extends HTMLElement {
       dialog.classList.remove('editing-description')
       var desc = textarea.value
       descriptionEl.textContent = desc
-      await beaker.hyperdrive.updateMetadata(`/photos/${photo}`, {description: desc})
+      await beaker.fs.updateMetadata(`/photos/${photo}`, {description: desc})
     }
 
     async function onDelete (e) {
       if (!confirm('Delete this photo?')) {
         return
       }
-      await beaker.hyperdrive.unlink(`/photos/${photo}`)
+      await beaker.fs.unlink(`/photos/${photo}`)
       location.reload()
     }
 
@@ -177,7 +177,7 @@ customElements.define('photo-album-app', class extends HTMLElement {
     dialog.showModal()
 
     // Load description after dialog is visible so the backdrop never flashes
-    var description = (await beaker.hyperdrive.stat(`/photos/${photo}`).catch(e => {}))?.metadata?.description
+    var description = (await beaker.fs.stat(`/photos/${photo}`).catch(e => {}))?.metadata?.description
     if (this._openingIndex !== index) return
     descriptionEl.innerHTML = ''
     descriptionEl.append(description ? description : h('em', {}, 'No description'))

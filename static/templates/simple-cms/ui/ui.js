@@ -7,7 +7,7 @@ const main = $('main')
 const editor = $('#editor')
 
 async function readPage () {
-  return beaker.hyperdrive.readFile(pathname).catch(e => '')
+  return beaker.fs.readFile(pathname).catch(e => '')
 }
 
 async function onNew (e) {
@@ -15,18 +15,18 @@ async function onNew (e) {
   if (!path) return
   if (!path.endsWith('.html')) path += '.html'
   if (!path.startsWith('/')) path = `/${path}`
-  await beaker.hyperdrive.writeFile(path, `<h1>${path}</h1>`)
+  await beaker.fs.writeFile(path, `<h1>${path}</h1>`)
   location.pathname = path
 }
 
 async function onSave (e) {
-  await beaker.hyperdrive.writeFile(pathname, editor.value)
+  await beaker.fs.writeFile(pathname, editor.value)
   location.reload()
 }
 
 async function onDelete (e) {
   if (!confirm('Are you sure?')) return
-  await beaker.hyperdrive.unlink(pathname)
+  await beaker.fs.unlink(pathname)
   location.reload()
 }
 

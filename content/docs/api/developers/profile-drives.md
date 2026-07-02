@@ -42,11 +42,11 @@ A Profile Drive's `/index.json` must include at minimum a `type` and `title`:
 
 ```javascript
 // If you have someone's profile URL:
-var profile = await beaker.hyperdrive.drive('hyper://abc123.../').getInfo()
+var profile = await beaker.fs.drive('hyper://abc123.../').getInfo()
 console.log(profile.title, profile.description)
 
 // Or read the full index.json for links:
-var manifest = await beaker.hyperdrive.drive('hyper://abc123../')
+var manifest = await beaker.fs.drive('hyper://abc123../')
   .readFile('/index.json')
   .then(JSON.parse)
 
@@ -76,7 +76,7 @@ When you use a Collaborative Drive from multiple devices, each device has its ow
 Update this file whenever you add a new device to a Collaborative Drive:
 
 ```javascript
-var myProfile = beaker.hyperdrive.drive('hyper://my-profile/')
+var myProfile = beaker.fs.drive('hyper://my-profile/')
 var existing = await myProfile.readFile('/.data/walled.garden/writer-keys.json')
   .then(JSON.parse).catch(() => ({ type: 'walled.garden/writer-keys', keys: [] }))
 
@@ -95,14 +95,14 @@ await myProfile.writeFile(
 
 ## Resolving author identity from a Collaborative Drive
 
-Collaborative Drive writers are listed via `beaker.autobase`. Each entry includes a `profileUrl`:
+Collaborative Drive writers are listed via `beaker.fs`. Each entry includes a `profileUrl`:
 
 ```javascript
-var writers = await beaker.autobase.collaborativeDrive(driveUrl).listWriters()
+var writers = await beaker.fs.drive(driveUrl).listWriters()
 
 for (const { writerKey, profileUrl } of writers) {
   if (!profileUrl) continue
-  var profile = await beaker.hyperdrive.drive(profileUrl).getInfo()
+  var profile = await beaker.fs.drive(profileUrl).getInfo()
   console.log(`${profile.title} writes with key ${writerKey}`)
 }
 ```

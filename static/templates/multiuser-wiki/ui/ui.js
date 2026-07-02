@@ -91,8 +91,8 @@ customElements.define('page-controls', class extends HTMLElement {
       }
       break
     } while(true)
-    await beaker.hyperdrive.mkdir('/users').catch(e => undefined)
-    await beaker.hyperdrive.mount(`/users/${name}`, contact.url)
+    await beaker.fs.mkdir('/users').catch(e => undefined)
+    await beaker.fs.mount(`/users/${name}`, contact.url)
     location.reload()
   }
 
@@ -102,7 +102,7 @@ customElements.define('page-controls', class extends HTMLElement {
     if (!confirm(`Remove ${name} from authors?`)) {
       return
     }
-    await beaker.hyperdrive.unmount(`/users/${name}`)
+    await beaker.fs.unmount(`/users/${name}`)
     location.reload()
   }
 })
@@ -120,7 +120,7 @@ customElements.define('page-content', class extends HTMLElement {
     var file = await queryForPage(location.pathname)
 
     if (EDIT_MODE) {
-      let content = file ? await beaker.hyperdrive.readFile(file.path).catch(e => '') : ''
+      let content = file ? await beaker.fs.readFile(file.path).catch(e => '') : ''
       main.append(h('h1', `Editing ${location.pathname}`))
       main.append(h('textarea', {class: 'editor'}, content))
       main.classList.remove('loading')
@@ -129,7 +129,7 @@ customElements.define('page-content', class extends HTMLElement {
 
     console.debug('Page found:', file)
     if (!file) {
-      let st = await beaker.hyperdrive.stat('/users').catch(e => undefined)
+      let st = await beaker.fs.stat('/users').catch(e => undefined)
       if (!st) {
         // no authors yet
         main.classList.remove('loading')
@@ -152,7 +152,7 @@ customElements.define('page-content', class extends HTMLElement {
     } else if (/\.(mp3|ogg)/i.test(file.path)) {
       main.append(h('audio', {controls: true}, h('source', {src: file.path})))
     } else {
-      let content = await beaker.hyperdrive.readFile(file.path)
+      let content = await beaker.fs.readFile(file.path)
       // treat empty file as a tombstone
       if (!content) {
         main.classList.remove('loading')

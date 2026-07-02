@@ -145,7 +145,7 @@ async function enterViewMode () {
 
 ## Add Read/Write Methods
 
-Reading and writing the page's HTML is going to work like in the [self-modifying site tutorial](../self-modifying-site). We'll use the [Hyperdrive API](/docs/api/apis/beaker.hyperdrive) to read and write the files.
+Reading and writing the page's HTML is going to work like in the [self-modifying site tutorial](../self-modifying-site). We'll use the [beaker.fs API](/docs/api/apis/beaker.fs) to read and write the files.
 
 First, we set up some globals that we'll reuse:
 
@@ -154,19 +154,19 @@ var pathname = location.pathname
 if (pathname.endsWith('/')) pathname += 'index.html'
 ```
 
-Our UI code already uses a `readPage()` method to fetch the current page's content. This is defined using the [readFile\(\)](/docs/api/apis/beaker.hyperdrive#beaker-hyperdrive-readfile-url-opts) method of the Hyperdrive API.
+Our UI code already uses a `readPage()` method to fetch the current page's content. This is defined using the [readFile\(\)](/docs/api/apis/beaker.fs#reading) method of the beaker.fs API.
 
 ```javascript
 async function readPage () {
-  return beaker.hyperdrive.readFile(pathname).catch(e => '')
+  return beaker.fs.readFile(pathname).catch(e => '')
 }
 ```
 
-To save the page, we get the editor's value and then write it using the [writeFile\(\)](/docs/api/apis/beaker.hyperdrive#beaker-hyperdrive-writefile-url-data-opts) method. Afterwards, we reload the page to show the changes.
+To save the page, we get the editor's value and then write it using the [writeFile\(\)](/docs/api/apis/beaker.fs#writing) method. Afterwards, we reload the page to show the changes.
 
 ```javascript
 async function onSave (e) {
-  await beaker.hyperdrive.writeFile(pathname, editor.value)
+  await beaker.fs.writeFile(pathname, editor.value)
   location.reload()
 }
 ```
@@ -179,17 +179,17 @@ async function onNew (e) {
   if (!path) return
   if (!path.endsWith('.html')) path += '.html'
   if (!path.startsWith('/')) path = `/${path}`
-  await beaker.hyperdrive.writeFile(path, `<h1>${path}</h1>`)
+  await beaker.fs.writeFile(path, `<h1>${path}</h1>`)
   location.pathname = path
 }
 ```
 
-To delete the current page, we confirm with the user and then use the [unlink\(\)](/docs/api/apis/beaker.hyperdrive#beaker-hyperdrive-unlink-url-opts) method. When the page reloads, the view should display nothing because a 404 is handled by inserting an empty string \(see our readPage\(\) method above\).
+To delete the current page, we confirm with the user and then use the [unlink\(\)](/docs/api/apis/beaker.fs#writing) method. When the page reloads, the view should display nothing because a 404 is handled by inserting an empty string \(see our readPage\(\) method above\).
 
 ```javascript
 async function onDelete (e) {
   if (!confirm('Are you sure?')) return
-  await beaker.hyperdrive.unlink(pathname)
+  await beaker.fs.unlink(pathname)
   location.reload()
 }
 ```
@@ -208,7 +208,7 @@ const main = $('main')
 const editor = $('#editor')
 
 async function readPage () {
-  return beaker.hyperdrive.readFile(pathname).catch(e => '')
+  return beaker.fs.readFile(pathname).catch(e => '')
 }
 
 async function onNew (e) {
@@ -216,18 +216,18 @@ async function onNew (e) {
   if (!path) return
   if (!path.endsWith('.html')) path += '.html'
   if (!path.startsWith('/')) path = `/${path}`
-  await beaker.hyperdrive.writeFile(path, `<h1>${path}</h1>`)
+  await beaker.fs.writeFile(path, `<h1>${path}</h1>`)
   location.pathname = path
 }
 
 async function onSave (e) {
-  await beaker.hyperdrive.writeFile(pathname, editor.value)
+  await beaker.fs.writeFile(pathname, editor.value)
   location.reload()
 }
 
 async function onDelete (e) {
   if (!confirm('Are you sure?')) return
-  await beaker.hyperdrive.unlink(pathname)
+  await beaker.fs.unlink(pathname)
   location.reload()
 }
 

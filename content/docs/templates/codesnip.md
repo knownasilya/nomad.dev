@@ -24,7 +24,7 @@ title: Codesnip Template
 {{< /rawhtml >}}
 
 A codesnippet which you can use to demonstrate APIs, patterns, bugs, or other techniques.
-(Note that the code is run in an iframe and will have reduced permissions, including only readonly access to the Hyperdrive API.)
+(Note that the code is run in an iframe and will have reduced permissions, including only readonly access to the beaker.fs API.)
 
 ## Source
 

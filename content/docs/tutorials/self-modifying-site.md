@@ -77,7 +77,7 @@ Finally, the textarea is positioned to take up the rest of the screen:
 
 ## Reading and writing the page
 
-Our editor needs to read the HTML of the current page and then write the textarea's value back to that file. To do that, we'll use the [beaker.hyperdrive API](/docs/api/apis/beaker.hyperdrive).
+Our editor needs to read the HTML of the current page and then write the textarea's value back to that file. To do that, we'll use the [beaker.fs API](/docs/api/apis/beaker.fs).
 
 First, we need the path for the current file. We can get this from the window.location variable's `pathname` attribute. If we are looking at a folder, we should append "index.html".
 
@@ -86,19 +86,19 @@ var pathname = location.pathname
 if (pathname.endsWith('/')) pathname += 'index.html'
 ```
 
-To read the current page's HTML, we use the [readFile](/docs/api/apis/beaker.hyperdrive#readfile-path-opts) method.
+To read the current page's HTML, we use the [readFile](/docs/api/apis/beaker.fs#reading) method.
 
 ```javascript
 async function readPage () {
-  return beaker.hyperdrive.readFile(pathname).catch(e => '')
+  return beaker.fs.readFile(pathname).catch(e => '')
 }
 ```
 
-To write the current page, we use the [writeFile](/docs/api/apis/beaker.hyperdrive#writefile-path-data-opts) method.
+To write the current page, we use the [writeFile](/docs/api/apis/beaker.fs#writing) method.
 
 ```javascript
 async function savePage (value) {
-  await beaker.hyperdrive.writeFile(pathname, value)
+  await beaker.fs.writeFile(pathname, value)
 }
 ```
 
@@ -157,11 +157,11 @@ var pathname = location.pathname
 if (pathname.endsWith('/')) pathname += 'index.html'
 
 async function readPage () {
-  return beaker.hyperdrive.readFile(pathname).catch(e => '')
+  return beaker.fs.readFile(pathname).catch(e => '')
 }
 
 async function savePage (value) {
-  await beaker.hyperdrive.writeFile(pathname, value)
+  await beaker.fs.writeFile(pathname, value)
 }
 
 async function showEditor () {

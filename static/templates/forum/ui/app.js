@@ -1,8 +1,8 @@
-// Forum template — uses beaker.autobase for multi-writer collaboration
+// Forum template — uses beaker.fs for multi-writer collaboration
 // Each Writer can create posts and comments.
 // The drive owner manages who can write via invite/approve flows.
 
-const drive = beaker.autobase.collaborativeDrive(location.href)
+const drive = beaker.fs.drive(location.href)
 
 // ── State ──────────────────────────────────────────────────────────────────────
 
@@ -39,7 +39,7 @@ async function boot(el) {
 
   // Load the user's profile from address book
   try {
-    const ab = await beaker.hyperdrive.readFile('hyper://private/address-book.json').then(JSON.parse)
+    const ab = await beaker.fs.readFile('hyper://private/address-book.json').then(JSON.parse)
     console.log('Address book', ab);
     state.myProfileUrl = ab?.profiles?.[0]?.key ? `hyper://${ab.profiles[0].key}/` : null
   } catch(e) {
@@ -339,7 +339,7 @@ function showProfileHelp() {
 
 async function requestAccess() {
   const profileUrl = state.myProfileUrl
-  const result = await beaker.autobase.requestAccess(location.href, { profileUrl })
+  const result = await beaker.fs.requestAccess(location.href, { profileUrl })
   alert(`Access requested. Your writer key: ${result.writerKey}\n\nThe forum owner must approve your request.`)
 }
 
@@ -396,7 +396,7 @@ async function resolveAuthor(writerKey, profileUrl) {
 async function _fetchProfile(profileUrl) {
   if (!profileUrl) return null
   try {
-    return await beaker.hyperdrive.drive(profileUrl).getInfo()
+    return await beaker.fs.drive(profileUrl).getInfo()
   } catch { return null }
 }
 

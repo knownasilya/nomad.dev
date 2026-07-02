@@ -3,8 +3,10 @@
 // Posts are directory-per-post: /posts/<YYYY-MM-DD-slug>/{post.json, index.md}.
 // Individual posts are URL-addressable: hyper://<blog>/posts/<slug>/ .
 
-const BASE = location.protocol + '//' + location.host + '/'   // hyper://<key>/
-const drive = beaker.autobase.collaborativeDrive(BASE)
+// hyper://<key>/ — desktop derives it from location; mobile (which renders the
+// page in a base-less WebView) injects window.__hyperBase via the .ui bridge.
+const BASE = (typeof window !== 'undefined' && window.__hyperBase) || (location.protocol + '//' + location.host + '/')
+const drive = beaker.fs.drive(BASE)
 
 let state = {
   view: 'list',        // 'list' | 'post' | 'compose' | 'writers'
@@ -143,7 +145,7 @@ async function renderPost(main) {
   for (const t of (post.meta.tags || [])) meta.append(h('span', { class: 'tag' }, t))
   article.append(meta)
 
-  article.append(renderBody(post.body, post.kind))
+  article.append(await renderBody(post.body, post.kind))
   main.append(article)
 }
 
@@ -235,7 +237,7 @@ async function loadPost(slug) {
 
 async function loadProfileUrl() {
   try {
-    const ab = await beaker.hyperdrive.readFile('hyper://private/address-book.json').then(JSON.parse)
+    const ab = await beaker.fs.readFile('hyper://private/address-book.json').then(JSON.parse)
     return ab?.profiles?.[0]?.key ? `hyper://${ab.profiles[0].key}/` : null
   } catch { return null }
 }
@@ -258,7 +260,7 @@ async function onPublish(e) {
   if (draft) post.draft = true
   if (state.myProfileUrl) post.author = { url: state.myProfileUrl }
 
-  const valid = beaker.schemas.validate('walled.garden/post', post)
+  const valid = await beaker.schemas.validate('walled.garden/post', post)
   if (!valid.success) { alert('Could not publish — invalid post:\n' + valid.error); return }
 
   const slug = `${now.slice(0, 10)}-${slugify(title)}`
@@ -298,10 +300,10 @@ async function removeWriter(writerKey) {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function renderBody(body, kind) {
+async function renderBody(body, kind) {
   const el = h('div', { class: 'body' })
   if (kind === 'md' && beaker.markdown && typeof beaker.markdown.toHTML === 'function') {
-    try { el.innerHTML = beaker.markdown.toHTML(body); return el } catch {}
+    try { el.innerHTML = await beaker.markdown.toHTML(body); return el } catch {}
   }
   if (kind === 'html') { el.innerHTML = body; return el }
   el.classList.add('plain')

@@ -18,7 +18,7 @@ headless = true
     - [Collaborative Drives]({{< relref "/docs/api/advanced/collaborative-drives" >}})
     - [Devices & the Vault]({{< relref "/docs/api/advanced/devices-and-the-vault" >}})
   - [APIs]({{< relref "/docs/api/apis" >}})
-    - [beaker.autobase](/docs/api/apis/beaker.autobase/)
+    - [beaker.fs](/docs/api/apis/beaker.fs/)
     - [beaker.schemas](/docs/api/apis/beaker.schemas/)
   - **[Developer Reference]({{< relref "/docs/api/developers" >}})**
     - [Profile Drives](/docs/api/developers/profile-drives/)

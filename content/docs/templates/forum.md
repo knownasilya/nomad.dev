@@ -1,6 +1,6 @@
 ---
 title: Forum Template
-description: A multi-writer discussion board template demonstrating beaker.autobase.
+description: A multi-writer discussion board template demonstrating beaker.fs.
 ---
 
 {{< rawhtml >}}
@@ -22,7 +22,7 @@ description: A multi-writer discussion board template demonstrating beaker.autob
 <script src="/templates/index.js"></script>
 {{< /rawhtml >}}
 
-A multi-writer discussion board built on [beaker.autobase](/docs/api/apis/beaker.autobase/). Writers post and comment; the owner invites people via a shareable link or approves access requests. Author names and avatars are resolved from [Profile Drives](/docs/api/developers/profile-drives/).
+A multi-writer discussion board built on [beaker.fs](/docs/api/apis/beaker.fs/). Writers post and comment; the owner invites people via a shareable link or approves access requests. Author names and avatars are resolved from [Profile Drives](/docs/api/developers/profile-drives/).
 
 ## Source
 
