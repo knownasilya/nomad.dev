@@ -169,7 +169,7 @@
     const history_ = window.history
 
     // Scoped to the current drive — plain paths work on drive instances
-    const drive = beaker.fs.drive(location.href)
+    const drive = nomad.fs.drive(location.href)
 
     // — Session ID —
 
@@ -267,7 +267,7 @@
 
       try {
         let reply = ''
-        for await (const chunk of beaker.ai.chat(history)) {
+        for await (const chunk of nomad.ai.chat(history)) {
           reply += chunk
           replyEl.textContent = reply
           messagesEl.scrollTop = messagesEl.scrollHeight

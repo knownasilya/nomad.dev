@@ -1,5 +1,5 @@
 ---
-title: beaker.peersockets
+title: nomad.peersockets
 description: This API sends and receives messages over Hyperdrive connections
 ---
 
@@ -26,7 +26,7 @@ Peer IDs are created for the network session and will not persist.
 ```javascript
 // maintain a list of active peers
 var peerIds = new Set()
-var peerEvents = beaker.peersockets.watch()
+var peerEvents = nomad.peersockets.watch()
 peerEvents.addEventListener('join', e => {
   peerIds.add(e.peerId)
 })
@@ -35,7 +35,7 @@ peerEvents.addEventListener('leave', e => {
 })
 
 // send and receive 'chat' messages
-var topic = beaker.peersockets.join('chat')
+var topic = nomad.peersockets.join('chat')
 function sendToAll (message) {
   message = new TextEncoder('utf-8').encode(message)
   for (let peerId of peerIds) {
@@ -49,7 +49,7 @@ topic.addEventListener('message', e => {
 
 ## API
 
-### beaker.peersockets.join(topic)
+### nomad.peersockets.join(topic)
 
 Join a "topic" for sending and receiving messages.
 
@@ -57,7 +57,7 @@ Join a "topic" for sending and receiving messages.
 * Returns **Topic**
 
 ```javascript
-var topic = beaker.peersockets.join('chat')
+var topic = nomad.peersockets.join('chat')
 function sendToAll (message) {
   message = new TextEncoder('utf-8').encode(message)
   for (let peerId of peerIds) { // assume `peerIds` is being tracked using watch()
@@ -69,7 +69,7 @@ topic.addEventListener('message', e => {
 })
 ```
 
-### beaker.peersockets.watch()
+### nomad.peersockets.watch()
 
 Watch for connection events. Emits "join" events for all connections that exist at time-of-call.
 
@@ -77,7 +77,7 @@ Watch for connection events. Emits "join" events for all connections that exist 
 
 ```javascript
 var peerIds = new Set()
-var peerEvents = beaker.peersockets.watch()
+var peerEvents = nomad.peersockets.watch()
 peerEvents.addEventListener('join', e => {
   console.log('join', e)
   peerIds.add(e.peerId)

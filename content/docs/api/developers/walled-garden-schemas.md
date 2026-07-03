@@ -3,7 +3,7 @@ title: walled.garden Schemas
 description: Social data schemas for Nomad — Zod-backed, Standard Schema compliant.
 ---
 
-`walled.garden` schemas define the shape of social data stored in Drives. They are [Zod](https://zod.dev)-backed, [Standard Schema](https://standardschema.dev) compliant, and exposed to template apps via [`beaker.schemas`](/docs/api/apis/beaker.schemas/).
+`walled.garden` schemas define the shape of social data stored in Drives. They are [Zod](https://zod.dev)-backed, [Standard Schema](https://standardschema.dev) compliant, and exposed to template apps via [`nomad.schemas`](/docs/api/apis/nomad.schemas/).
 
 These schemas are **content conventions** — apps store `walled.garden` data wherever makes sense (there is no enforced directory path). The type string in each record identifies the schema.
 
@@ -209,10 +209,10 @@ A list of Autobase writer keypairs belonging to the same person. Published in a 
 
 ## Validating data
 
-Use `beaker.schemas.validate()` to validate before writing:
+Use `nomad.schemas.validate()` to validate before writing:
 
 ```javascript
-var result = beaker.schemas.validate('walled.garden/post', postData)
+var result = nomad.schemas.validate('walled.garden/post', postData)
 if (!result.success) {
   console.error(result.error)
 } else {

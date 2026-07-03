@@ -1,9 +1,9 @@
 ---
-title: beaker.ai
+title: nomad.ai
 description: Local AI API for Drives — streaming chat powered by an OpenAI-compatible runtime
 ---
 
-`beaker.ai` gives any Drive page access to a local AI agent. The underlying model runs in an external OpenAI-compatible server (Ollama, LM Studio, etc.) configured in Nomad settings.
+`nomad.ai` gives any Drive page access to a local AI agent. The underlying model runs in an external OpenAI-compatible server (Ollama, LM Studio, etc.) configured in Nomad settings.
 
 ## Configuration
 
@@ -30,7 +30,7 @@ Or delegate to another Drive's AI Config:
 
 ---
 
-### beaker.ai.chat(messages)
+### nomad.ai.chat(messages)
 
 Send a conversation to the AI and stream the response back as text chunks.
 
@@ -40,7 +40,7 @@ Send a conversation to the AI and stream the response back as text chunks.
 ```js
 const messages = [{ role: 'user', content: 'Summarise this Drive.' }]
 
-for await (const chunk of beaker.ai.chat(messages)) {
+for await (const chunk of nomad.ai.chat(messages)) {
   process.stdout.write(chunk)
 }
 ```

@@ -19,7 +19,7 @@ title: Prompt App Template
 <script src="/templates/index.js"></script>
 {{< /rawhtml >}}
 
-A minimal AI chat interface powered by [`beaker.ai`](/docs/api/apis/beaker.ai/). Type a message and get a streaming response from your local AI runtime. Edit `ai/system.md` to give the assistant a persona, and update `index.json` to set the model.
+A minimal AI chat interface powered by [`nomad.ai`](/docs/api/apis/nomad.ai/). Type a message and get a streaming response from your local AI runtime. Edit `ai/system.md` to give the assistant a persona, and update `index.json` to set the model.
 
 ## Source
 

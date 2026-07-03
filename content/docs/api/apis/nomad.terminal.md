@@ -1,9 +1,9 @@
 ---
-title: beaker.terminal
+title: nomad.terminal
 description: This API manages Webterm page commands
 ---
 
-### beaker.terminal.registerCommand(command)
+### nomad.terminal.registerCommand(command)
 
 Register a Webterm page command. See the [Webterm documentation on page commands](../advanced/webterm.md#creating-and-installing-new-commands).
 
@@ -15,7 +15,7 @@ Register a Webterm page command. See the [Webterm documentation on page commands
 * Returns **Void**
 
 ```javascript
-beaker.terminal.registerCommand({
+nomad.terminal.registerCommand({
   name: 'alert',
   help: 'Display an alert box',
   usage: 'alert {message}',
@@ -26,7 +26,7 @@ beaker.terminal.registerCommand({
 // @alert "Hello World"
 ```
 
-### beaker.terminal.unregisterCommand(commandName)
+### nomad.terminal.unregisterCommand(commandName)
 
 Unregisters a Webterm page command.
 
@@ -34,5 +34,5 @@ Unregisters a Webterm page command.
 * Returns **Void**.
 
 ```javascript
-beaker.terminal.unregisterCommand('alert')
+nomad.terminal.unregisterCommand('alert')
 ```

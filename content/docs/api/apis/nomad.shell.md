@@ -1,9 +1,9 @@
 ---
-title: beaker.shell
-description: This API provides general UX interactions for the Beaker browser
+title: nomad.shell
+description: This API provides general UX interactions for the Nomad browser
 ---
 
-### beaker.shell.drivePropertiesDialog(url)
+### nomad.shell.drivePropertiesDialog(url)
 
 Create a dialog for editing the properties of the given hyperdrive.
 
@@ -11,10 +11,10 @@ Create a dialog for editing the properties of the given hyperdrive.
 * Returns **Promise&lt;Void&gt;**
 
 ```javascript
-await beaker.shell.drivePropertiesDialog(drive.url)
+await nomad.shell.drivePropertiesDialog(drive.url)
 ```
 
-### beaker.shell.selectFileDialog(\[opts\])
+### nomad.shell.selectFileDialog(\[opts\])
 
 Create a dialog for selecting files or folders.
 
@@ -35,7 +35,7 @@ Create a dialog for selecting files or folders.
   * **url** String. The URL of the file or folder.
 
 ```javascript
-var files = await beaker.shell.selectFileDialog({
+var files = await nomad.shell.selectFileDialog({
   title: 'Select an Image',
   buttonLabel: 'Select Image',
   select: ['file'],
@@ -50,7 +50,7 @@ files[0].origin // => 'hyper://1234..56/'
 files[0].url    // => 'hyper://1234..56/imgs/foo.png'
 ```
 
-### beaker.shell.saveFileDialog(\[opts\])
+### nomad.shell.saveFileDialog(\[opts\])
 
 Create a dialog for selecting where to save a file.
 
@@ -70,7 +70,7 @@ Create a dialog for selecting where to save a file.
   * **url** String. The URL of the file or folder.
 
 ```javascript
-var file = await beaker.shell.saveFileDialog({
+var file = await nomad.shell.saveFileDialog({
   title: 'Save Image To...',
   buttonLabel: 'Save Image',
   defaultFilename: 'image.png',
@@ -81,7 +81,7 @@ file.origin // => 'hyper://1234..56/'
 file.url    // => 'hyper://1234..56/imgs/foo.png'
 ```
 
-### beaker.shell.selectDriveDialog(\[opts\])
+### nomad.shell.selectDriveDialog(\[opts\])
 
 Create a dialog for selecting a hyperdrive from the user's library.
 
@@ -97,7 +97,7 @@ Create a dialog for selecting a hyperdrive from the user's library.
 If a `.template` is specified, `.writable` is not `false`, and no drives in the user's library matches the filtering criteria, the modal will automatically jump to the "create drive" flow.
 
 ```javascript
-var driveUrl = await beaker.shell.selectDriveDialog({
+var driveUrl = await nomad.shell.selectDriveDialog({
   title: 'Select Your Profile',
   buttonLabel: 'Select Profile',
   writable: true,
@@ -106,7 +106,7 @@ var driveUrl = await beaker.shell.selectDriveDialog({
 })
 ```
 
-### beaker.shell.saveDriveDialog(url\[, opts\])
+### nomad.shell.saveDriveDialog(url\[, opts\])
 
 Create a dialog for saving a hyperdrive to the user's library.
 
@@ -115,10 +115,10 @@ Create a dialog for saving a hyperdrive to the user's library.
   * **tags** String. A space-separated list of tags to suggest saving the hyperdrive under.
 
 ```javascript
-var driveUrl = await beaker.shell.saveDriveDialog(drive.url, {tags: 'website fun'})
+var driveUrl = await nomad.shell.saveDriveDialog(drive.url, {tags: 'website fun'})
 ```
 
-### beaker.shell.listDrives(\[opts\])
+### nomad.shell.listDrives(\[opts\])
 
 List saved drives according to a filter. Requires user to grant permission.
 
@@ -127,10 +127,10 @@ List saved drives according to a filter. Requires user to grant permission.
   * **writable** Boolean. Only list drives which are or aren't writable.
 
 ```javascript
-var contacts = await beaker.shell.listDrives({writable: false, tag: 'contact'})
+var contacts = await nomad.shell.listDrives({writable: false, tag: 'contact'})
 ```
 
-### beaker.shell.tagDrive(url, tags)
+### nomad.shell.tagDrive(url, tags)
 
 Ask the user to add tags to the given hyperdrive. If the drive isn't already saved, will trigger the "save drive" dialog.
 
@@ -138,10 +138,10 @@ Ask the user to add tags to the given hyperdrive. If the drive isn't already sav
 * **tags** String. A space-separated list of tags to assign the drive.
 
 ```javascript
-var driveUrl = await beaker.shell.tagDrive(drive.url, 'website fun')
+var driveUrl = await nomad.shell.tagDrive(drive.url, 'website fun')
 ```
 
-### beaker.shell.unsaveDrive(url)
+### nomad.shell.unsaveDrive(url)
 
 Remove a hyperdrive from the user's library. Requires user to grant permission.
 

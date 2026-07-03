@@ -72,7 +72,7 @@ customElements.define('page-controls', class extends HTMLElement {
   }
 
   async onAddAuthor (e) {
-    var contact = await beaker.contacts.requestContact()
+    var contact = await nomad.contacts.requestContact()
     var key = contact.url.slice('hyper://'.length)
     if (this.siteMeta.authors.find(a => a.key === key)) {
       alert('That user is already an author')
@@ -91,8 +91,8 @@ customElements.define('page-controls', class extends HTMLElement {
       }
       break
     } while(true)
-    await beaker.fs.mkdir('/users').catch(e => undefined)
-    await beaker.fs.mount(`/users/${name}`, contact.url)
+    await nomad.fs.mkdir('/users').catch(e => undefined)
+    await nomad.fs.mount(`/users/${name}`, contact.url)
     location.reload()
   }
 
@@ -102,7 +102,7 @@ customElements.define('page-controls', class extends HTMLElement {
     if (!confirm(`Remove ${name} from authors?`)) {
       return
     }
-    await beaker.fs.unmount(`/users/${name}`)
+    await nomad.fs.unmount(`/users/${name}`)
     location.reload()
   }
 })
@@ -120,7 +120,7 @@ customElements.define('page-content', class extends HTMLElement {
     var file = await queryForPage(location.pathname)
 
     if (EDIT_MODE) {
-      let content = file ? await beaker.fs.readFile(file.path).catch(e => '') : ''
+      let content = file ? await nomad.fs.readFile(file.path).catch(e => '') : ''
       main.append(h('h1', `Editing ${location.pathname}`))
       main.append(h('textarea', {class: 'editor'}, content))
       main.classList.remove('loading')
@@ -129,7 +129,7 @@ customElements.define('page-content', class extends HTMLElement {
 
     console.debug('Page found:', file)
     if (!file) {
-      let st = await beaker.fs.stat('/users').catch(e => undefined)
+      let st = await nomad.fs.stat('/users').catch(e => undefined)
       if (!st) {
         // no authors yet
         main.classList.remove('loading')
@@ -152,7 +152,7 @@ customElements.define('page-content', class extends HTMLElement {
     } else if (/\.(mp3|ogg)/i.test(file.path)) {
       main.append(h('audio', {controls: true}, h('source', {src: file.path})))
     } else {
-      let content = await beaker.fs.readFile(file.path)
+      let content = await nomad.fs.readFile(file.path)
       // treat empty file as a tombstone
       if (!content) {
         main.classList.remove('loading')
@@ -161,7 +161,7 @@ customElements.define('page-content', class extends HTMLElement {
       }
       // render content
       if (/.md$/i.test(file.path)) {
-        main.innerHTML = beaker.markdown.toHTML(content)
+        main.innerHTML = nomad.markdown.toHTML(content)
       } else {
         main.append(h('pre', content))
       }

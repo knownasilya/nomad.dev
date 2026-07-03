@@ -17,7 +17,7 @@ title: Chat Room Template
 <script src="/templates/index.js"></script>
 {{< /rawhtml >}}
 
-This template creates a minimal chat room for all the visitors of the site. It uses the [Peersockets API](/docs/api/apis/beaker.peersockets) to send and receive messages. Traffic is encrypted so that only users who possess the site's URL can read it.
+This template creates a minimal chat room for all the visitors of the site. It uses the [Peersockets API](/docs/api/apis/nomad.peersockets) to send and receive messages. Traffic is encrypted so that only users who possess the site's URL can read it.
 
 ## Source
 

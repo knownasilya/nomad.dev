@@ -1,5 +1,5 @@
 ---
-title: beaker.capabilities
+title: nomad.capabilities
 description: This API creates temporary URLs for securely sharing hyperdrive access between applications
 ---
 
@@ -15,7 +15,7 @@ Capability URLs are local and stored in-memory. They will be "destroyed" when th
 
 ## API
 
-### beaker.capabilities.create(targetUrl)
+### nomad.capabilities.create(targetUrl)
 
 Create a new capability mapping to the target URL.
 
@@ -23,11 +23,11 @@ Create a new capability mapping to the target URL.
 * Returns **Promise&lt;String&gt;**. The capability URL.
 
 ```javascript
-var capUrl = await beaker.capabilities.create('hyper://12345..af')
-await beaker.fs.drive(capUrl).readdir('/')
+var capUrl = await nomad.capabilities.create('hyper://12345..af')
+await nomad.fs.drive(capUrl).readdir('/')
 ```
 
-### beaker.capabilities.modify(capUrl, targetUrl)
+### nomad.capabilities.modify(capUrl, targetUrl)
 
 Modify an existing capability's mapping.
 
@@ -36,11 +36,11 @@ Modify an existing capability's mapping.
 * Returns **Promise&lt;Void&gt;**.
 
 ```javascript
-await beaker.capabilities.modify(capUrl, 'hyper://fedcb..21')
-await beaker.fs.drive(capUrl).readdir('/')
+await nomad.capabilities.modify(capUrl, 'hyper://fedcb..21')
+await nomad.fs.drive(capUrl).readdir('/')
 ```
 
-### beaker.capabilities.delete(capUrl)
+### nomad.capabilities.delete(capUrl)
 
 Delete a capability. Future operations against the URL will fail.
 
@@ -48,5 +48,5 @@ Delete a capability. Future operations against the URL will fail.
 * Returns **Promise&lt;Void&gt;**.
 
 ```javascript
-await beaker.capabilities.delete(capUrl)
+await nomad.capabilities.delete(capUrl)
 ```

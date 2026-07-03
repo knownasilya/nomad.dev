@@ -1,8 +1,8 @@
 ---
-title: Getting Started with Beaker
+title: Getting Started with Nomad
 ---
 
-Welcome! Beaker is a peer-to-peer browser for Web hackers. It includes a bunch of tools:
+Welcome! Nomad is a peer-to-peer browser for Web hackers. It includes a bunch of tools:
 
 * [Instant website creation](beginner/creating-new-hyperdrives.md)
 * [A builtin editor](beginner/using-the-editor.md)
@@ -10,14 +10,14 @@ Welcome! Beaker is a peer-to-peer browser for Web hackers. It includes a bunch o
 * [Peer-to-peer Web APIs](/#apis)
 * and more.
 
-In this guide, we're going to familiarize you with Beaker's ideas and tools.
+In this guide, we're going to familiarize you with Nomad's ideas and tools.
 
 ## What is this peer-to-peer thing?
 
-Beaker uses a peer-to-peer protocol called Hypercore, or Hyper for short. "Hyperdrives" are like websites. They store webpages, pictures, media, user data, and so on. Hyperdrives power a lot of Beaker's best features.
+Nomad uses a peer-to-peer protocol called Hypercore, or Hyper for short. "Hyperdrives" are like websites. They store webpages, pictures, media, user data, and so on. Hyperdrives power a lot of Nomad's best features.
 
 :::note
-**"Hyperdrives" are folders you host from your computer.** They contain web pages which you can browse and edit. You can create and share hyperdrives using Beaker. [Learn more](beginner/creating-new-hyperdrives.md).
+**"Hyperdrives" are folders you host from your computer.** They contain web pages which you can browse and edit. You can create and share hyperdrives using Nomad. [Learn more](beginner/creating-new-hyperdrives.md).
 :::
 
 Peer-to-peer means that you host data directly from your device.

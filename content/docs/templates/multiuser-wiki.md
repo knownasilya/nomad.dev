@@ -25,10 +25,10 @@ This wiki is a minimal collaborative website. It maintains a list of authors (se
 
 This wiki uses a [frontend](/docs/api/developers/frontends-.ui-folder) to virtually construct pages. As a result, when you visit a page, you are viewing a constructed result rather than a file that lives on this drive.
 
-Each author maintains a folder under `/beaker-wiki/{wiki-drive-key}/`. When a page is visited at some path, the wiki's frontend runs the following query:
+Each author maintains a folder under `/nomad-wiki/{wiki-drive-key}/`. When a page is visited at some path, the wiki's frontend runs the following query:
 
 ```
-/users/*/beaker-wiki/{wiki-drive-key}/{path}
+/users/*/nomad-wiki/{wiki-drive-key}/{path}
 ```
 
 The matching file with the highest mtime is then chosen for rendering.

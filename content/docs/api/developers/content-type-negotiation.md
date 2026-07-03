@@ -2,7 +2,7 @@
 title: Content-Type Negotiation
 ---
 
-Beaker's hyper:// server supports content-type negotiation, allowing files to be served without specifying file extensions in URLs.
+Nomad's hyper:// server supports content-type negotiation, allowing files to be served without specifying file extensions in URLs.
 
 Instead of including extensions like `.png` in image paths, you can reference files without them. The server will automatically detect and serve the correct format based on content-type negotiation.
 

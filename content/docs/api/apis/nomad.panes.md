@@ -1,25 +1,25 @@
 ---
-title: beaker.panes
+title: nomad.panes
 description: Attach to other active panes, coordinate navigation, and inject code
 ---
 
-Beaker includes the ability to split the page into multiple panes which navigate independently. This API gives applications the ability to "attach" to other panes and coordinate their browsing as well as inject JS/CSS.
+Nomad includes the ability to split the page into multiple panes which navigate independently. This API gives applications the ability to "attach" to other panes and coordinate their browsing as well as inject JS/CSS.
 
 Currently each pane can attach and manage one other pane at a time. The user must grant permission to use the panes API.
 
 ## API
 
-### beaker.panes.setAttachable()
+### nomad.panes.setAttachable()
 
 Mark the pane as "attachable." This will cause the attachment UI to display in the app's status bar, even if the pane is not attached to anything.
 
 * Returns **Void**.
 
 ```javascript
-beaker.panes.setAttachable()
+nomad.panes.setAttachable()
 ```
 
-### beaker.panes.getAttachedPane()
+### nomad.panes.getAttachedPane()
 
 Get the currently attached pane. Returns undefined if no pane is attached.
 
@@ -28,14 +28,14 @@ Get the currently attached pane. Returns undefined if no pane is attached.
   * **url** String. The pane's current location.
 
 ```javascript
-var pane = beaker.panes.getAttachedPane()
+var pane = nomad.panes.getAttachedPane()
 if (pane) {
   console.log(pane.id) // some number
   console.log(pane.url) // the current address of the pane
 }
 ```
 
-### beaker.panes.attachToLastActivePane()
+### nomad.panes.attachToLastActivePane()
 
 Attempts to attach to the pane that was active prior to the current pane. Can be used during setup to automatically attach to the pane in use.
 
@@ -46,14 +46,14 @@ Requires permission from the user.
   * **url** String. The pane's current location.
 
 ```javascript
-var pane = await beaker.panes.attachToLastActivePane()
+var pane = await nomad.panes.attachToLastActivePane()
 if (pane) {
   console.log(pane.id) // some number
   console.log(pane.url) // the current address of the pane
 }
 ```
 
-### beaker.panes.create(url, {attach: boolean})
+### nomad.panes.create(url, {attach: boolean})
 
 Creates a new pane and optionally attaches to the pane automatically.
 
@@ -67,12 +67,12 @@ Requires permission from the user.
   * **url** String. The pane's current location.
 
 ```javascript
-var pane = await beaker.panes.create('https://nomad.dev', {attach: true})
+var pane = await nomad.panes.create('https://nomad.dev', {attach: true})
 console.log(pane.id) // some number
 console.log(pane.url) // the current address of the pane
 ```
 
-### beaker.panes.navigate(paneId, url)
+### nomad.panes.navigate(paneId, url)
 
 Navigates the pane to the given URL. The given pane must be attached.
 
@@ -81,10 +81,10 @@ Navigates the pane to the given URL. The given pane must be attached.
 * Returns **Promise&lt;Void&gt;**.
 
 ```javascript
-await beaker.panes.navigate(pane.id, 'https://nomad.dev')
+await nomad.panes.navigate(pane.id, 'https://nomad.dev')
 ```
 
-### beaker.panes.focus(paneId)
+### nomad.panes.focus(paneId)
 
 Gives focus to a different pane. The given pane must be attached.
 
@@ -92,10 +92,10 @@ Gives focus to a different pane. The given pane must be attached.
 * Returns **Promise&lt;Void&gt;**.
 
 ```javascript
-await beaker.panes.focus(pane.id)
+await nomad.panes.focus(pane.id)
 ```
 
-### beaker.panes.executeJavaScript(paneId, script)
+### nomad.panes.executeJavaScript(paneId, script)
 
 Runs the given javascript in a different pane. The given pane must be attached.
 
@@ -106,13 +106,13 @@ Requires permission from the user.
 * Returns **Promise&lt;Any&gt;**.
 
 ```javascript
-var res = await beaker.panes.executeJavaScript(pane.id, 'alert("hello!")')
+var res = await nomad.panes.executeJavaScript(pane.id, 'alert("hello!")')
 console.log(res) // undefined
-var res = await beaker.panes.executeJavaScript(pane.id, 'window.location.toString()')
+var res = await nomad.panes.executeJavaScript(pane.id, 'window.location.toString()')
 console.log(typeof res) // string
 ```
 
-### beaker.panes.injectCss(paneId, styles)
+### nomad.panes.injectCss(paneId, styles)
 
 Inserts CSS into a different pane. The given pane must be attached.
 
@@ -123,11 +123,11 @@ Requires permission from the user.
 * Returns **Promise&lt;Number&gt;**. An ID which can be used to uninject the styles.
 
 ```javascript
-var cssId = await beaker.panes.injectCss(pane.id, 'body { color: red; }')
+var cssId = await nomad.panes.injectCss(pane.id, 'body { color: red; }')
 console.log(typeof cssId) // number
 ```
 
-### beaker.panes.uninjectCss(paneId, cssId)
+### nomad.panes.uninjectCss(paneId, cssId)
 
 Removes injected CSS from a pane. The given pane must be attached.
 
@@ -138,9 +138,9 @@ Requires permission from the user.
 * Returns **Promise&lt;Void&gt;**.
 
 ```javascript
-var cssId = await beaker.panes.injectCss(pane.id, 'body { color: red; }')
+var cssId = await nomad.panes.injectCss(pane.id, 'body { color: red; }')
 console.log(typeof cssId) // number
-await beaker.panes.uninjectCss(pane.id, cssId)
+await nomad.panes.uninjectCss(pane.id, cssId)
 ```
 
 ### "pane-attached" event
@@ -150,7 +150,7 @@ Emitted when a pane has been attached to the current app.
 * **detail.id** Number. The ID of the attached pane.
 
 ```js
-beaker.panes.addEventListener('pane-attached', e => {
+nomad.panes.addEventListener('pane-attached', e => {
   console.log(e.detail.id) // some number
 })
 ```
@@ -160,7 +160,7 @@ beaker.panes.addEventListener('pane-attached', e => {
 Emitted when a pane has been detached from the current app.
 
 ```js
-beaker.panes.addEventListener('pane-detached', e => {
+nomad.panes.addEventListener('pane-detached', e => {
   // ...
 })
 ```
@@ -172,7 +172,7 @@ Emitted when the attached pane has changed its current location.
 * **detail.url** String. The new URL of the attached pane.
 
 ```js
-beaker.panes.addEventListener('pane-navigated', e => {
+nomad.panes.addEventListener('pane-navigated', e => {
   console.log('navigated to', e.detail.url)
 })
 ```
@@ -204,7 +204,7 @@ This example app can help you familiarize with the panes API.
     </style>
   </head>
   <body>
-    <h1>beaker.panes API Demo</h1>
+    <h1>nomad.panes API Demo</h1>
     <button id="create">Create Attached Pane</button>
     <button id="nav1" class="requires-attached" disabled>Navigate pane to nomad.dev</button>
     <button id="nav2" class="requires-attached" disabled>Navigate pane to example.com</button>
@@ -218,26 +218,26 @@ This example app can help you familiarize with the panes API.
       }
 
       setDisabled(true)
-      beaker.panes.setAttachable()
-      beaker.panes.attachToLastActivePane().then(res => {
+      nomad.panes.setAttachable()
+      nomad.panes.attachToLastActivePane().then(res => {
         if (res) setDisabled(false)
       })
       const on = (el, evt, fn) => el.addEventListener(evt, fn)
-      on(create, 'click', e => beaker.panes.create('https://example.com', {attach: true}))
-      on(nav1, 'click', e => beaker.panes.navigate(beaker.panes.getAttachedPane().id, 'https://nomad.dev'))
-      on(nav2, 'click', e => beaker.panes.navigate(beaker.panes.getAttachedPane().id, 'https://example.com'))
-      on(exec, 'click', e => beaker.panes.executeJavaScript(beaker.panes.getAttachedPane().id, 'alert("hello from " + location.toString())'))
-      on(inject, 'click', e => beaker.panes.injectCss(beaker.panes.getAttachedPane().id, 'body { color: red !important; }'))
+      on(create, 'click', e => nomad.panes.create('https://example.com', {attach: true}))
+      on(nav1, 'click', e => nomad.panes.navigate(nomad.panes.getAttachedPane().id, 'https://nomad.dev'))
+      on(nav2, 'click', e => nomad.panes.navigate(nomad.panes.getAttachedPane().id, 'https://example.com'))
+      on(exec, 'click', e => nomad.panes.executeJavaScript(nomad.panes.getAttachedPane().id, 'alert("hello from " + location.toString())'))
+      on(inject, 'click', e => nomad.panes.injectCss(nomad.panes.getAttachedPane().id, 'body { color: red !important; }'))
 
-      beaker.panes.addEventListener('pane-attached', e => {
+      nomad.panes.addEventListener('pane-attached', e => {
         console.log('pane attached')
         setDisabled(false)
       })
-      beaker.panes.addEventListener('pane-detached', e => {
+      nomad.panes.addEventListener('pane-detached', e => {
         console.log('pane detached')
         setDisabled(true)
       })
-      beaker.panes.addEventListener('pane-navigated', e => {
+      nomad.panes.addEventListener('pane-navigated', e => {
         console.log('pane has changed url', e.detail.url)
       })
     </script>

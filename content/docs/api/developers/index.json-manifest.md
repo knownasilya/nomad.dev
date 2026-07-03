@@ -47,7 +47,7 @@ The explorer sidebar and drive view use this image to represent the drive. If om
 
 **csp** String. A [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) header value applied to all pages served from the drive.
 
-**ai** Object or String. Opts this Drive into the [`beaker.ai`](/docs/api/apis/beaker.ai/) API. See the `beaker.ai` docs for the full resolution order (Drive → Space default → global fallback).
+**ai** Object or String. Opts this Drive into the [`nomad.ai`](/docs/api/apis/nomad.ai/) API. See the `nomad.ai` docs for the full resolution order (Drive → Space default → global fallback).
 
 - **Inline** — specify a model directly. Nomad uses the Drive's own `/ai/system.md` and `/ai/tools/` as the AI Config.
 ```json
@@ -65,7 +65,7 @@ The explorer sidebar and drive view use this image to represent the drive. If om
 { "chatBubble": true }
 ```
 
-Requires the `ai` field to be set (or a Space/global AI default to be configured) — otherwise the bubble will open but `beaker.ai` calls will fail with a "no model configured" error.
+Requires the `ai` field to be set (or a Space/global AI default to be configured) — otherwise the bubble will open but `nomad.ai` calls will fail with a "no model configured" error.
 
 ## Full example
 

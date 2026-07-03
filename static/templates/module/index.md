@@ -1,3 +1,3 @@
 # My Module
 
-This module was created with Beaker
+This module was created with Nomad

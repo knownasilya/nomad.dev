@@ -2,7 +2,7 @@
 title: Hole-punchability
 ---
 
-Beaker's peer-to-peer networking depends on hole-punching technology to enable device accessibility beyond local networks. When this fails, users may experience connectivity challenges.
+Nomad's peer-to-peer networking depends on hole-punching technology to enable device accessibility beyond local networks. When this fails, users may experience connectivity challenges.
 
 ## What the issue indicates
 

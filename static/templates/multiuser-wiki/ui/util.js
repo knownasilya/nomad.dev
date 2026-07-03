@@ -1,6 +1,6 @@
 const WIKI_KEY = location.hostname
-const ROOT_PATH = (user) => `/users/${user}/beaker-wiki/${WIKI_KEY}/`
-const QUERY_ROOT_PATH = `/users/*/beaker-wiki/${WIKI_KEY}/`
+const ROOT_PATH = (user) => `/users/${user}/nomad-wiki/${WIKI_KEY}/`
+const QUERY_ROOT_PATH = `/users/*/nomad-wiki/${WIKI_KEY}/`
 
 export function joinPath (...args) {
   var str = args[0]
@@ -23,13 +23,13 @@ export function slugify (str = '') {
 
 export async function getSiteMeta () {
   var [info, authors] = await Promise.all([
-    beaker.fs.getInfo(),
-    beaker.fs.readdir('/users', {includeStats: true}).catch(e => ([]))
+    nomad.fs.getInfo(),
+    nomad.fs.readdir('/users', {includeStats: true}).catch(e => ([]))
   ])
   var userIsAuthor = false
   for (let author of authors) {
     if (!author.stat.mount?.key) continue
-    let info = await beaker.fs.getInfo(author.stat.mount.key).catch(e => undefined)
+    let info = await nomad.fs.getInfo(author.stat.mount.key).catch(e => undefined)
     if (info?.writable) {
       author.writable = true
       userIsAuthor = true
@@ -47,7 +47,7 @@ export async function queryForPage (path) {
     path = joinPath(path, 'index.md')
   }
   console.debug('Querying', joinPath(QUERY_ROOT_PATH, path))
-  var files = await beaker.fs.query({
+  var files = await nomad.fs.query({
     path: joinPath(QUERY_ROOT_PATH, path),
     sort: 'mtime',
     reverse: true
@@ -60,6 +60,6 @@ export async function writeFile (author, path, content) {
     path = joinPath(path, 'index.md')
   }
   console.log('writing to', joinPath(ROOT_PATH(author.name), path))
-  var filePath = joinPath('beaker-wiki', WIKI_KEY, path)
-  await beaker.fs.drive(author.key).writeFile(filePath, content, {ensureParent: true})
+  var filePath = joinPath('nomad-wiki', WIKI_KEY, path)
+  await nomad.fs.drive(author.key).writeFile(filePath, content, {ensureParent: true})
 }

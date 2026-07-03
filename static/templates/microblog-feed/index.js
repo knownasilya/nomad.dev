@@ -29,14 +29,14 @@ customElements.define('microblog-composer', class extends HTMLElement {
     var content = e.target.content.value
     filename = filename || `${Date.now()}.md`
     if (filename.indexOf('.') === -1) filename += '.md'
-    await beaker.fs.drive(profile.url).mkdir(PATH).catch(e => undefined)
-    await beaker.fs.drive(profile.url).writeFile(PATH + filename, content)
+    await nomad.fs.drive(profile.url).mkdir(PATH).catch(e => undefined)
+    await nomad.fs.drive(profile.url).writeFile(PATH + filename, content)
     location.reload()
   }
 
   async onClickChangeProfile (e) {
     e.preventDefault()
-    profile = await beaker.contacts.requestProfile()
+    profile = await nomad.contacts.requestProfile()
     localStorage.profile = JSON.stringify(profile)
     location.reload()
   }
@@ -49,13 +49,13 @@ customElements.define('microblog-feed', class extends HTMLElement {
     try {
       var sources = []
       if (profile) {
-        sources = await beaker.contacts.list()
+        sources = await nomad.contacts.list()
       }
       let drive = sources.map(s => s.url)
       if (profile && !drive.includes(profile.url)) {
         drive.push(profile.url)
       }
-      var files = await beaker.fs.query({
+      var files = await nomad.fs.query({
         path: PATH + '*',
         drive,
         sort: 'ctime',
@@ -101,10 +101,10 @@ customElements.define('microblog-feed', class extends HTMLElement {
             })
             postDiv.append(content)
         } else {
-          let txt = await beaker.fs.readFile(file.url)
+          let txt = await nomad.fs.readFile(file.url)
           if (/\.md$/i.test(file.path)) {
             let content = h('div', {class: 'content'})
-            content.innerHTML = beaker.markdown.toHTML(txt)
+            content.innerHTML = nomad.markdown.toHTML(txt)
             postDiv.append(content)
           } else {
             postDiv.append(h('div', {class: 'content'}, h('pre', txt)))
