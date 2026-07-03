@@ -1,5 +1,5 @@
 var createDriveButton = document.querySelector('.create-drive')
-if (typeof beaker !== 'undefined' && typeof beaker.fs !== 'undefined') {
+if (typeof nomad !== 'undefined' && typeof nomad.fs !== 'undefined') {
   createDriveButton.textContent = 'Create Drive From This Template'
   createDriveButton.addEventListener('click', async (e) => {
     createDriveButton.disabled = true
@@ -7,12 +7,12 @@ if (typeof beaker !== 'undefined' && typeof beaker.fs !== 'undefined') {
     try {
       // ADR-0010: every drive is an Autobase. `TEMPLATE_DRIVE_TYPE === 'autobase'` means the
       // template wants a collaborative (multi-writer) drive, so create it unlocked; otherwise a
-      // locked / single-writer drive. Both return a scoped beaker.fs drive handle.
+      // locked / single-writer drive. Both return a scoped nomad.fs drive handle.
       var drive
       if (window.TEMPLATE_DRIVE_TYPE === 'autobase') {
-        drive = await beaker.fs.createCollaborativeDrive({ title: TEMPLATE_TITLE, collaborative: true })
+        drive = await nomad.fs.createCollaborativeDrive({ title: TEMPLATE_TITLE, collaborative: true })
       } else {
-        drive = await beaker.fs.createDrive({ title: TEMPLATE_TITLE })
+        drive = await nomad.fs.createDrive({ title: TEMPLATE_TITLE })
       }
       for (let path of TEMPLATE_FILES) {
         try {
@@ -38,8 +38,8 @@ if (typeof beaker !== 'undefined' && typeof beaker.fs !== 'undefined') {
     }
   })
 } else {
-  createDriveButton.textContent = 'Get Beaker to Create This Site'
+  createDriveButton.textContent = 'Get Nomad to Create This Site'
   createDriveButton.addEventListener('click', e => {
-    window.open('https://nomad.pages.dev/docs/getting-started/install-beaker')
+    window.open('https://nomad.pages.dev/docs/getting-started/install-nomad')
   })
 }

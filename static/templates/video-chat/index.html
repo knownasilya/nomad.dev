@@ -52,7 +52,7 @@ async function pageReady() {
   console.log('running setup')
   uuid = createUUID();
 
-  var peerEvents = beaker.peersockets.watch()
+  var peerEvents = nomad.peersockets.watch()
   peerEvents.addEventListener('join', e => {
     console.log('join', e)
     peerSockets.add(e.peerId)
@@ -61,7 +61,7 @@ async function pageReady() {
     console.log('leave', e)
     peerSockets.delete(e.peerId)
   })
-  topic = beaker.peersockets.join('signalling')
+  topic = nomad.peersockets.join('signalling')
   topic.addEventListener('message', gotMessageFromPeersocket)
 
   navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(getUserMediaSuccess).catch(errorHandler);

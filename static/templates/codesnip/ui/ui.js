@@ -20,11 +20,11 @@ iframe.setAttribute('sandbox', 'allow-scripts')
 setup()
 
 async function setup () {
-  var info = await beaker.fs.getInfo()
+  var info = await nomad.fs.getInfo()
 
-  editors.js.setValue(await beaker.fs.readFile('/index.js').catch(e => ''))
-  editors.css.setValue(await beaker.fs.readFile('/index.css').catch(e => ''))
-  editors.html.setValue(await beaker.fs.readFile('/index.html').catch(e => ''))
+  editors.js.setValue(await nomad.fs.readFile('/index.js').catch(e => ''))
+  editors.css.setValue(await nomad.fs.readFile('/index.css').catch(e => ''))
+  editors.html.setValue(await nomad.fs.readFile('/index.html').catch(e => ''))
   for (let k in editors) {
     editors[k].selection.moveTo(0,0)
   }
@@ -61,9 +61,9 @@ function debounce (fn, timeout) {
 async function onChangeEditor (id) {
   var editor = editors[id]
   var filename = `/index.${id}`
-  var current = await beaker.fs.readFile(filename).catch(e => '')
+  var current = await nomad.fs.readFile(filename).catch(e => '')
   if (current !== editor.getValue()) {
     runSnippet()
-    beaker.fs.writeFile(filename, editor.getValue()).catch(e => undefined)
+    nomad.fs.writeFile(filename, editor.getValue()).catch(e => undefined)
   }
 }

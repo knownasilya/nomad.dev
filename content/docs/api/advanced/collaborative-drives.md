@@ -1,6 +1,6 @@
 ---
 title: Collaborative Drives
-description: Multi-writer drives — how they work, how to invite writers, and how to build collaborative apps with beaker.fs.
+description: Multi-writer drives — how they work, how to invite writers, and how to build collaborative apps with nomad.fs.
 ---
 
 Every Drive in Nomad is an [Autobase](https://github.com/holepunchto/autobase): multi-writer-capable,
@@ -9,7 +9,7 @@ linearised across all writers into an eventually-consistent view.
 
 "Collaborative" is a **policy flag**, not a separate kind of drive. A drive is **locked (single-writer)
 by default** and can be **unlocked without changing its URL** — so a drive can start private and open
-up to collaborators later. All of this goes through the single [`beaker.fs`](/docs/api/apis/beaker.fs/) API.
+up to collaborators later. All of this goes through the single [`nomad.fs`](/docs/api/apis/nomad.fs/) API.
 
 ---
 
@@ -17,17 +17,17 @@ up to collaborators later. All of this goes through the single [`beaker.fs`](/do
 
 ```javascript
 // Locked / single-writer (the default)
-var drive = await beaker.fs.createDrive({ title: 'My Notes' })
+var drive = await nomad.fs.createDrive({ title: 'My Notes' })
 
 // …or collaborative from the start (accepts writer requests)
-var drive = await beaker.fs.createCollaborativeDrive({
+var drive = await nomad.fs.createCollaborativeDrive({
   title: 'My Forum',
   type: 'walled.garden/forum'
 })
 console.log(drive.url) // hyper://abc123.../ — permanent
 
 // Unlock an existing drive later — SAME URL
-await beaker.fs.configure(drive.url, { collaborative: true })
+await nomad.fs.configure(drive.url, { collaborative: true })
 ```
 
 Anyone with the URL can read. Write access must be explicitly granted (below).
@@ -52,10 +52,10 @@ var post = await drive.get('/posts/hello.json', 'json')
 var entries = await drive.list('/posts/')
 ```
 
-Validate data before writing with `beaker.schemas`:
+Validate data before writing with `nomad.schemas`:
 
 ```javascript
-var result = beaker.schemas.validate('walled.garden/post', postData)
+var result = nomad.schemas.validate('walled.garden/post', postData)
 if (!result.success) throw new Error(result.error)
 await drive.put('/posts/my-post.json', JSON.stringify(result.data))
 ```
@@ -78,7 +78,7 @@ var inviteUrl = await drive.createInvite({ multiUse: true })
 The recipient opens the invite URL in Nomad, which triggers:
 
 ```javascript
-var { writerKey } = await beaker.fs.claimInvite(inviteUrl, {
+var { writerKey } = await nomad.fs.claimInvite(inviteUrl, {
   profileUrl: 'hyper://my-profile/'
 })
 ```
@@ -96,7 +96,7 @@ await drive.approveRequest(requests[0].writerKey)
 
 ```javascript
 // Anyone can request write access to a collaborative (unlocked) drive
-var { writerKey } = await beaker.fs.requestAccess(driveUrl, {
+var { writerKey } = await nomad.fs.requestAccess(driveUrl, {
   profileUrl: 'hyper://my-profile/'
 })
 // The owner sees this in listRequests()
@@ -104,7 +104,7 @@ var { writerKey } = await beaker.fs.requestAccess(driveUrl, {
 
 Requests are **never auto-accepted** — the owner is always the gate. A **locked** drive ignores
 requests entirely (it doesn't even advertise the request channel), so check
-`(await beaker.fs.getInfo(url)).collaborative` if you need to know whether a drive is open.
+`(await nomad.fs.getInfo(url)).collaborative` if you need to know whether a drive is open.
 
 ---
 
@@ -117,7 +117,7 @@ var writers = await drive.listWriters()
 // [{ writerKey: '...', profileUrl: 'hyper://...' }]
 
 for (const w of writers) {
-  var profile = await beaker.fs.getInfo(w.profileUrl)
+  var profile = await nomad.fs.getInfo(w.profileUrl)
   console.log(profile.title, profile.description)
 }
 ```
@@ -136,7 +136,7 @@ await drive.removeWriter(writerKey)
 ## Full example: a forum post
 
 ```javascript
-const drive = beaker.fs.drive(location.href)
+const drive = nomad.fs.drive(location.href)
 
 async function createPost(title, body, category) {
   var myProfileUrl = await getMyProfileUrl() // read from address book
@@ -152,7 +152,7 @@ async function createPost(title, body, category) {
     author: { url: myProfileUrl, writerKey: myWriter?.writerKey }
   }
 
-  var valid = beaker.schemas.validate('walled.garden/post', post)
+  var valid = nomad.schemas.validate('walled.garden/post', post)
   if (!valid.success) throw new Error(valid.error)
 
   var slug = `${Date.now()}-${title.toLowerCase().replace(/\s+/g, '-')}`

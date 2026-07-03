@@ -2,7 +2,7 @@
 title: Using the Editor
 ---
 
-Beaker includes a built-in editor for viewing and modifying hyperdrive source code.
+Nomad includes a built-in editor for viewing and modifying hyperdrive source code.
 
 ## Opening the Editor
 

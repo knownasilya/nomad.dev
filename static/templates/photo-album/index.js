@@ -23,8 +23,8 @@ customElements.define('photo-album-app', class extends HTMLElement {
   }
 
   async load () {
-    this.siteInfo = await beaker.fs.getInfo()
-    this.photos = await beaker.fs.readdir('/photos').catch(e => ([]))
+    this.siteInfo = await nomad.fs.getInfo()
+    this.photos = await nomad.fs.readdir('/photos').catch(e => ([]))
 
     this.append(h('header', {}, 
       h('h1', {},
@@ -72,8 +72,8 @@ customElements.define('photo-album-app', class extends HTMLElement {
     fr.onload = async () => {
       var ext = file.name.split('.').pop()
       var name = `${Date.now()}.${ext}`
-      await beaker.fs.mkdir('/photos').catch(e => undefined)
-      await beaker.fs.writeFile(`/photos/${name}`, fr.result, 'binary')
+      await nomad.fs.mkdir('/photos').catch(e => undefined)
+      await nomad.fs.writeFile(`/photos/${name}`, fr.result, 'binary')
       this.photos.push(name)
       this.renderPhotos()
 
@@ -83,7 +83,7 @@ customElements.define('photo-album-app', class extends HTMLElement {
   
   async onEditInfo (e) {
     e.preventDefault()
-    await beaker.shell.drivePropertiesDialog(location.toString())
+    await nomad.shell.drivePropertiesDialog(location.toString())
     location.reload()
   }
 
@@ -155,14 +155,14 @@ customElements.define('photo-album-app', class extends HTMLElement {
       dialog.classList.remove('editing-description')
       var desc = textarea.value
       descriptionEl.textContent = desc
-      await beaker.fs.updateMetadata(`/photos/${photo}`, {description: desc})
+      await nomad.fs.updateMetadata(`/photos/${photo}`, {description: desc})
     }
 
     async function onDelete (e) {
       if (!confirm('Delete this photo?')) {
         return
       }
-      await beaker.fs.unlink(`/photos/${photo}`)
+      await nomad.fs.unlink(`/photos/${photo}`)
       location.reload()
     }
 
@@ -177,7 +177,7 @@ customElements.define('photo-album-app', class extends HTMLElement {
     dialog.showModal()
 
     // Load description after dialog is visible so the backdrop never flashes
-    var description = (await beaker.fs.stat(`/photos/${photo}`).catch(e => {}))?.metadata?.description
+    var description = (await nomad.fs.stat(`/photos/${photo}`).catch(e => {}))?.metadata?.description
     if (this._openingIndex !== index) return
     descriptionEl.innerHTML = ''
     descriptionEl.append(description ? description : h('em', {}, 'No description'))

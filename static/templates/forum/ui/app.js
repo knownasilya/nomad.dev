@@ -1,8 +1,8 @@
-// Forum template — uses beaker.fs for multi-writer collaboration
+// Forum template — uses nomad.fs for multi-writer collaboration
 // Each Writer can create posts and comments.
 // The drive owner manages who can write via invite/approve flows.
 
-const drive = beaker.fs.drive(location.href)
+const drive = nomad.fs.drive(location.href)
 
 // ── State ──────────────────────────────────────────────────────────────────────
 
@@ -39,7 +39,7 @@ async function boot(el) {
 
   // Load the user's profile from address book
   try {
-    const ab = await beaker.fs.readFile('hyper://private/address-book.json').then(JSON.parse)
+    const ab = await nomad.fs.readFile('hyper://private/address-book.json').then(JSON.parse)
     console.log('Address book', ab);
     state.myProfileUrl = ab?.profiles?.[0]?.key ? `hyper://${ab.profiles[0].key}/` : null
   } catch(e) {
@@ -299,7 +299,7 @@ async function submitPost(e) {
     author: { url: state.myProfileUrl, writerKey: state.myWriterKey }
   }
 
-  const valid = beaker.schemas.validate('walled.garden/post', post)
+  const valid = nomad.schemas.validate('walled.garden/post', post)
   if (!valid.success) { alert('Validation error: ' + valid.error); return }
 
   const slug = `${Date.now()}-${post.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)}`
@@ -339,7 +339,7 @@ function showProfileHelp() {
 
 async function requestAccess() {
   const profileUrl = state.myProfileUrl
-  const result = await beaker.fs.requestAccess(location.href, { profileUrl })
+  const result = await nomad.fs.requestAccess(location.href, { profileUrl })
   alert(`Access requested. Your writer key: ${result.writerKey}\n\nThe forum owner must approve your request.`)
 }
 
@@ -396,7 +396,7 @@ async function resolveAuthor(writerKey, profileUrl) {
 async function _fetchProfile(profileUrl) {
   if (!profileUrl) return null
   try {
-    return await beaker.fs.drive(profileUrl).getInfo()
+    return await nomad.fs.drive(profileUrl).getInfo()
   } catch { return null }
 }
 

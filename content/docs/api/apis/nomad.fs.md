@@ -1,9 +1,9 @@
 ---
-title: beaker.fs
+title: nomad.fs
 description: The single filesystem API for reading, writing, and managing hyper:// drives.
 ---
 
-`beaker.fs` is **the** API for `hyper://` drives — reading and writing files, drive lifecycle
+`nomad.fs` is **the** API for `hyper://` drives — reading and writing files, drive lifecycle
 (create/fork/configure), and multi-writer collaboration, all through one surface. Every drive is an
 [Autobase](/docs/api/advanced/collaborative-drives/) (multi-writer-capable, with a stable URL for life).
 
@@ -12,18 +12,18 @@ parses JSON for you.
 
 ## API
 
-### beaker.fs.drive(url)
+### nomad.fs.drive(url)
 
 Create a scoped drive handle. Its methods accept paths relative to the drive rather than full URLs.
 
 ```javascript
-var drive = beaker.fs.drive('hyper://abc123../')
+var drive = nomad.fs.drive('hyper://abc123../')
 await drive.list('/')
 ```
 
 Returns an **FsDrive** instance with all the methods below (scoped to the drive).
 
-Every method also exists as a top-level, URL-first helper — e.g. `beaker.fs.readFile('hyper://abc123../index.html')`.
+Every method also exists as a top-level, URL-first helper — e.g. `nomad.fs.readFile('hyper://abc123../index.html')`.
 
 ---
 
@@ -40,7 +40,7 @@ Every method also exists as a top-level, URL-first helper — e.g. `beaker.fs.re
 * **diff(other\[, opts\])** — Changes vs another version (Hyperdrive only; empty on Autobase for now).
 
 ```javascript
-var drive = beaker.fs.drive('hyper://abc123../')
+var drive = nomad.fs.drive('hyper://abc123../')
 var manifest = await drive.get('/index.json', 'json')   // parsed object
 var st = await drive.stat('/index.json')                // st.mtime, st.ctime, st.size
 var html = await drive.readFile('/index.html')
@@ -56,7 +56,7 @@ var posts = await drive.query('/posts/')
 * **copy(src, dst\[, opts\])** / **rename(src, dst\[, opts\])** — Works within and across drives.
 
 ```javascript
-var drive = beaker.fs.drive('hyper://abc123../')
+var drive = nomad.fs.drive('hyper://abc123../')
 await drive.writeFile('/notes.txt', 'hello')
 await drive.put('/data.json', { hi: true }, { encoding: 'json' })
 await drive.rename('/notes.txt', '/notes-2.txt')
@@ -67,31 +67,31 @@ Writes require the drive to be writable — a Hyperdrive you own, or an Autobase
 
 ### Watching
 
-### beaker.fs.watch(url\[, pathSpec\]\[, onChanged\])
+### nomad.fs.watch(url\[, pathSpec\]\[, onChanged\])
 
 Watch a drive (or a path prefix) for changes. Returns an `EventTarget` that emits `changed`.
 
 ```javascript
-var drive = beaker.fs.drive('hyper://abc123../')
+var drive = nomad.fs.drive('hyper://abc123../')
 drive.watch('/posts/', () => rerender())
 // or url-first:
-beaker.fs.watch('hyper://abc123../', () => rerender())
+nomad.fs.watch('hyper://abc123../', () => rerender())
 ```
 
 ### Drive lifecycle
 
-These are top-level `beaker.fs` methods. `createDrive`/`createCollaborativeDrive`/`forkDrive` return a scoped **FsDrive**.
+These are top-level `nomad.fs` methods. `createDrive`/`createCollaborativeDrive`/`forkDrive` return a scoped **FsDrive**.
 
-* **beaker.fs.createDrive(\[opts\])** — Create a new drive. `opts`: `{ title, description, collaborative }`. Locked / single-writer unless `collaborative: true`.
-* **beaker.fs.createCollaborativeDrive(\[opts\])** — Same as `createDrive` but defaults to accepting writers; equivalent to `createDrive({ ..., collaborative: true })`.
-* **beaker.fs.forkDrive(url\[, opts\])** — Fork an existing drive into a new one.
-* **beaker.fs.configure(url, settings\[, opts\])** — Update the drive manifest (`title`, `description`, `type`, `thumb`, `links`) and/or `collaborative` (see below). Also on the scoped handle as `drive.configure(settings)`.
-* **beaker.fs.isCollaborativeDrive(url)** — Boolean.
+* **nomad.fs.createDrive(\[opts\])** — Create a new drive. `opts`: `{ title, description, collaborative }`. Locked / single-writer unless `collaborative: true`.
+* **nomad.fs.createCollaborativeDrive(\[opts\])** — Same as `createDrive` but defaults to accepting writers; equivalent to `createDrive({ ..., collaborative: true })`.
+* **nomad.fs.forkDrive(url\[, opts\])** — Fork an existing drive into a new one.
+* **nomad.fs.configure(url, settings\[, opts\])** — Update the drive manifest (`title`, `description`, `type`, `thumb`, `links`) and/or `collaborative` (see below). Also on the scoped handle as `drive.configure(settings)`.
+* **nomad.fs.isCollaborativeDrive(url)** — Boolean.
 
 ```javascript
 // Every new drive is a multi-writer-capable Autobase, but "collaborative" is a policy flag.
-var drive = await beaker.fs.createDrive({ title: 'Notes' })          // locked (single-writer)
-await beaker.fs.configure(drive.url, { collaborative: true })        // unlock later — SAME URL
+var drive = await nomad.fs.createDrive({ title: 'Notes' })          // locked (single-writer)
+await nomad.fs.configure(drive.url, { collaborative: true })        // unlock later — SAME URL
 ```
 
 ### Collaboration {#collaboration}
@@ -115,9 +115,9 @@ writers is a policy flag, `collaborative`, **locked by default**:
 * **listWriters(url)** — `[{ writerKey, profileUrl }]`.
 
 ```javascript
-var drive = beaker.fs.drive('hyper://abc123../')
+var drive = nomad.fs.drive('hyper://abc123../')
 var invite = await drive.createInvite()          // share this; drive is now collaborative
-// …recipient: await beaker.fs.claimInvite(invite)
+// …recipient: await nomad.fs.claimInvite(invite)
 await drive.approveRequest(writerKey)
 ```
 

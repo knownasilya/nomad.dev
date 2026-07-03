@@ -1,4 +1,4 @@
-var infoPromise = beaker.fs.getInfo()
+var infoPromise = nomad.fs.getInfo()
 
 function h (tag, attrs, ...children) {
   var el = document.createElement(tag)
@@ -24,8 +24,8 @@ customElements.define('module-header', class extends HTMLElement {
   async render () {
     var [info, hasTests, hasDemo] = await Promise.all([
        infoPromise,
-       beaker.fs.stat('/tests/index.html').catch(e => false),
-       beaker.fs.stat('/demo/index.html').catch(e => false)
+       nomad.fs.stat('/tests/index.html').catch(e => false),
+       nomad.fs.stat('/demo/index.html').catch(e => false)
      ])
 
     this.append(h('h1', {}, h('a', {href: '/'}, info.title)))
@@ -33,7 +33,7 @@ customElements.define('module-header', class extends HTMLElement {
       let editProps = h('a', {title: 'Edit Properties', href: '#'}, 'Edit')
       editProps.addEventListener('click', async (e) => {
         e.preventDefault()
-        await beaker.shell.drivePropertiesDialog(location.toString())
+        await nomad.shell.drivePropertiesDialog(location.toString())
         location.reload()
       })
       this.append(h('p', {}, `${info.description} [ `, editProps, ` ]`))
@@ -80,7 +80,7 @@ class ModuleDirectoryView extends HTMLElement {
   }
 
   async render () {
-    var entries = await beaker.fs.readdir(location.pathname, {includeStats: true})
+    var entries = await nomad.fs.readdir(location.pathname, {includeStats: true})
     entries.sort((a, b) => {
       if (a.stat.isDirectory() && !b.stat.isDirectory()) return -1
       if (!a.stat.isDirectory() && b.stat.isDirectory()) return 1
@@ -113,7 +113,7 @@ class ModuleFileView extends HTMLElement {
   }
   async render (pathname, renderHTML = false) {
     // check existence
-    let stat = await beaker.fs.stat(pathname).catch(e => undefined)
+    let stat = await nomad.fs.stat(pathname).catch(e => undefined)
     if (!stat) {
       // 404
       this.append(h('div', {class: 'empty'}, h('h2', {}, '404 File Not Found')))
@@ -129,10 +129,10 @@ class ModuleFileView extends HTMLElement {
       this.append(h('audio', {controls: true}, h('source', {src: pathname})))
     } else {
       // render content
-      let content = await beaker.fs.readFile(pathname)
+      let content = await nomad.fs.readFile(pathname)
       if (renderHTML && /\.(md|html)$/i.test(pathname)) {
         if (pathname.endsWith('.md')) {
-          content = beaker.markdown.toHTML(content)
+          content = nomad.markdown.toHTML(content)
         }
         let contentEl = h('div', {class: 'content'})
         contentEl.innerHTML = content
@@ -154,7 +154,7 @@ class ModuleReadmeView extends HTMLElement {
     this.render()
   }
   async render () {
-    let files = await beaker.fs.readdir(location.pathname).catch(e => ([]))
+    let files = await nomad.fs.readdir(location.pathname).catch(e => ([]))
     files = files.filter(f => ['index.html', 'index.md'].includes(f.toLowerCase()))
     if (files[0]) {
       this.append(new ModuleFileView(location.pathname + files[0], true))
@@ -196,7 +196,7 @@ async function executeScripts (el) {
   }
 }
 
-beaker.terminal.registerCommand({
+nomad.terminal.registerCommand({
   name: 'test',
   help: 'Run the module tests',
   handle () {
@@ -207,7 +207,7 @@ beaker.terminal.registerCommand({
     }
   }
 })
-beaker.terminal.registerCommand({
+nomad.terminal.registerCommand({
   name: 'demo',
   help: 'View the module demo',
   handle () {
@@ -218,7 +218,7 @@ beaker.terminal.registerCommand({
     }
   }
 })
-beaker.terminal.registerCommand({
+nomad.terminal.registerCommand({
   name: 'run',
   help: 'Run a script in the /scripts directory',
   usage: '@run {script} {...args}',

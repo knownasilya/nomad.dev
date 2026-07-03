@@ -8,7 +8,7 @@ first launch and persisted across sessions. It holds data that should live on yo
 bookmarks and app preferences.
 
 Like every drive in Nomad it is an [Autobase](/docs/api/advanced/collaborative-drives/), reached
-through the single [`beaker.fs`](/docs/api/apis/beaker.fs/) API. What makes it special is only that it
+through the single [`nomad.fs`](/docs/api/apis/nomad.fs/) API. What makes it special is only that it
 is addressed by the well-known URL `hyper://private/` and is not published to the public network.
 
 ## Accessing the private drive
@@ -19,10 +19,10 @@ Navigate to it directly in the address bar:
 hyper://private/
 ```
 
-Or from JavaScript with `beaker.fs`:
+Or from JavaScript with `nomad.fs`:
 
 ```javascript
-var privateDrive = beaker.fs.drive('hyper://private/')
+var privateDrive = nomad.fs.drive('hyper://private/')
 
 // read a file
 var data = await privateDrive.readFile('/my-notes.txt')
@@ -48,12 +48,12 @@ var entries = await privateDrive.readdir('/')
 The private drive is a good place to store:
 
 - Personal notes and drafts
-- Bookmarks and pins (`/bookmarks/`, `/beaker/pins.json`)
+- Bookmarks and pins (`/bookmarks/`, `/nomad/pins.json`)
 - App configuration and preferences
-- Data created by `beaker://` pages that needs to persist across sessions
+- Data created by `nomad://` pages that needs to persist across sessions
 
 ```javascript
 // check that hyper://private/ is writable
-var info = await beaker.fs.getInfo('hyper://private/')
+var info = await nomad.fs.getInfo('hyper://private/')
 console.log(info.writable) // true
 ```

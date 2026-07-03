@@ -19,7 +19,7 @@ static/templates/forum/
   index.json      drive manifest: { "title": "...", "type": "walled.garden/forum" }
   index.html      a <meta http-equiv="refresh"> to /.ui/ui.html (+ a plain link fallback)
   ui/ui.html      the SPA shell: a custom element + <script type="module" src="/.ui/app.js"> + <style>
-  ui/app.js       the app logic, using the global beaker.* APIs
+  ui/app.js       the app logic, using the global nomad.* APIs
 ```
 
 Key rules:
@@ -49,9 +49,9 @@ Front-matter (`title`, `description`) + a `{{< rawhtml >}}` block that wires up 
 <script src="/templates/index.js"></script>     // shared create-drive logic
 ```
 
-`static/templates/index.js` creates the drive via `beaker.fs` (ADR-0010: `beaker.hyperdrive`/`beaker.autobase`
-are gone) — `beaker.fs.createCollaborativeDrive({ collaborative: true })` when `TEMPLATE_DRIVE_TYPE ===
-'autobase'`, else `beaker.fs.createDrive(...)` (locked/single-writer) — fetches each `TEMPLATE_FILES` entry, rewrites
+`static/templates/index.js` creates the drive via `nomad.fs` (ADR-0010: `nomad.hyperdrive`/`nomad.autobase`
+are gone) — `nomad.fs.createCollaborativeDrive({ collaborative: true })` when `TEMPLATE_DRIVE_TYPE ===
+'autobase'`, else `nomad.fs.createDrive(...)` (locked/single-writer) — fetches each `TEMPLATE_FILES` entry, rewrites
 `/ui/`→`/.ui/`, writes them in, and opens the drive. Only files listed in `TEMPLATE_FILES` are copied, so
 extra files in the template dir are safe (and won't ship into user drives).
 

@@ -1,9 +1,9 @@
 ---
-title: beaker.markdown
+title: nomad.markdown
 description: This API renders Markdown into HTML
 ---
 
-## beaker.markdown.toHTML(md)
+## nomad.markdown.toHTML(md)
 
 Renders Markdown into HTML.
 
@@ -11,6 +11,6 @@ Renders Markdown into HTML.
 * Returns **String**.
 
 ```javascript
-var html = beaker.markdown.toHTML('# hello!')
+var html = nomad.markdown.toHTML('# hello!')
 console.log(html) // => '<h1>Hello!</h1>'
 ```

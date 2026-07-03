@@ -48,7 +48,7 @@
       
       setup()
       async function setup () {
-        var peerEvents = beaker.peersockets.watch()
+        var peerEvents = nomad.peersockets.watch()
         peerEvents.addEventListener('join', e => {
           console.log('join', e)
           peers.add(e.peerId)
@@ -60,7 +60,7 @@
           output.innerHTML += `<em>Peer ${e.peerId} has left</em>\n`
         })
 
-        topic = beaker.peersockets.join('chat')
+        topic = nomad.peersockets.join('chat')
         input.addEventListener('keydown', e => {
           if (e.keyCode !== 13) return
 

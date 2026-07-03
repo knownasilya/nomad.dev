@@ -1,5 +1,5 @@
 ---
-title: beaker.schemas
+title: nomad.schemas
 description: Validate data against walled.garden schemas.
 ---
 
@@ -7,7 +7,7 @@ The schemas API exposes [walled.garden schema](/docs/api/developers/walled-garde
 
 ## API
 
-### beaker.schemas.validate(type, data)
+### nomad.schemas.validate(type, data)
 
 Validate an object against a named schema.
 
@@ -16,7 +16,7 @@ Validate an object against a named schema.
 * Returns **{ success: true, data }** or **{ success: false, error }** (synchronous).
 
 ```javascript
-var result = beaker.schemas.validate('walled.garden/post', {
+var result = nomad.schemas.validate('walled.garden/post', {
   type: 'walled.garden/post',
   title: 'Hello world',
   body: 'This is my first post.',
@@ -30,14 +30,14 @@ if (!result.success) {
 }
 ```
 
-### beaker.schemas.list()
+### nomad.schemas.list()
 
 List all known schema type strings.
 
 * Returns **String[]** (synchronous).
 
 ```javascript
-beaker.schemas.list()
+nomad.schemas.list()
 // [
 //   'walled.garden/person',
 //   'walled.garden/post',

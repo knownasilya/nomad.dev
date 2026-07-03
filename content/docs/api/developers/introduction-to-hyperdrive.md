@@ -21,7 +21,7 @@ Hyperdrive is a peer-to-peer network similar to BitTorrent with distinct differe
 
 ## Core Mechanics
 
-A hyperdrive functions as a networked folder containing files, folders, symlinks, and mounts. Beaker's implementation supports executing web content.
+A hyperdrive functions as a networked folder containing files, folders, symlinks, and mounts. Nomad's implementation supports executing web content.
 
 **Public-key URLs** identify each drive using a 64-character hex string as the domain, with standard HTTPS-style paths, queries, and hash segments.
 

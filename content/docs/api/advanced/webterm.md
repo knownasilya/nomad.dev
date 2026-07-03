@@ -2,7 +2,7 @@
 title: Webterm
 ---
 
-Webterm is a web-based terminal environment that ships with Beaker. It is superficially similar to the Unix "bash" terminal, but designed specifically for the browser and Hyperdrive environment.
+Webterm is a web-based terminal environment that ships with Nomad. It is superficially similar to the Unix "bash" terminal, but designed specifically for the browser and Hyperdrive environment.
 
 ![](/img/webterm.png)
 
@@ -16,7 +16,7 @@ The terminal uses a command syntax that's similar to "bash" in Unix.
 command [-s|--switch {param}] {param1} {param2}
 ```
 
-At this stage, there is no piping or sub-invocations. All commands translate to JavaScript functions which can be created using the [beaker.terminal API](../apis/beaker.terminal).
+At this stage, there is no piping or sub-invocations. All commands translate to JavaScript functions which can be created using the [nomad.terminal API](../apis/nomad.terminal).
 
 ## Builtin commands
 
@@ -54,7 +54,7 @@ To view and modify the environment variables, use the `env` command. By default,
 
 ## Creating and installing new commands
 
-You can manage your installed Webterm commands by using the `term` command. Commands are provided by web pages which use the [beaker.terminal API](../apis/beaker.terminal) to register commands.
+You can manage your installed Webterm commands by using the `term` command. Commands are provided by web pages which use the [nomad.terminal API](../apis/nomad.terminal) to register commands.
 
 You can invoke commands two ways: while visiting the page using the `@` syntax, or by installing the page using `term install`.
 
@@ -62,7 +62,7 @@ Consider an example page at `https://example.com/term.html` which has the follow
 
 ```html
 <script>
-beaker.terminal.registerCommand({
+nomad.terminal.registerCommand({
   name: 'alert',
   help: 'Display an alert box',
   usage: 'alert {message}',
