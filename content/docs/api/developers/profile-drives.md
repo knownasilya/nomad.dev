@@ -107,4 +107,21 @@ for (const { writerKey, profileUrl } of writers) {
 }
 ```
 
+---
+
+## Followers are private by design
+
+If you publish a Profile Drive (or a Blog) and people follow it, **who follows you is not exposed** — because there is no follower list anywhere to expose. Following is *subscriber-side*: a follower adds your URL to their own [`walled.garden/follows`](/docs/api/developers/walled-garden-schemas/#follows) record in *their* private Root Drive, and their [Reader](/docs/templates/blog/) aggregates it. Your Drive is never written to and never learns about it. The follow relationship is scattered across each follower's private drive and collected nowhere.
+
+This is a property of P2P Drives in general, not of the Profile template — any public readable Drive (including a custom one with its own schema and reader app) inherits the same un-enumerability. What's template-specific is only the *rendering*: the built-in Reader understands `walled.garden/feed`; a custom convention needs its own reader.
+
+Two things to keep in mind:
+
+- **Don't build the thing that breaks it.** A public "followers" list or subscriber count *is* the aggregate you were getting privacy from not having. There is deliberately no `walled.garden/followers` schema. If you genuinely need a private-to-you follower count, that requires a separate encrypted follow-inbox — not a published record.
+- **The network layer is a separate question.** Replicating a Drive announces the peer on that Drive's DHT discovery topic, so a third party with your URL can observe *connections* (by IP), independent of Drive type. The privacy claim above is that no follower list exists — it is not a claim that replication itself is unobservable.
+
+See ADR-0013 for the full decision and scope.
+
+---
+
 See also: [walled.garden schemas](/docs/api/developers/walled-garden-schemas/)

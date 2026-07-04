@@ -161,6 +161,10 @@ A list of Drive URLs the user subscribes to.
 }
 ```
 
+**`follows` is outbound-only, and lives in the follower's private Root Drive** (`hyper://private/.data/walled.garden/follows.json`) — it records the Drives *you* follow, and only your own [Reader](/docs/templates/blog/) ever reads it. Following is subscriber-side: a Follow is you adding a URL here, not the target Drive recording a subscriber. There is deliberately **no `walled.garden/followers` schema and no aggregate follower list** — who follows a Drive is not published anywhere, so it can't be enumerated at the data layer. Building a public followers list or count would defeat that; if you need a private-to-you follower registry, that's a separate mechanism (an encrypted follow-inbox), not a published record. See ADR-0013.
+
+> **Caveat (network layer):** replicating any Drive announces your peer on that Drive's DHT discovery topic, so a third party holding the Drive URL can observe *connections* to it regardless of Drive type. The data-layer privacy above is about no follower *list* existing; it is not a claim that replication is unobservable.
+
 ---
 
 ## reaction
