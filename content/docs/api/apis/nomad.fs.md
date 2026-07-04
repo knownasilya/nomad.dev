@@ -121,6 +121,30 @@ var invite = await drive.createInvite()          // share this; drive is now col
 await drive.approveRequest(writerKey)
 ```
 
+### Draft Mode
+
+Stage edits to a drive **privately** — synced across *your own* devices but invisible to every other
+peer — until you **Publish**. Backed by your Vault (ADR-0012), so a Draft never enters the drive's
+replicated log. While Draft Mode is on, `put`/`writeFile`/`del` stage instead of going live; reads stay
+on the published view unless you pass `{ draft: true }` to preview the merge.
+
+* **beginDraft(url)** / **endDraft(url)** — Turn a drive's Draft Mode on/off. `{ on }`.
+* **draftStatus(url)** — `{ mode, changes: [{ path, op: 'put'|'del', conflict }] }`. `conflict` is true when the base moved under a staged path since it was staged.
+* **publishDraft(url\[, opts\])** — Fold the Draft onto the drive. `opts.paths` restricts to a subset/subtree; `opts.force` applies conflicting paths anyway. `{ published, conflicts }`.
+* **discardDraft(url\[, opts\])** — Drop the Draft (or `opts.paths` subset). `{ discarded }`.
+* **watchDraft(url\[, onChanged\])** — `EventTarget` emitting `changed` when the Draft mutates.
+* **setDraftPreview(url, on)** — Render the merged Draft in *this tab* (used by the browser chrome's "Preview Draft" toggle). Local-only; never replicated.
+
+```javascript
+var drive = nomad.fs.drive('hyper://abc123../')
+await drive.beginDraft()
+await drive.writeFile('/posts/2026-07-04-hi/post.json', '{"title":"Hi"}')  // staged, not replicated
+var preview = await drive.readFile('/posts/2026-07-04-hi/post.json', { draft: true })
+await drive.publishDraft({ paths: ['/posts/2026-07-04-hi/'] })             // this post goes live
+```
+
+> Publish works only on a device that can write the drive; on a device you merely paired into, Publish is rejected — draft on your phone, Publish from the owning device.
+
 ### Import / export
 
 * **importFromFilesystem(opts)** / **exportToFilesystem(opts)** / **exportToDrive(opts)** — Bulk copy between a drive and the local filesystem (or another drive).
