@@ -3,9 +3,10 @@
 // Posts are directory-per-post: /posts/<YYYY-MM-DD-slug>/{post.json, index.md}.
 // Individual posts are URL-addressable: hyper://<blog>/posts/<slug>/ .
 
-// hyper://<key>/ — desktop derives it from location; mobile (which renders the
-// page in a base-less WebView) injects window.__hyperBase via the .ui bridge.
-const BASE = (typeof window !== 'undefined' && window.__hyperBase) || (location.protocol + '//' + location.host + '/')
+// This page's own drive + route, from nomad.page — the host-provided page identity, authoritative
+// on desktop AND mobile (never parse `location` yourself; it's unreliable in the mobile WebView).
+const BASE = nomad.page.origin
+const ROUTE = nomad.page.path
 const drive = nomad.fs.drive(BASE)
 
 let state = {
@@ -56,7 +57,7 @@ async function boot(el) {
 // Map the current URL to a base view. Posts are real URLs; compose/writers are
 // in-page overlays reached from the list.
 function currentRoute() {
-  let p = decodeURIComponent(location.pathname || '/')
+  let p = decodeURIComponent(ROUTE)
   if (p === '/' || p === '/index.html' || p === '/.ui/ui.html' || p === '/.ui/') {
     return { view: 'list' }
   }

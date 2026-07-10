@@ -2,7 +2,10 @@
 // Each Writer can create posts and comments.
 // The drive owner manages who can write via invite/approve flows.
 
-const drive = nomad.fs.drive(location.href)
+// The drive this page lives in, from nomad.page — host-provided and authoritative on desktop AND
+// mobile (never parse `location` yourself; it's unreliable in the mobile WebView).
+const BASE = nomad.page.origin
+const drive = nomad.fs.drive(BASE)
 
 // ── State ──────────────────────────────────────────────────────────────────────
 
@@ -314,7 +317,7 @@ async function submitComment(e, postSlug) {
   const now = new Date().toISOString()
   const comment = {
     type: 'walled.garden/comment',
-    topic: `${location.href}posts/${postSlug}.json`,
+    topic: `${BASE}posts/${postSlug}.json`,
     body: fd.get('body').trim(),
     createdAt: now,
     author: { url: state.myProfileUrl, writerKey: state.myWriterKey }
@@ -339,7 +342,7 @@ function showProfileHelp() {
 
 async function requestAccess() {
   const profileUrl = state.myProfileUrl
-  const result = await nomad.fs.requestAccess(location.href, { profileUrl })
+  const result = await nomad.fs.requestAccess(BASE, { profileUrl })
   alert(`Access requested. Your writer key: ${result.writerKey}\n\nThe forum owner must approve your request.`)
 }
 
