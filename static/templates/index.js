@@ -20,12 +20,6 @@ if (typeof nomad !== 'undefined' && typeof nomad.fs !== 'undefined') {
             if (!res.ok) throw new Error('HTTP ' + res.status)
             return res.text()
           })
-          if (path.startsWith('/ui/')) {
-            // HACK
-            // hugo doesnt serve the . folders so we have to fudge it for /.ui/ folders
-            // -prf
-            path = '/.ui/' + path.slice('/ui/'.length)
-          }
           await drive.writeFile(path, v)
         } catch (e) {
           console.warn('[template] failed to write', path, e)

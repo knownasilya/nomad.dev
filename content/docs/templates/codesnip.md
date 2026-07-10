@@ -11,13 +11,14 @@ title: Codesnip Template
   const TEMPLATE_ROOT = '/templates/codesnip'
   const TEMPLATE_TITLE = 'Codesnip'
   window.TEMPLATE_FILES = [
-    '/ui/ui.html',
-    '/ui/ui.js',
-    '/ui/ui.css',
-    '/ui/ace/ace.js',
-    '/ui/ace/mode-css.js',
-    '/ui/ace/mode-html.js',
-    '/ui/ace/mode-javascript.js'
+    '/index.html',
+    '/index.json',
+    '/ui.js',
+    '/ui.css',
+    '/ace/ace.js',
+    '/ace/mode-css.js',
+    '/ace/mode-html.js',
+    '/ace/mode-javascript.js'
   ]
 </script>
 <script src="/templates/index.js"></script>
@@ -29,14 +30,17 @@ A codesnippet which you can use to demonstrate APIs, patterns, bugs, or other te
 ## Source
 
 {{< tabsraw >}}
-{{< tab "/.ui/ui.html" >}}
-{{< readcode "/static/templates/codesnip/ui/ui.html" "html" >}}
+{{< tab "/index.html" >}}
+{{< readcode "/static/templates/codesnip/index.html" "html" >}}
 {{< /tab >}}
-{{< tab "/.ui/ui.js" >}}
-{{< readcode "/static/templates/codesnip/ui/ui.js" "js" >}}
+{{< tab "/index.json" >}}
+{{< readcode "/static/templates/codesnip/index.json" "json" >}}
 {{< /tab >}}
-{{< tab "/.ui/ui.css" >}}
-{{< readcode "/static/templates/codesnip/ui/ui.css" "css" >}}
+{{< tab "/ui.js" >}}
+{{< readcode "/static/templates/codesnip/ui.js" "js" >}}
+{{< /tab >}}
+{{< tab "/ui.css" >}}
+{{< readcode "/static/templates/codesnip/ui.css" "css" >}}
 {{< /tab >}}
 {{< tab "LICENSE" >}}
 {{< readcode "/static/templates/LICENSE" "txt" >}}

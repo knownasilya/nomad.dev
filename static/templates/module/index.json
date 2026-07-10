@@ -1,0 +1,5 @@
+{
+  "title": "My Module",
+  "description": "A JavaScript module you can import from other drives.",
+  "fallback": "/index.html"
+}

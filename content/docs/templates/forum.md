@@ -15,8 +15,7 @@ description: A multi-writer discussion board template demonstrating nomad.fs.
   window.TEMPLATE_FILES = [
     '/index.html',
     '/index.json',
-    '/ui/ui.html',
-    '/ui/app.js'
+    '/app.js'
   ]
 </script>
 <script src="/templates/index.js"></script>
@@ -33,11 +32,8 @@ A multi-writer discussion board built on [nomad.fs](/docs/api/apis/nomad.fs/). W
 {{< tab "/index.json" >}}
 {{< readcode "/static/templates/forum/index.json" "json" >}}
 {{< /tab >}}
-{{< tab "/ui/ui.html" >}}
-{{< readcode "/static/templates/forum/ui/ui.html" "html" >}}
-{{< /tab >}}
-{{< tab "/ui/app.js" >}}
-{{< readcode "/static/templates/forum/ui/app.js" "js" >}}
+{{< tab "/app.js" >}}
+{{< readcode "/static/templates/forum/app.js" "js" >}}
 {{< /tab >}}
 {{< tab "LICENSE" >}}
 {{< readcode "/static/templates/LICENSE" "txt" >}}

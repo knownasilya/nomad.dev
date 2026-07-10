@@ -12,7 +12,7 @@ Introduction to Hyperdrive
 Index.json Manifest
 {{< /linkcard >}}
 
-{{< linkcard relref="./developers/frontends-.ui-folder" icon="fas fa-arrow-right" >}}
+{{< linkcard relref="./developers/frontends" icon="fas fa-arrow-right" >}}
 Frontends (.ui folder)
 {{< /linkcard >}}
 

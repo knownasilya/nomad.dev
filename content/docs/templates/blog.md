@@ -15,8 +15,7 @@ description: A multi-device, URL-addressable blog built on nomad.fs and walled.g
   window.TEMPLATE_FILES = [
     '/index.html',
     '/index.json',
-    '/ui/ui.html',
-    '/ui/app.js'
+    '/app.js'
   ]
 </script>
 <script src="/templates/index.js"></script>
@@ -27,8 +26,9 @@ A personal blog you can write from any of your devices. The drive is an [Autobas
 ## How it works
 
 - **`/index.json`** declares `type: "walled.garden/feed"` with `itemsPath: "/posts/"`.
-- **Each post is a directory** — `/posts/<YYYY-MM-DD-slug>/` containing a `post.json` ([`walled.garden/post`](/docs/api/developers/walled-garden-schemas/#post)) and an `index.md` body. Co-locate images in the same folder and reference them with relative paths.
-- **Posts are URL-addressable**: `hyper://<blog>/posts/<slug>/` opens that post directly. The `/.ui/ui.html` frontend reads the path and renders it; if a reader has no custom frontend, the same URL falls back to rendering the post's `index.md`.
+- **Each post is a directory** — `/posts/<YYYY-MM-DD-slug>/` containing a `post.json` ([`walled.garden/post`](/docs/api/developers/walled-garden-schemas/#post)) and an `index.md` body. Co-locate images in the same folder and reference them with **absolute** paths (`/posts/<slug>/photo.jpg`) — the themed permalink renders at `/p/<slug>`, so relative paths would resolve against the wrong base.
+- **The app shell is `/index.html`**, declared as the manifest [`fallback`](/docs/api/developers/frontends/): a page navigation with no real file serves the shell, which routes off the URL.
+- **Posts are URL-addressable**: `hyper://<blog>/p/<slug>` is the themed permalink (a virtual route rendered by the shell), and `hyper://<blog>/posts/<slug>/` opens the post's raw `index.md` directly — the storage is plain files, readable on any runtime.
 - **Drafts**: tick "Save as draft" to set `draft: true`. Drafts sync to your devices and stay out of feeds and readers — but note the drive is public, so a draft is hidden, not secret.
 - **Multi-device**: open **Devices → Create invite link**, open the link on another device, and approve the request. That device can then publish too.
 
@@ -41,11 +41,8 @@ A personal blog you can write from any of your devices. The drive is an [Autobas
 {{< tab "/index.json" >}}
 {{< readcode "/static/templates/blog/index.json" "json" >}}
 {{< /tab >}}
-{{< tab "/ui/ui.html" >}}
-{{< readcode "/static/templates/blog/ui/ui.html" "html" >}}
-{{< /tab >}}
-{{< tab "/ui/app.js" >}}
-{{< readcode "/static/templates/blog/ui/app.js" "js" >}}
+{{< tab "/app.js" >}}
+{{< readcode "/static/templates/blog/app.js" "js" >}}
 {{< /tab >}}
 {{< tab "LICENSE" >}}
 {{< readcode "/static/templates/LICENSE" "txt" >}}

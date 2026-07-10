@@ -1,5 +1,12 @@
-var pathname = location.pathname
-if (pathname.endsWith('/')) pathname += 'index.html'
+// Routes are extensionless virtual paths (/, /about, …) with page content stored
+// under /pages/<route>.html. A route has no real file, so the manifest `fallback`
+// serves this shell there and we render the stored page into it. (/index.html is
+// the shell itself; storing pages at real .html paths would win the navigation
+// and serve them raw, outside the site chrome.)
+var route = location.pathname.replace(/\/$/, '') || '/'
+var pathname = route === '/' || route === '/index.html'
+  ? '/pages/index.html'
+  : `/pages${route}.html`
 
 const $ = (sel, parent = document) => parent.querySelector(sel)
 const nav = $('nav')
@@ -11,12 +18,11 @@ async function readPage () {
 }
 
 async function onNew (e) {
-  var path = prompt('Enter the name of your new page')
-  if (!path) return
-  if (!path.endsWith('.html')) path += '.html'
-  if (!path.startsWith('/')) path = `/${path}`
-  await nomad.fs.writeFile(path, `<h1>${path}</h1>`)
-  location.pathname = path
+  var page = prompt('Enter the name of your new page')
+  if (!page) return
+  page = page.replace(/\.html$/, '').replace(/^\//, '')
+  await nomad.fs.writeFile(`/pages/${page}.html`, `<h1>${page}</h1>`)
+  location.pathname = `/${page}`
 }
 
 async function onSave (e) {

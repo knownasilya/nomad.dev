@@ -1,0 +1,5 @@
+{
+  "title": "Codesnip",
+  "description": "An editable, shareable code snippet.",
+  "fallback": "/index.html"
+}

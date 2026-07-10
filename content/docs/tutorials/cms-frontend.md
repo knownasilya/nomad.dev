@@ -4,24 +4,35 @@ title: Building a CMS "Frontend"
 
 [In the self-modifying site tutorial](../self-modifying-site), we created a simple self-modifying site. While it worked, it didn't have any way to automatically include the editing tools on every page.
 
-In this tutorial, we're going to use a "Frontend" to create a consistent UI on every page. Before we start, [read this documentation on Frontends](/docs/api/developers/frontends-.ui-folder) to learn the high-level mechanics we'll be using.
+In this tutorial, we're going to use a "Frontend" to create a consistent UI on every page. Before we start, [read this documentation on Frontends](/docs/api/developers/frontends) to learn the high-level mechanics we'll be using.
 
 {{< niceimg img="/tutorials/cms-frontend.gif" >}}
 
 On load, our Frontend will automatically create a UI with the editor tools on the left. It will then attempt to read the file that corresponds to the current URL. If the file is found, it will insert it into the UI.
 
-## Create /.ui/ui.html
+## Declare the Frontend
 
-Every frontend is located at `/.ui/ui.html`. If that file is present, it will be served instead of the target resource.
+A Frontend is just your `/index.html`, declared as the drive's `fallback` in `/index.json`:
 
-Our ui.html is going to include the full UI for our edit mode and view mode.
+```json
+{
+  "title": "My Website",
+  "fallback": "/index.html"
+}
+```
+
+Now any page navigation that doesn't match a real file — like `/about` — serves `/index.html` with the URL unchanged, so our app can read `location.pathname` and render the right page. Real files always win, which is why we'll store page content under `/pages/` and use extensionless routes: if we stored `/about.html` and linked to it directly, the browser would serve that raw file *instead of* our Frontend.
+
+## Create /index.html
+
+Our index.html is going to include the full UI for our edit mode and view mode.
 
 ```html
 <!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/.ui/ui.css">
+    <link rel="stylesheet" href="/ui.css">
   </head>
   <body>
     <nav>
@@ -38,17 +49,19 @@ Our ui.html is going to include the full UI for our edit mode and view mode.
     </nav>
     <main><!-- page content will be inserted here --></main>
     <textarea id="editor"></textarea>
-    <script type="module" src="/.ui/ui.js"></script>
+    <script type="module" src="/ui.js"></script>
   </body>
 </html>
 
 ```
 
+Note the absolute asset paths (`/ui.css`, `/ui.js`) — the shell is served for arbitrary routes, so relative URLs would break.
+
 In our UI, there will be two modes: view mode and edit mode. We'll toggle between the two to render the page or the editor, respectively.
 
 ## Add Styles
 
-In our frontend, we're going to put all our styles in `/.ui/ui.css`. I'm not going to review each style but you can see them here:
+In our frontend, we're going to put all our styles in `/ui.css`. I'm not going to review each style but you can see them here:
 
 ```css
 body {
@@ -147,11 +160,13 @@ async function enterViewMode () {
 
 Reading and writing the page's HTML is going to work like in the [self-modifying site tutorial](../self-modifying-site). We'll use the [nomad.fs API](/docs/api/apis/nomad.fs) to read and write the files.
 
-First, we set up some globals that we'll reuse:
+First, we set up some globals that we'll reuse. The route is the (extensionless) URL path, and the file that backs it lives under `/pages/`:
 
 ```javascript
-var pathname = location.pathname
-if (pathname.endsWith('/')) pathname += 'index.html'
+var route = location.pathname.replace(/\/$/, '') || '/'
+var pathname = route === '/' || route === '/index.html'
+  ? '/pages/index.html'
+  : `/pages${route}.html`
 ```
 
 Our UI code already uses a `readPage()` method to fetch the current page's content. This is defined using the [readFile\(\)](/docs/api/apis/nomad.fs#reading) method of the nomad.fs API.
@@ -171,16 +186,15 @@ async function onSave (e) {
 }
 ```
 
-To create a new page, we prompt the user for a filename. We make sure the name ends with '.html' because that's the only kind of content we understand. We then write a starting .html template and navigate to the new page.
+To create a new page, we prompt the user for a page name, write a starting .html template into `/pages/`, and navigate to the new page's route. The route itself has no real file, so the Frontend serves there and renders the stored content.
 
 ```javascript
 async function onNew (e) {
-  var path = prompt('Enter the name of your new page')
-  if (!path) return
-  if (!path.endsWith('.html')) path += '.html'
-  if (!path.startsWith('/')) path = `/${path}`
-  await nomad.fs.writeFile(path, `<h1>${path}</h1>`)
-  location.pathname = path
+  var page = prompt('Enter the name of your new page')
+  if (!page) return
+  page = page.replace(/\.html$/, '').replace(/^\//, '')
+  await nomad.fs.writeFile(`/pages/${page}.html`, `<h1>${page}</h1>`)
+  location.pathname = `/${page}`
 }
 ```
 
@@ -197,10 +211,21 @@ async function onDelete (e) {
 ## The Final Code
 
 {{< tabs "final-code" >}}
-{{< tab "/.ui/ui.js" >}}
+{{< tab "/index.json" >}}
+```json
+{
+  "title": "My Website",
+  "fallback": "/index.html"
+}
+```
+{{< /tab >}}
+
+{{< tab "/ui.js" >}}
 ```javascript
-var pathname = location.pathname
-if (pathname.endsWith('/')) pathname += 'index.html'
+var route = location.pathname.replace(/\/$/, '') || '/'
+var pathname = route === '/' || route === '/index.html'
+  ? '/pages/index.html'
+  : `/pages${route}.html`
 
 const $ = (sel, parent = document) => parent.querySelector(sel)
 const nav = $('nav')
@@ -212,12 +237,11 @@ async function readPage () {
 }
 
 async function onNew (e) {
-  var path = prompt('Enter the name of your new page')
-  if (!path) return
-  if (!path.endsWith('.html')) path += '.html'
-  if (!path.startsWith('/')) path = `/${path}`
-  await nomad.fs.writeFile(path, `<h1>${path}</h1>`)
-  location.pathname = path
+  var page = prompt('Enter the name of your new page')
+  if (!page) return
+  page = page.replace(/\.html$/, '').replace(/^\//, '')
+  await nomad.fs.writeFile(`/pages/${page}.html`, `<h1>${page}</h1>`)
+  location.pathname = `/${page}`
 }
 
 async function onSave (e) {
@@ -262,13 +286,13 @@ setup()
 ```
 {{< /tab >}}
 
-{{< tab "/.ui/ui.html" >}}
+{{< tab "/index.html" >}}
 ```html
 <!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/.ui/ui.css">
+    <link rel="stylesheet" href="/ui.css">
   </head>
   <body>
     <nav>
@@ -285,14 +309,14 @@ setup()
     </nav>
     <main></main>
     <textarea id="editor"></textarea>
-    <script type="module" src="/.ui/ui.js"></script>
+    <script type="module" src="/ui.js"></script>
   </body>
 </html>
 
 ```
 {{< /tab >}}
 
-{{< tab "/.ui/ui.css" >}}
+{{< tab "/ui.css" >}}
 ```css
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;

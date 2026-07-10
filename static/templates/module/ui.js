@@ -93,7 +93,7 @@ class ModuleDirectoryView extends HTMLElement {
       let isMount = !!entry.stat.mount
       let href = isMount ? `hyper://${entry.stat.mount.key}` : `./${entry.name}${isDir ? '/' : ''}`
       listing.append(h('div', {class: 'entry'},
-        h('img', {class: 'icon', src: `/.ui/img/${isMount ? 'mount' : isDir ? 'folder' : 'file'}.svg`}),
+        h('img', {class: 'icon', src: `/img/${isMount ? 'mount' : isDir ? 'folder' : 'file'}.svg`}),
         h('a', {href}, entry.name),
         h('small', {}, formatBytes(entry.stat.size))
       ))
@@ -154,8 +154,10 @@ class ModuleReadmeView extends HTMLElement {
     this.render()
   }
   async render () {
+    // index.md only: /index.html is this viewer itself (the manifest `fallback`
+    // shell), and a subdirectory's real index.html serves directly — never through here.
     let files = await nomad.fs.readdir(location.pathname).catch(e => ([]))
-    files = files.filter(f => ['index.html', 'index.md'].includes(f.toLowerCase()))
+    files = files.filter(f => f.toLowerCase() === 'index.md')
     if (files[0]) {
       this.append(new ModuleFileView(location.pathname + files[0], true))
     }

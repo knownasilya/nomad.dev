@@ -15,7 +15,7 @@
     </main>
 
     {{ partial "docs/inject/body" . }}
-    {{ template "_internal/google_analytics_async.html" . }}
+    {{ if site.Config.Services.GoogleAnalytics.ID }}{{ template "_internal/google_analytics.html" . }}{{ end }}
   </body>
 
 </html>

@@ -1,6 +1,8 @@
 {
   "title": "My Blog",
   "type": "walled.garden/feed",
+  "fallback": "/index.html",
+  "collaborative": true,
   "description": "A peer-to-peer blog.",
   "itemsPath": "/posts/",
   "itemType": "walled.garden/post",

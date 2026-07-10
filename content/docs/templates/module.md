@@ -18,13 +18,14 @@ title: Module Template
     '/tests/vendor/mocha.js',
     '/tests/index.html',
     '/tests/index.js',
-    '/ui/ui.html',
-    '/ui/ui.js',
-    '/ui/ui.css',
-    '/ui/vendor/highlight.css',
-    '/ui/vendor/highlight.pack.js',
-    '/ui/img/file.svg',
-    '/ui/img/folder.svg',
+    '/index.html',
+    '/index.json',
+    '/ui.js',
+    '/ui.css',
+    '/vendor/highlight.css',
+    '/vendor/highlight.pack.js',
+    '/img/file.svg',
+    '/img/folder.svg',
     '/index.js',
     '/index.md'
   ]
@@ -56,14 +57,17 @@ Also includes webterm [page commands](/docs/api/advanced/webterm#page-commands) 
 {{< tab "/demo/index.html" >}}
 {{< readcode "/static/templates/module/demo/index.html" "html" >}}
 {{< /tab >}}
-{{< tab "/.ui/ui.html" >}}
-{{< readcode "/static/templates/module/ui/ui.html" "html" >}}
+{{< tab "/index.html" >}}
+{{< readcode "/static/templates/module/index.html" "html" >}}
 {{< /tab >}}
-{{< tab "/.ui/ui.js" >}}
-{{< readcode "/static/templates/module/ui/ui.js" "js" >}}
+{{< tab "/index.json" >}}
+{{< readcode "/static/templates/module/index.json" "json" >}}
 {{< /tab >}}
-{{< tab "/.ui/ui.css" >}}
-{{< readcode "/static/templates/module/ui/ui.css" "css" >}}
+{{< tab "/ui.js" >}}
+{{< readcode "/static/templates/module/ui.js" "js" >}}
+{{< /tab >}}
+{{< tab "/ui.css" >}}
+{{< readcode "/static/templates/module/ui.css" "css" >}}
 {{< /tab >}}
 {{< tab "LICENSE" >}}
 {{< readcode "/static/templates/LICENSE" "txt" >}}

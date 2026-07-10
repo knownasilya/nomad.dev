@@ -16,19 +16,23 @@ drive with a custom frontend). The **blog** template is the reference for a `wal
 
 ```
 static/templates/forum/
-  index.json      drive manifest: { "title": "...", "type": "walled.garden/forum" }
-  index.html      a <meta http-equiv="refresh"> to /.ui/ui.html (+ a plain link fallback)
-  ui/ui.html      the SPA shell: a custom element + <script type="module" src="/.ui/app.js"> + <style>
-  ui/app.js       the app logic, using the global nomad.* APIs
+  index.json      drive manifest: { "title": "...", "type": "walled.garden/forum",
+                                    "fallback": "/index.html", "collaborative": true }
+  index.html      the SPA shell: a custom element + <script type="module" src="/app.js"> + <style>
+  app.js          the app logic, using the global nomad.* APIs
 ```
 
 Key rules:
-- **`/ui/` → `/.ui/` on copy.** Hugo will not serve dot-folders, so template sources keep the frontend in
-  `ui/`, and the create script rewrites the path to `/.ui/` when writing into the drive (see the HACK in
-  `static/templates/index.js`). In the drive the frontend lives at `/.ui/ui.html`, which the Nomad protocol
-  handler serves as the drive's custom frontend (SPA) for every HTML navigation.
-- **Reference assets with absolute drive paths** (`/.ui/app.js`, `/thumb`) — the SPA is served for arbitrary
-  paths (e.g. `/posts/x/`), so relative URLs would break.
+- **`/index.html` is the app shell, declared via the manifest `fallback`** (ADR-0015 in the nomad repo;
+  docs at `content/docs/api/developers/frontends.md`). The protocol handler serves it — 200 rewrite, URL
+  unchanged — for any page navigation that misses; real files always win, so app routes must be virtual
+  paths with no real file behind them (e.g. the blog links posts as `/p/<slug>`, not `/posts/<slug>/`,
+  because the stored `index.md` there would win the navigation). The legacy `/.ui/ui.html` takeover (and
+  the old `/ui/`→`/.ui/` copy HACK in `static/templates/index.js`) is gone from all templates.
+- **Autobase templates must put `"collaborative": true` in their `index.json`** — the template's manifest
+  overwrites the one `createCollaborativeDrive` wrote, so omitting it silently re-locks the drive.
+- **Reference assets with absolute drive paths** (`/app.js`, `/thumb`) — the shell is served for arbitrary
+  paths (e.g. `/p/x`), so relative URLs would break.
 - **`index.json` `type`** identifies the drive (e.g. `walled.garden/feed` for a blog). Nomad recognises some
   types (person, feed) and surfaces chrome for them.
 
@@ -43,7 +47,7 @@ Front-matter (`title`, `description`) + a `{{< rawhtml >}}` block that wires up 
   const TEMPLATE_TITLE = 'My Forum'             // initial drive title
   window.TEMPLATE_DRIVE_TYPE = 'autobase'       // 'autobase' = Collaborative Drive; omit for a plain Hyperdrive
   window.TEMPLATE_FILES = [                      // EXPLICIT list of files to copy (paths under TEMPLATE_ROOT)
-    '/index.html', '/index.json', '/ui/ui.html', '/ui/app.js'
+    '/index.html', '/index.json', '/app.js'
   ]
 </script>
 <script src="/templates/index.js"></script>     // shared create-drive logic
@@ -51,8 +55,8 @@ Front-matter (`title`, `description`) + a `{{< rawhtml >}}` block that wires up 
 
 `static/templates/index.js` creates the drive via `nomad.fs` (ADR-0010: `nomad.hyperdrive`/`nomad.autobase`
 are gone) — `nomad.fs.createCollaborativeDrive({ collaborative: true })` when `TEMPLATE_DRIVE_TYPE ===
-'autobase'`, else `nomad.fs.createDrive(...)` (locked/single-writer) — fetches each `TEMPLATE_FILES` entry, rewrites
-`/ui/`→`/.ui/`, writes them in, and opens the drive. Only files listed in `TEMPLATE_FILES` are copied, so
+'autobase'`, else `nomad.fs.createDrive(...)` (locked/single-writer) — fetches each `TEMPLATE_FILES` entry,
+writes them in, and opens the drive. Only files listed in `TEMPLATE_FILES` are copied, so
 extra files in the template dir are safe (and won't ship into user drives).
 
 Below the create block, add prose and a **Source** section using `{{< tabsraw >}}` + `{{< readcode "/static/templates/<name>/<file>" "<lang>" >}}` tabs (copy forum.md's structure).

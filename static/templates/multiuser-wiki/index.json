@@ -1,0 +1,5 @@
+{
+  "title": "My Wiki",
+  "description": "A wiki written collaboratively by its authors.",
+  "fallback": "/index.html"
+}

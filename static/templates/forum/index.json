@@ -1,4 +1,6 @@
 {
   "title": "My Forum",
-  "type": "walled.garden/forum"
+  "type": "walled.garden/forum",
+  "fallback": "/index.html",
+  "collaborative": true
 }

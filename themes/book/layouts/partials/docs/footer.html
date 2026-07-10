@@ -1,6 +1,6 @@
 <div class="content-container">
   <div class="flex justify-between">
-  {{ if .Site.IsMultiLingual }}
+  {{ if gt (len .Site.Languages) 1 }}
     {{ partial "docs/languages" . }}
   {{ end }}
 

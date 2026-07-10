@@ -22,9 +22,11 @@ setup()
 async function setup () {
   var info = await nomad.fs.getInfo()
 
-  editors.js.setValue(await nomad.fs.readFile('/index.js').catch(e => ''))
-  editors.css.setValue(await nomad.fs.readFile('/index.css').catch(e => ''))
-  editors.html.setValue(await nomad.fs.readFile('/index.html').catch(e => ''))
+  // Snippet content lives in /snippet.* — /index.html is this editor (the drive's
+  // manifest `fallback` shell), so the snippet can't be stored there.
+  editors.js.setValue(await nomad.fs.readFile('/snippet.js').catch(e => ''))
+  editors.css.setValue(await nomad.fs.readFile('/snippet.css').catch(e => ''))
+  editors.html.setValue(await nomad.fs.readFile('/snippet.html').catch(e => ''))
   for (let k in editors) {
     editors[k].selection.moveTo(0,0)
   }
@@ -60,7 +62,7 @@ function debounce (fn, timeout) {
 
 async function onChangeEditor (id) {
   var editor = editors[id]
-  var filename = `/index.${id}`
+  var filename = `/snippet.${id}`
   var current = await nomad.fs.readFile(filename).catch(e => '')
   if (current !== editor.getValue()) {
     runSnippet()

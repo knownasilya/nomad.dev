@@ -12,9 +12,9 @@ title: Simple CMS Template
   const TEMPLATE_TITLE = 'My Website'
   window.TEMPLATE_FILES = [
     '/index.html',
-    '/ui/ui.js',
-    '/ui/ui.html',
-    '/ui/ui.css'
+    '/index.json',
+    '/ui.js',
+    '/ui.css'
   ]
 </script>
 <script src="/templates/index.js"></script>
@@ -28,14 +28,14 @@ This template is a minimal content management system for building a site. [Read 
 {{< tab "/index.html" >}}
 {{< readcode "/static/templates/simple-cms/index.html" "html" >}}
 {{< /tab >}}
-{{< tab "/.ui/ui.js" >}}
-{{< readcode "/static/templates/simple-cms/ui/ui.js" "js" >}}
+{{< tab "/index.json" >}}
+{{< readcode "/static/templates/simple-cms/index.json" "json" >}}
 {{< /tab >}}
-{{< tab "/.ui/ui.html" >}}
-{{< readcode "/static/templates/simple-cms/ui/ui.html" "html" >}}
+{{< tab "/ui.js" >}}
+{{< readcode "/static/templates/simple-cms/ui.js" "js" >}}
 {{< /tab >}}
-{{< tab "/.ui/ui.css" >}}
-{{< readcode "/static/templates/simple-cms/ui/ui.css" "css" >}}
+{{< tab "/ui.css" >}}
+{{< readcode "/static/templates/simple-cms/ui.css" "css" >}}
 {{< /tab >}}
 {{< tab "LICENSE" >}}
 {{< readcode "/static/templates/LICENSE" "txt" >}}

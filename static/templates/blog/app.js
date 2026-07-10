@@ -1,7 +1,7 @@
 // Blog template — a walled.garden/feed published as an Autobase Collaborative Drive.
 // All of your Devices are Writers of one drive under a single stable URL.
 // Posts are directory-per-post: /posts/<YYYY-MM-DD-slug>/{post.json, index.md}.
-// Individual posts are URL-addressable: hyper://<blog>/posts/<slug>/ .
+// Individual posts are URL-addressable at the virtual route hyper://<blog>/p/<slug> .
 
 // This page's own drive + route, from nomad.page — the host-provided page identity, authoritative
 // on desktop AND mobile (never parse `location` yourself; it's unreliable in the mobile WebView).
@@ -54,14 +54,16 @@ async function boot(el) {
   await render(el)
 }
 
-// Map the current URL to a base view. Posts are real URLs; compose/writers are
-// in-page overlays reached from the list.
+// Map the current URL to a base view. Post permalinks are the virtual route
+// /p/<slug> — it has no real file, so the manifest `fallback` serves this shell
+// there (the stored /posts/<slug>/ dir has a real index.md, which would win the
+// navigation and render unthemed). Compose/writers are in-page overlays.
 function currentRoute() {
   let p = decodeURIComponent(ROUTE)
-  if (p === '/' || p === '/index.html' || p === '/.ui/ui.html' || p === '/.ui/') {
+  if (p === '/' || p === '/index.html') {
     return { view: 'list' }
   }
-  const m = p.match(/^\/posts\/([^/]+)\/?$/)
+  const m = p.match(/^\/p\/([^/]+)\/?$/) || p.match(/^\/posts\/([^/]+)\/?$/)
   if (m) return { view: 'post', slug: m[1] }
   return { view: 'list' }
 }
@@ -114,7 +116,7 @@ async function renderList(main) {
 
   const ul = h('ul', { class: 'post-list' })
   for (const post of posts) {
-    const card = h('a', { class: 'post-card', href: `${BASE}posts/${post._slug}/` })
+    const card = h('a', { class: 'post-card', href: `${BASE}p/${post._slug}` })
     card.append(h('h2', {}, post.title || post._slug))
     if (post.summary) card.append(h('p', { class: 'summary' }, post.summary))
     const meta = h('div', { class: 'post-meta' })
@@ -271,7 +273,7 @@ async function onPublish(e) {
   } catch (err) {
     alert('Publish failed: ' + err.message); return
   }
-  window.location.href = `${BASE}posts/${slug}/`
+  window.location.href = `${BASE}p/${slug}`
 }
 
 function openWriters() { state.view = 'writers'; render(document.querySelector('blog-app')) }
