@@ -58,7 +58,7 @@ A titled post — the building block of a forum or blog.
 | `author.url` | Profile Drive URL | |
 | `author.writerKey` | Hex string | |
 
-`body` is optional. When a post is stored as its own directory (`/posts/<slug>/post.json`), the body can instead live alongside it as `index.md`, `index.html`, or `index.txt` — the file extension determines how it renders, and the post stays readable even without a custom frontend. `draft: true` hides a post from feeds and readers.
+`body` is optional. When a post is stored as its own directory (`/posts/<slug>/post.json`), the body can instead live alongside it as `post.md`, `post.html`, or `post.txt` — the file extension determines how it renders, and the post stays readable even without a custom frontend (fetch it directly at `/posts/<slug>/post.md`). Consumers also read the legacy `index.{md,html,txt}` names from older posts. The body is deliberately *not* named `index.*`: on a [`fallback`](/docs/api/developers/frontends/) drive that would make the post directory resolve as a real page and shadow the app shell at the post's canonical URL. `draft: true` hides a post from feeds and readers.
 
 ---
 
@@ -90,7 +90,7 @@ Declares a drive as a **feed** — a blog or other stream of items that a [Reade
 | `language` | String | | BCP-47 language tag, e.g. `en` |
 | `icon` | String | | Path within the drive to a feed icon |
 
-A **blog** is a feed whose items are posts: each post is a directory under `itemsPath` (e.g. `/posts/2026-06-15-hello/`) holding a `post.json` plus an `index.md` (or `index.html`/`index.txt`) body. See the [Blog template](/docs/templates/blog/).
+A **blog** is a feed whose items are posts: each post is a directory under `itemsPath` (e.g. `/posts/2026-06-15-hello/`) holding a `post.json` plus a `post.md` (or `post.html`/`post.txt`) body. See the [Blog template](/docs/templates/blog/).
 
 ---
 

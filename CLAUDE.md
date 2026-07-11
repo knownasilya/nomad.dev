@@ -25,14 +25,15 @@ static/templates/forum/
 Key rules:
 - **`/index.html` is the app shell, declared via the manifest `fallback`** (ADR-0015 in the nomad repo;
   docs at `content/docs/api/developers/frontends.md`). The protocol handler serves it — 200 rewrite, URL
-  unchanged — for any page navigation that misses; real files always win, so app routes must be virtual
-  paths with no real file behind them (e.g. the blog links posts as `/p/<slug>`, not `/posts/<slug>/`,
-  because the stored `index.md` there would win the navigation). The legacy `/.ui/ui.html` takeover (and
-  the old `/ui/`→`/.ui/` copy HACK in `static/templates/index.js`) is gone from all templates.
+  unchanged — for any page navigation that misses; real files always win, so app routes must be paths
+  with no real file (and no `index.*` directory index) behind them. That's why the blog's post body is
+  `post.md`, not `index.md` (ADR-0009 amendment): `/posts/<slug>/` stays a natural miss, so the shell
+  serves the themed post at the canonical URL. The legacy `/.ui/ui.html` takeover (and the old
+  `/ui/`→`/.ui/` copy HACK in `static/templates/index.js`) is gone from all templates.
 - **Autobase templates must put `"collaborative": true` in their `index.json`** — the template's manifest
   overwrites the one `createCollaborativeDrive` wrote, so omitting it silently re-locks the drive.
 - **Reference assets with absolute drive paths** (`/app.js`, `/thumb`) — the shell is served for arbitrary
-  paths (e.g. `/p/x`), so relative URLs would break.
+  paths (e.g. `/posts/x/`), so relative URLs would break.
 - **`index.json` `type`** identifies the drive (e.g. `walled.garden/feed` for a blog). Nomad recognises some
   types (person, feed) and surfaces chrome for them.
 

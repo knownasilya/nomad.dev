@@ -1,7 +1,9 @@
 // Blog template — a walled.garden/feed published as an Autobase Collaborative Drive.
 // All of your Devices are Writers of one drive under a single stable URL.
-// Posts are directory-per-post: /posts/<YYYY-MM-DD-slug>/{post.json, index.md}.
-// Individual posts are URL-addressable at the virtual route hyper://<blog>/p/<slug> .
+// Posts are directory-per-post: /posts/<YYYY-MM-DD-slug>/{post.json, post.md}.
+// Individual posts are URL-addressable at hyper://<blog>/posts/<slug>/ — the directory
+// has no index file, so that navigation misses and the manifest `fallback` serves this
+// shell there (the body stays directly readable at /posts/<slug>/post.md).
 
 // This page's own drive + route, from nomad.page — the host-provided page identity, authoritative
 // on desktop AND mobile (never parse `location` yourself; it's unreliable in the mobile WebView).
@@ -54,16 +56,17 @@ async function boot(el) {
   await render(el)
 }
 
-// Map the current URL to a base view. Post permalinks are the virtual route
-// /p/<slug> — it has no real file, so the manifest `fallback` serves this shell
-// there (the stored /posts/<slug>/ dir has a real index.md, which would win the
-// navigation and render unthemed). Compose/writers are in-page overlays.
+// Map the current URL to a base view. Post permalinks are the canonical
+// /posts/<slug>/ (a directory with no index file — the body is post.md — so the
+// navigation misses and the `fallback` serves this shell). /p/<slug> is kept as a
+// legacy matcher for links minted by earlier template versions. Compose/writers
+// are in-page overlays.
 function currentRoute() {
   let p = decodeURIComponent(ROUTE)
   if (p === '/' || p === '/index.html') {
     return { view: 'list' }
   }
-  const m = p.match(/^\/p\/([^/]+)\/?$/) || p.match(/^\/posts\/([^/]+)\/?$/)
+  const m = p.match(/^\/posts\/([^/]+)\/?$/) || p.match(/^\/p\/([^/]+)\/?$/)
   if (m) return { view: 'post', slug: m[1] }
   return { view: 'list' }
 }
@@ -116,7 +119,7 @@ async function renderList(main) {
 
   const ul = h('ul', { class: 'post-list' })
   for (const post of posts) {
-    const card = h('a', { class: 'post-card', href: `${BASE}p/${post._slug}` })
+    const card = h('a', { class: 'post-card', href: `${BASE}posts/${post._slug}/` })
     card.append(h('h2', {}, post.title || post._slug))
     if (post.summary) card.append(h('p', { class: 'summary' }, post.summary))
     const meta = h('div', { class: 'post-meta' })
@@ -230,7 +233,12 @@ async function loadPosts() {
 async function loadPost(slug) {
   const meta = JSON.parse(await drive.get(`/posts/${slug}/post.json`))
   let body = null, kind = null
-  for (const [name, k] of [['index.md', 'md'], ['index.html', 'html'], ['index.txt', 'txt']]) {
+  // post.* is the current body convention; index.* is read for posts written by
+  // earlier template versions (pre-ADR-0009-amendment).
+  for (const [name, k] of [
+    ['post.md', 'md'], ['post.html', 'html'], ['post.txt', 'txt'],
+    ['index.md', 'md'], ['index.html', 'html'], ['index.txt', 'txt'],
+  ]) {
     const c = await drive.get(`/posts/${slug}/${name}`).catch(() => null)
     if (c != null) { body = c; kind = k; break }
   }
@@ -269,11 +277,11 @@ async function onPublish(e) {
   const slug = `${now.slice(0, 10)}-${slugify(title)}`
   try {
     await drive.put(`/posts/${slug}/post.json`, JSON.stringify(valid.data, null, 2))
-    await drive.put(`/posts/${slug}/index.md`, bodyMd)
+    await drive.put(`/posts/${slug}/post.md`, bodyMd)
   } catch (err) {
     alert('Publish failed: ' + err.message); return
   }
-  window.location.href = `${BASE}p/${slug}`
+  window.location.href = `${BASE}posts/${slug}/`
 }
 
 function openWriters() { state.view = 'writers'; render(document.querySelector('blog-app')) }
