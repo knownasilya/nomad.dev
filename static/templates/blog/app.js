@@ -79,6 +79,9 @@ async function render(el) {
   el.innerHTML = ''
   if (state.loading) { el.append(h('p', { class: 'empty' }, 'Loading…')); return }
 
+  // Tab title tracks the view; renderPost refines it to the post's own title.
+  document.title = state.info?.title || 'Blog'
+
   el.append(renderHeader())
   const main = h('main')
   el.append(main)
@@ -138,6 +141,10 @@ async function renderPost(main) {
   let post
   try { post = await loadPost(state.slug) }
   catch { main.append(h('p', { class: 'empty' }, 'Post not found.')); return }
+
+  const blogTitle = state.info?.title
+  const postTitle = post.meta.title || state.slug
+  document.title = blogTitle ? `${postTitle} — ${blogTitle}` : postTitle
 
   const article = h('article', { class: 'post' })
   if (post.meta.draft) article.append(h('div', { class: 'post-meta' }, h('span', { class: 'badge-draft' }, 'Draft')))
