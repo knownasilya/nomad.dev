@@ -151,5 +151,7 @@ await drive.publishDraft({ paths: ['/posts/2026-07-04-hi/'] })             // th
 
 ## Notes
 
+* **A page can't open the private drive.** Calls on `hyper://private/` fail unless the user allows
+  one path, for one hour. See [Private Drive](/docs/api/apis/private-drive/#who-can-open-it).
 * **Nomad `hyper://` is a Nomad dialect.** Nomad drives are Autobase-backed and are not readable by
   generic `hyper://` clients.
