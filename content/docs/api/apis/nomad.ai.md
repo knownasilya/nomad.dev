@@ -3,14 +3,17 @@ title: nomad.ai
 description: Local AI API for Drives — streaming chat powered by an OpenAI-compatible runtime
 ---
 
-`nomad.ai` gives any Drive page access to a local AI agent. The underlying model runs in an external OpenAI-compatible server (Ollama, LM Studio, etc.) configured in Nomad settings.
+`nomad.ai` gives any Drive page access to a local AI agent. The model runs in whichever runtime is active in Nomad settings: Claude or Cursor when those apps are installed, or a named OpenAI-compatible server (Ollama, LM Studio, or any other `/v1` API).
 
 ## Configuration
 
-**Global settings** (Nomad → Settings → AI Settings):
+**Global settings** (Nomad → Settings → AI):
 
-- `ai_base_url` — base URL of your OpenAI-compatible runtime, e.g. `http://localhost:11434/v1`
-- `ai_default_model` — fallback model name when a Drive does not specify one, e.g. `llama3.2:3b`
+One runtime is active at a time. Claude and Cursor are detected when those apps are installed on the computer. Several named OpenAI-compatible servers can be saved (Ollama, LM Studio, or any `/v1` API); you choose which one is active, and which model it uses.
+
+- `ai_default_model` — model for the active runtime
+- `nomad.ai.listRuntimes()` — `{ active, model, runtimes }`, where each runtime is `{ id, name, kind, detected, available, baseUrl, hasToken }` and `kind` is `"openai"`, `"claude"`, or `"cursor"`
+- `nomad.ai.listModels()` — `{ models, current, labels }` for the active runtime. `labels` maps a model to a readable name when the runtime gives one: the Claude CLI reports names such as "Opus 5.5". It is empty for other runtimes.
 
 **Per-Drive opt-in** — add an `ai` key to your Drive's `/index.json`:
 
@@ -34,13 +37,21 @@ Or delegate to another Drive's AI Config:
 
 Send a conversation to the AI and stream the response back as text chunks.
 
-* **messages** Array&lt;{role: string, content: string}&gt;. Conversation history in OpenAI message format (`"user"`, `"assistant"` roles).
+* **messages** Array of `{ role, content, images? }`. `role` is `"user"`, `"assistant"`, or `"system"`. `content` is a string, or an array of `{ type: "text", text }` and `{ type: "image_url", image_url: { url } }` parts. `images` is one or more image URLs for that message (at most 8), appended after `content`. Each URL is a `data:image` URL (`png`, `jpeg`, `webp`, or `gif`) or an `http`/`https` URL. A data URL larger than about 4.5 MB is rejected — resize first.
 * Returns **AsyncIterator&lt;string&gt;**. Yields text chunks as they arrive. The system prompt from the Drive's AI Config is prepended automatically.
 
 ```js
-const messages = [{ role: 'user', content: 'Summarise this Drive.' }]
+const messages = [{
+  role: 'user',
+  content: 'What food is in these photos?',
+  images: [jpegDataUrl, pngDataUrl] // optional; at most 8
+}]
 
-for await (const chunk of nomad.ai.chat(messages)) {
+for await (const chunk of nomad.ai.chat(messages, {
+  think: false,     // skip the reasoning phase
+  tools: false,     // plain completion: no search/execute, and no standing tool prompt
+  maxTokens: 1600   // cap the completion
+})) {
   process.stdout.write(chunk)
 }
 ```

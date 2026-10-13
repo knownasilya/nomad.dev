@@ -79,6 +79,12 @@ Requires the `ai` field to be set (or a Space/global AI default to be configured
 { "collaborative": true }
 ```
 
+**indexable** Boolean. Opts the drive into public discovery — when `true`, it announces itself so search engines can find it. Absent/`false` = never listed. **topics** Array of up to 5 lowercase slug categories (browsable facets). **keywords** Array of up to 12 free-text search terms (matched with title & description). Managed by [`nomad.fs.configure()`](/docs/api/apis/nomad.fs/) and the Site Info panel. See [Discovery & Search](/docs/api/developers/discovery-and-search/) for the Topics-vs-Keywords distinction and how the index works.
+
+```json
+{ "indexable": true, "topics": ["gardening"], "keywords": ["raised beds", "compost"] }
+```
+
 ## Full example
 
 ```json

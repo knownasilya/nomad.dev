@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Todo</title>
+    <style>
+      :root {
+        --bg: #f5f5f7;
+        --card: #fff;
+        --ink: #1d1d1f;
+        --muted: #8a8a8e;
+        --line: #e5e5ea;
+        --accent: #0a84ff;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1c1c1e;
+          --card: #2c2c2e;
+          --ink: #f2f2f7;
+          --muted: #98989f;
+          --line: #3a3a3c;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        display: flex;
+        justify-content: center;
+        padding: 40px 16px 96px;
+      }
+      main {
+        width: 100%;
+        max-width: 520px;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0 0 4px;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 0 0 20px;
+      }
+      form {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      input[type="text"] {
+        flex: 1;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--card);
+        color: var(--ink);
+        font: inherit;
+      }
+      input[type="text"]:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      button {
+        font: inherit;
+        cursor: pointer;
+        border: none;
+        border-radius: 10px;
+      }
+      .add-btn {
+        padding: 0 16px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 500;
+      }
+      .filters {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      .filters button {
+        padding: 4px 10px;
+        font-size: 13px;
+        background: transparent;
+        color: var(--muted);
+        border-radius: 8px;
+      }
+      .filters button.active {
+        background: var(--card);
+        color: var(--ink);
+        box-shadow: 0 0 0 1px var(--line);
+      }
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background: var(--card);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 0 0 1px var(--line);
+      }
+      li {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-top: 1px solid var(--line);
+      }
+      li:first-child {
+        border-top: none;
+      }
+      li input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        flex: none;
+        accent-color: var(--accent);
+      }
+      li .text {
+        flex: 1;
+      }
+      li.done .text {
+        color: var(--muted);
+        text-decoration: line-through;
+      }
+      li .del {
+        background: transparent;
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1;
+        padding: 2px 6px;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+      li:hover .del {
+        opacity: 1;
+      }
+      .empty {
+        padding: 28px 14px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      footer {
+        margin-top: 14px;
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      footer button {
+        background: transparent;
+        color: var(--accent);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Todo</h1>
+      <p class="sub">
+        Add tasks below — or ask the assistant (chat bubble, bottom-right) to manage the list for you.
+      </p>
+
+      <form id="add-form">
+        <input id="add-input" type="text" placeholder="What needs doing?" autocomplete="off" />
+        <button class="add-btn" type="submit">Add</button>
+      </form>
+
+      <div class="filters" id="filters">
+        <button data-filter="all" class="active">All</button>
+        <button data-filter="active">Active</button>
+        <button data-filter="done">Done</button>
+      </div>
+
+      <ul id="list"></ul>
+
+      <footer>
+        <span id="count"></span>
+        <button id="clear-done" type="button" hidden>Clear completed</button>
+      </footer>
+    </main>
+
+    <script>
+      // --- storage -----------------------------------------------------------
+      const KEY = "todo:" + location.origin;
+      /** @type {{id:string,text:string,done:boolean}[]} */
+      let tasks = load();
+      let filter = "all";
+
+      function load() {
+        try {
+          return JSON.parse(localStorage.getItem(KEY)) || [];
+        } catch {
+          return [];
+        }
+      }
+      function save() {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(tasks));
+        } catch {}
+      }
+      const uid = () => Math.random().toString(36).slice(2, 9);
+
+      // --- mutations (shared by the UI and the WebMCP tools) ----------------
+      function addTask(text) {
+        text = String(text || "").trim();
+        if (!text) throw new Error("Task text is required");
+        const task = { id: uid(), text, done: false };
+        tasks.push(task);
+        save();
+        render();
+        return task;
+      }
+      function findTask(ref) {
+        ref = String(ref || "").trim();
+        if (!ref) return null;
+        return (
+          tasks.find((t) => t.id === ref) ||
+          tasks.find((t) => t.text.toLowerCase() === ref.toLowerCase()) ||
+          tasks.find((t) => t.text.toLowerCase().includes(ref.toLowerCase())) ||
+          null
+        );
+      }
+      function setDone(ref, done) {
+        const t = findTask(ref);
+        if (!t) throw new Error(`No task matching "${ref}"`);
+        t.done = done;
+        save();
+        render();
+        return t;
+      }
+      function removeTask(ref) {
+        const t = findTask(ref);
+        if (!t) throw new Error(`No task matching "${ref}"`);
+        tasks = tasks.filter((x) => x !== t);
+        save();
+        render();
+        return t;
+      }
+      function clearCompleted() {
+        const n = tasks.filter((t) => t.done).length;
+        tasks = tasks.filter((t) => !t.done);
+        save();
+        render();
+        return n;
+      }
+
+      // --- rendering -------------------------------------------------------
+      const list = document.getElementById("list");
+      const countEl = document.getElementById("count");
+      const clearBtn = document.getElementById("clear-done");
+
+      function render() {
+        const shown = tasks.filter((t) =>
+          filter === "all" ? true : filter === "done" ? t.done : !t.done
+        );
+        list.innerHTML = "";
+        if (!shown.length) {
+          const li = document.createElement("li");
+          li.className = "empty";
+          li.textContent = tasks.length ? "Nothing here." : "No tasks yet.";
+          list.append(li);
+        }
+        for (const t of shown) {
+          const li = document.createElement("li");
+          li.className = t.done ? "done" : "";
+
+          const cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.checked = t.done;
+          cb.addEventListener("change", () => setDone(t.id, cb.checked));
+
+          const span = document.createElement("span");
+          span.className = "text";
+          span.textContent = t.text;
+
+          const del = document.createElement("button");
+          del.className = "del";
+          del.type = "button";
+          del.textContent = "×";
+          del.title = "Delete";
+          del.addEventListener("click", () => removeTask(t.id));
+
+          li.append(cb, span, del);
+          list.append(li);
+        }
+        const left = tasks.filter((t) => !t.done).length;
+        countEl.textContent = `${left} left · ${tasks.length} total`;
+        clearBtn.hidden = !tasks.some((t) => t.done);
+      }
+
+      document.getElementById("add-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const input = document.getElementById("add-input");
+        if (input.value.trim()) addTask(input.value);
+        input.value = "";
+        input.focus();
+      });
+      document.getElementById("filters").addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-filter]");
+        if (!btn) return;
+        filter = btn.dataset.filter;
+        document
+          .querySelectorAll("#filters button")
+          .forEach((b) => b.classList.toggle("active", b === btn));
+        render();
+      });
+      clearBtn.addEventListener("click", clearCompleted);
+      render();
+
+      // --- WebMCP: expose the list to the AI assistant ---------------------
+      // https://nomad.pages.dev/docs/api/developers/webmcp
+      const mc = document.modelContext; // (navigator.modelContext is a deprecated alias)
+      const ok = (text) => ({ content: [{ type: "text", text }] });
+      const summary = (t) => `${t.done ? "[x]" : "[ ]"} ${t.text}`;
+
+      mc.registerTool({
+        name: "add_task",
+        description: "Add a task to the todo list.",
+        inputSchema: {
+          type: "object",
+          properties: { text: { type: "string", description: "The task to add" } },
+          required: ["text"],
+        },
+        execute: ({ text }) => ok(`Added: ${addTask(text).text}`),
+      });
+
+      mc.registerTool({
+        name: "list_tasks",
+        description: "List the tasks. Optionally filter by status.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            status: { type: "string", enum: ["all", "active", "done"], description: "Defaults to all" },
+          },
+        },
+        execute: ({ status = "all" }) => {
+          const rows = tasks.filter((t) =>
+            status === "done" ? t.done : status === "active" ? !t.done : true
+          );
+          return ok(rows.length ? rows.map(summary).join("\n") : "(no tasks)");
+        },
+      });
+
+      mc.registerTool({
+        name: "complete_task",
+        description: "Mark a task as done. Match by its text (or id).",
+        inputSchema: {
+          type: "object",
+          properties: { task: { type: "string", description: "Task text or id" } },
+          required: ["task"],
+        },
+        execute: ({ task }) => ok(`Completed: ${setDone(task, true).text}`),
+      });
+
+      mc.registerTool({
+        name: "reopen_task",
+        description: "Mark a completed task as active again. Match by its text (or id).",
+        inputSchema: {
+          type: "object",
+          properties: { task: { type: "string", description: "Task text or id" } },
+          required: ["task"],
+        },
+        execute: ({ task }) => ok(`Reopened: ${setDone(task, false).text}`),
+      });
+
+      mc.registerTool({
+        name: "remove_task",
+        description: "Delete a task from the list. Match by its text (or id).",
+        inputSchema: {
+          type: "object",
+          properties: { task: { type: "string", description: "Task text or id" } },
+          required: ["task"],
+        },
+        execute: ({ task }) => ok(`Removed: ${removeTask(task).text}`),
+      });
+
+      mc.registerTool({
+        name: "clear_completed",
+        description: "Delete every completed task.",
+        inputSchema: { type: "object", properties: {} },
+        execute: () => ok(`Cleared ${clearCompleted()} completed task(s)`),
+      });
+    </script>
+  </body>
+</html>
