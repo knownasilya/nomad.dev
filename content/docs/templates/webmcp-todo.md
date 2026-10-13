@@ -1,8 +1,23 @@
 ---
 title: Todo (WebMCP)
 description: A todo list a page's own AI assistant can read and edit, built on the WebMCP standard.
-template: webmcp-todo
 ---
+
+{{< rawhtml >}}
+<img class="template-thumb" src="/templates/webmcp-todo.png">
+
+<button class="create-drive">Create Drive From This Template</button>
+
+<script>
+  const TEMPLATE_ROOT = '/templates/webmcp-todo'
+  const TEMPLATE_TITLE = 'My Todo List'
+  window.TEMPLATE_FILES = [
+    '/index.html',
+    '/index.json'
+  ]
+</script>
+<script src="/templates/index.js"></script>
+{{< /rawhtml >}}
 
 A single-file todo app that exposes its list to the built-in AI assistant with
 [WebMCP](/docs/api/developers/webmcp). Tasks are stored in the browser (`localStorage`), and the
@@ -42,3 +57,17 @@ Requires a local AI model that supports tool calling (set it in **nomad://settin
 - Everything is in `index.html` — no build step, no dependencies. Fork it and change the tools.
 - To persist across devices instead of per-browser, swap the `localStorage` load/save for
   `nomad.fs` writes to a file in the drive (e.g. `/tasks.json`).
+
+## Source
+
+{{< tabsraw >}}
+{{< tab "/index.html" >}}
+{{< readcode "/static/templates/webmcp-todo/index.html" "html" >}}
+{{< /tab >}}
+{{< tab "/index.json" >}}
+{{< readcode "/static/templates/webmcp-todo/index.json" "json" >}}
+{{< /tab >}}
+{{< tab "LICENSE" >}}
+{{< readcode "/static/templates/LICENSE" "txt" >}}
+{{< /tab >}}
+{{< /tabsraw >}}

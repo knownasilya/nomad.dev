@@ -33,4 +33,7 @@ Templates are a quick way to start with new apps and projects.
 {{< imgcard relref="./templates/blog" img="/templates/blog.png" >}}
 {{< /imgcard >}}
 
+{{< imgcard relref="./templates/webmcp-todo" img="/templates/webmcp-todo.png" >}}
+{{< /imgcard >}}
+
 {{< /linkcardgrid >}}
