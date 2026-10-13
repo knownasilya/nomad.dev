@@ -53,25 +53,17 @@ The explorer sidebar and drive view use this image to represent the drive. If om
 { "fallback": "/index.html" }
 ```
 
-**ai** Object or String. Opts this Drive into the [`nomad.ai`](/docs/api/apis/nomad.ai/) API. See the `nomad.ai` docs for the full resolution order (Drive → Space default → global fallback).
+**ai** Boolean or String. Gives this Drive's pages a system prompt for [`nomad.ai`](/docs/api/apis/nomad.ai/). It sets the prompt only: the model is always the user's choice. See the `nomad.ai` docs for the resolution order (Drive → Space default → no prompt).
 
-- **Inline** — specify a model directly. Nomad uses the Drive's own `/ai/system.md` and `/ai/tools/` as the AI Config.
+- **`true`** — use this Drive's own `/ai/system.md`.
 ```json
-{ "ai": { "model": "llama3.2:3b" } }
+{ "ai": true }
 ```
 
 - **Pointer** — delegate to another Drive's AI Config entirely.
 ```json
 { "ai": "hyper://abc123..." }
 ```
-
-**chatBubble** Boolean. When `true`, Nomad injects a floating chat bubble into every page on this Drive. Clicking the bubble opens an Intercom-style overlay that lets visitors chat with the Drive's AI (resolved via the `ai` field above, or the Space/global default). The Drive does not need to build any chat UI of its own.
-
-```json
-{ "chatBubble": true }
-```
-
-Requires the `ai` field to be set (or a Space/global AI default to be configured) — otherwise the bubble will open but `nomad.ai` calls will fail with a "no model configured" error.
 
 **collaborative** Boolean. Whether the drive accepts new writers. Every drive is multi-writer-capable, but writers can only be invited while this is `true`. Don't edit it by hand — it's managed by [`nomad.fs.configure()`](/docs/api/apis/nomad.fs/) (and the drive UI), which persists it here.
 
@@ -99,7 +91,6 @@ Requires the `ai` field to be set (or a Space/global AI default to be configured
   },
   "csp": "default-src 'self'",
   "fallback": "/index.html",
-  "ai": { "model": "llama3.2:3b" },
-  "chatBubble": true
+  "ai": true
 }
 ```

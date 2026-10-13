@@ -138,8 +138,20 @@ await drive.removeWriter(writerKey)
 ```javascript
 const drive = nomad.fs.drive(location.href)
 
+// The user picks their profile once. A page can't read the address book in hyper://private/.
+async function getMyProfileUrl() {
+  if (!localStorage.profileUrl) {
+    localStorage.profileUrl = await nomad.shell.selectDriveDialog({
+      title: 'Choose your profile',
+      tag: 'contact',
+      writable: true,
+    })
+  }
+  return localStorage.profileUrl
+}
+
 async function createPost(title, body, category) {
-  var myProfileUrl = await getMyProfileUrl() // read from address book
+  var myProfileUrl = await getMyProfileUrl()
   var writers = await drive.listWriters()
   var myWriter = writers.find(w => w.profileUrl === myProfileUrl)
 

@@ -111,7 +111,7 @@ for (const { writerKey, profileUrl } of writers) {
 
 ## Followers are private by design
 
-If you publish a Profile Drive (or a Blog) and people follow it, **who follows you is not exposed** — because there is no follower list anywhere to expose. Following is *subscriber-side*: a follower adds your URL to their own [`walled.garden/follows`](/docs/api/developers/walled-garden-schemas/#follows) record in *their* private Root Drive, and their [Reader](/docs/templates/blog/) aggregates it. Your Drive is never written to and never learns about it. The follow relationship is scattered across each follower's private drive and collected nowhere.
+If you publish a Profile Drive (or a Blog) and people follow it, **who follows you is not exposed** — because there is no follower list anywhere to expose. Following is *subscriber-side*: a follower adds your URL to their own follows, kept privately on *their* devices (the built-in [Reader](/docs/templates/blog/) keeps them in their Vault), and their Reader aggregates it. Your Drive is never written to and never learns about it. The follow relationship is scattered across each follower's private drive and collected nowhere.
 
 This is a property of P2P Drives in general, not of the Profile template — any public readable Drive (including a custom one with its own schema and reader app) inherits the same un-enumerability. What's template-specific is only the *rendering*: the built-in Reader understands `walled.garden/feed`; a custom convention needs its own reader.
 
