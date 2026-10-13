@@ -26,13 +26,19 @@ This wiki is a minimal collaborative website. It maintains a list of authors (se
 
 This wiki uses a [frontend](/docs/api/developers/frontends) to virtually construct pages: `/index.html` is the app shell, declared as the manifest `fallback`, so every page path (which has no real file in this drive) serves the shell. When you visit a page, you are viewing a constructed result rather than a file that lives on this drive.
 
-Each author maintains a folder under `/nomad-wiki/{wiki-drive-key}/`. When a page is visited at some path, the wiki's frontend runs the following query:
+Each author keeps their pages in **their own drive**, in a folder named `/nomad-wiki/{wiki-drive-key}/`. The wiki drive holds only the list of authors, in `/authors.json`:
+
+```json
+{ "authors": [{ "name": "alice", "url": "hyper://…/" }] }
+```
+
+Only the wiki's owner can change that list. When you visit a page, the frontend looks for the path in every author's folder:
 
 ```
-/users/*/nomad-wiki/{wiki-drive-key}/{path}
+{author-url}/nomad-wiki/{wiki-drive-key}/{path}
 ```
 
-The matching file with the highest mtime is then chosen for rendering.
+It shows the matching file with the newest mtime. When you save a page, it goes into your own drive. Each author owns their copy of their work, and removing an author takes their pages out of the wiki without touching their drive.
 
 ## Source
 

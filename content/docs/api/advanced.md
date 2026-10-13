@@ -16,10 +16,6 @@ Forking Hyperdrives
 Comparing and Merging Hyperdrives
 {{< /linkcard >}}
 
-{{< linkcard relref="./advanced/creating-mounts" icon="fas fa-arrow-right" >}}
-Creating Mounts
-{{< /linkcard >}}
-
 {{< linkcard relref="./advanced/editing-file-metadata" icon="fas fa-arrow-right" >}}
 Editing File Metadata
 {{< /linkcard >}}

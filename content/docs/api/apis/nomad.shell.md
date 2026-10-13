@@ -23,7 +23,7 @@ Create a dialog for selecting files or folders.
   * **buttonLabel** String. The label on the "OK" button.
   * **drive** String. The initial drive to explore.
   * **defaultPath** String. The initial path to explore.
-  * **select** Array&lt;String&gt;. What kind of entries to accept. Must contain 'file', 'folder', 'mount'.
+  * **select** Array&lt;String&gt;. What kind of entries to accept: 'file', 'folder', or both.
   * **filters** Object
     * **extensions** Array&lt;String&gt;. The extensions of the files to accept.
     * **writable** Boolean. If true, only accept writable files. If false, only accept unwritable files.

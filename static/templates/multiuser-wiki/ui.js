@@ -1,4 +1,4 @@
-import { getSiteMeta, queryForPage, writeFile, slugify } from './util.js'
+import { getSiteMeta, readAuthors, saveAuthors, queryForPage, writeFile, slugify } from './util.js'
 
 const EDIT_MODE = location.search.includes('?edit')
 
@@ -73,14 +73,14 @@ customElements.define('page-controls', class extends HTMLElement {
 
   async onAddAuthor (e) {
     var contact = await nomad.contacts.requestContact()
-    var key = contact.url.slice('hyper://'.length)
-    if (this.siteMeta.authors.find(a => a.key === key)) {
+    if (this.siteMeta.authors.find(a => a.url === contact.url)) {
       alert('That user is already an author')
       return
     }
     var name = slugify(contact.title)
     do {
       name = prompt('Select a username for this author', name)
+      if (!name) return
       if (name.includes('/')) {
         alert('Please dont include slashes in the username')
         continue
@@ -91,8 +91,7 @@ customElements.define('page-controls', class extends HTMLElement {
       }
       break
     } while(true)
-    await nomad.fs.mkdir('/users').catch(e => undefined)
-    await nomad.fs.mount(`/users/${name}`, contact.url)
+    await saveAuthors([...this.siteMeta.authors, {name, url: contact.url}])
     location.reload()
   }
 
@@ -102,7 +101,7 @@ customElements.define('page-controls', class extends HTMLElement {
     if (!confirm(`Remove ${name} from authors?`)) {
       return
     }
-    await nomad.fs.unmount(`/users/${name}`)
+    await saveAuthors(this.siteMeta.authors.filter(a => a.name !== name))
     location.reload()
   }
 })
@@ -120,7 +119,7 @@ customElements.define('page-content', class extends HTMLElement {
     var file = await queryForPage(location.pathname)
 
     if (EDIT_MODE) {
-      let content = file ? await nomad.fs.readFile(file.path).catch(e => '') : ''
+      let content = file ? await nomad.fs.readFile(file.url).catch(e => '') : ''
       main.append(h('h1', `Editing ${location.pathname}`))
       main.append(h('textarea', {class: 'editor'}, content))
       main.classList.remove('loading')
@@ -129,8 +128,7 @@ customElements.define('page-content', class extends HTMLElement {
 
     console.debug('Page found:', file)
     if (!file) {
-      let st = await nomad.fs.stat('/users').catch(e => undefined)
-      if (!st) {
+      if (!(await readAuthors()).length) {
         // no authors yet
         main.classList.remove('loading')
         main.append(h('h2', 'Welcome to your Wiki'))
@@ -145,14 +143,14 @@ customElements.define('page-content', class extends HTMLElement {
     }
 
     // embed content
-    if (/\.(png|jpe?g|gif|svg)$/i.test(file.path)) {
-      main.append(h('img', {src: file.path}))
-    } else if (/\.(mp4|webm|mov)/i.test(file.path)) {
-      main.append(h('video', {controls: true}, h('source', {src: file.path})))
-    } else if (/\.(mp3|ogg)/i.test(file.path)) {
-      main.append(h('audio', {controls: true}, h('source', {src: file.path})))
+    if (/\.(png|jpe?g|gif|svg)$/i.test(file.url)) {
+      main.append(h('img', {src: file.url}))
+    } else if (/\.(mp4|webm|mov)/i.test(file.url)) {
+      main.append(h('video', {controls: true}, h('source', {src: file.url})))
+    } else if (/\.(mp3|ogg)/i.test(file.url)) {
+      main.append(h('audio', {controls: true}, h('source', {src: file.url})))
     } else {
-      let content = await nomad.fs.readFile(file.path)
+      let content = await nomad.fs.readFile(file.url)
       // treat empty file as a tombstone
       if (!content) {
         main.classList.remove('loading')
@@ -160,7 +158,7 @@ customElements.define('page-content', class extends HTMLElement {
         return
       }
       // render content
-      if (/.md$/i.test(file.path)) {
+      if (/.md$/i.test(file.url)) {
         main.innerHTML = nomad.markdown.toHTML(content)
       } else {
         main.append(h('pre', content))
@@ -169,7 +167,7 @@ customElements.define('page-content', class extends HTMLElement {
     main.classList.remove('loading')
 
     // render metadata
-    var author = file.path.split('/')[2]
+    var author = file.author
     var mtime = (new Date(file.stat.mtime)).toLocaleString()
     this.append(h('footer', `Last updated by ${author} at ${mtime}`))
   }
