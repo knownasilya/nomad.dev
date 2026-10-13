@@ -25,15 +25,13 @@ A hyperdrive functions as a networked folder containing files and folders. Nomad
 
 **Public-key URLs** identify each drive using a 64-character hex string as the domain, with standard HTTPS-style paths, queries, and hash segments.
 
-**Authorship** requires possessing the drive's private key for modifications. "Currently the private key cannot be shared between devices or users," limiting collaboration.
+**Authorship** requires being one of the drive's writers. A drive can have many: your other devices, and people you invite (see [Collaborative Drives](/docs/api/advanced/collaborative-drives/)).
 
 **Co-hosting** involves devices announcing themselves on the DHT Swarm to provide content.
 
 **Caching** automatically stores accessed content locally for faster subsequent retrieval.
 
 **Versioning** maintains linear history with an incrementable counter, allowing previous version access without Git-style branching.
-
-**Mounts** function as symlinks between hyperdrives, similar to Git submodules.
 
 **File K/V metadata** stores additional information like the `href` key for resource references.
 

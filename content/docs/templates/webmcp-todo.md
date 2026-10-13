@@ -57,7 +57,7 @@ The file format is a loose convention made up for this demo (any list of items w
 | `remove_task({ task })` | delete a task |
 | `clear_completed()` | delete every completed task |
 
-The assistant sees them prefixed `page_` (e.g. `page_add_task`). The first time it uses one,
+The assistant finds them with `search` and runs them as `nomad.page.add_task(...)`. The first time it uses one,
 Nomad asks once per drive for permission ("Let the AI assistant use tools this page provides").
 
 ## Try it

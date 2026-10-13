@@ -69,7 +69,7 @@ Writes require the drive to be writable — a Hyperdrive you own, or an Autobase
 
 ### nomad.fs.watch(url\[, pathSpec\]\[, onChanged\])
 
-Watch a drive (or a path prefix) for changes. Returns an `EventTarget` that emits `changed`.
+Watch a drive, a folder (and everything in it), or one file for changes. Returns an `EventTarget` that emits `changed`.
 
 ```javascript
 var drive = nomad.fs.drive('hyper://abc123../')
