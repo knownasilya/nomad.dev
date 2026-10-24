@@ -56,11 +56,36 @@ for await (const chunk of nomad.ai.chat(messages, {
 }
 ```
 
-Built-in tools available to the model (called opaquely — the page only receives text output):
+### Built-in tools
 
-| Tool | Description |
-|------|-------------|
-| `readDriveFile(path)` | Read a file from the current Drive |
-| `listDriveFiles(path)` | List a directory in the current Drive |
-| `fetchUrl(url)` | Fetch an http/https URL |
-| `writeDriveFile(path, content)` | Write a file (prompts user for permission on first use) |
+During `nomad.ai.chat()` the model can use Nomad's built-in tools. The model finds a tool and calls it itself, and your page only sees the reply text. Pass `tools: false` to turn them off. Use `onToolEvent` to follow writes.
+
+A page's chat stays on its own Drive: the one it is served from, or `driveUrl`. These are the tools it gets:
+
+| Tool | What it does | Available when |
+|------|--------------|----------------|
+| `readDriveFile({ path })` | Read a text file from the Drive | Always |
+| `listDriveFiles({ path })` | List a directory in the Drive | Always |
+| `fetchUrl({ url })` | Fetch the text of an `http`/`https` URL | Always |
+| `writeDriveFile({ path, content })` | Write a text file to the Drive. Asks the user for permission to change the Drive | Unless `allowWrite: false` |
+| `readCurrentPage()` | Read the visible text of the page that called `chat()` | On this device (not over the AI Bridge) |
+| `screenshotCurrentPage()` | Take a screenshot of that page and show it to the model | The model accepts images (`allowVision: true`), on this device |
+
+The model can also call **your page's own tools**, the ones it registers with `document.modelContext` ([WebMCP](/docs/api/developers/webmcp)), after the user allows them once for your site.
+
+#### Tools for the user's own assistant
+
+Some tools work with the user's own data, so only the user's own assistant gets them: the AI Sidebar, the phone's AI panel, and programs on this computer that use Nomad's local MCP server. A page's `nomad.ai.chat()` never gets them.
+
+| Tool | What it does |
+|------|--------------|
+| `currentTab()` | The tab the user is on: `{ url, title, drive, writable }` |
+| `openTab({ url?, background?, group? })` | Open a new tab, optionally in a tab group. The group is made if it doesn't exist. Not on the phone |
+| `listNotes`, `readNote`, `writeNote` | Find, read and write the user's Notes |
+| `highlightText({ text, note? })` | Highlight text on the page in the user's tab, optionally with a Note. Not on the phone |
+| `listReaderPosts`, `readReaderPost` | Read posts from the feeds the user follows in Reader |
+| `followFeed`, `unfollowFeed`, `markPostsRead` | Change what the user follows and has read in Reader |
+
+The user's own assistant can also pass a `drive` to `readDriveFile`, `listDriveFiles` and `writeDriveFile`. A `drive` is one of the user's names for a drive, or a `hyper://` URL. The Notes and Reader tools ask the user for permission to read or change that data.
+
+`nomad.ai.listTools()` returns what a page's chat can reach right now. `capabilities` lists the tools above that this page gets. `page` lists your WebMCP tools.
