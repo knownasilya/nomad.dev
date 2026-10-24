@@ -1,0 +1,56 @@
+---
+title: Blog Template
+description: A multi-device, URL-addressable blog built on nomad.fs and walled.garden/feed.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+
+<CreateDrive
+  root="/templates/blog"
+  title="My Blog"
+  collaborative
+  files={[
+    '/index.html',
+    '/index.json',
+    '/app.js'
+  ]}
+/>
+
+A personal blog you can write from any of your devices. The drive is an [Autobase Collaborative Drive](/docs/api/apis/nomad.fs/), so each Device you add is a Writer of the **same** drive under one stable `hyper://` URL — no follower-breaking key changes. The drive declares itself a [`walled.garden/feed`](/docs/api/developers/walled-garden-schemas/#feed) so the in-browser Reader can subscribe to it.
+
+## How it works
+
+- **`/index.json`** declares `type: "walled.garden/feed"` with `itemsPath: "/posts/"`.
+- **Each post is a directory** — `/posts/<YYYY-MM-DD-slug>/` containing a `post.json` ([`walled.garden/post`](/docs/api/developers/walled-garden-schemas/#post)) and a `post.md` body. Co-locate images in the same folder and reference them with relative paths.
+- **The app shell is `/index.html`**, declared as the manifest [`fallback`](/docs/api/developers/frontends/): a page navigation with no real file serves the shell, which routes off the URL.
+- **Posts are URL-addressable**: `hyper://<blog>/posts/<slug>/` is the themed permalink. The post directory has no index file (the body is `post.md`), so that navigation misses and the `fallback` shell renders the post; the raw body stays directly readable at `/posts/<slug>/post.md` on any runtime.
+- **Drafts**: tick "Save as draft" to set `draft: true`. Drafts sync to your devices and stay out of feeds and readers — but note the drive is public, so a draft is hidden, not secret.
+- **Multi-device**: open **Devices → Create invite link**, open the link on another device, and approve the request. That device can then publish too.
+
+## Source
+
+<Tabs>
+<TabItem label="/index.html">
+
+<ReadCode path="/templates/blog/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="/index.json">
+
+<ReadCode path="/templates/blog/index.json" lang="json" />
+
+</TabItem>
+<TabItem label="/app.js">
+
+<ReadCode path="/templates/blog/app.js" lang="js" />
+
+</TabItem>
+<TabItem label="LICENSE">
+
+<ReadCode path="/templates/LICENSE" lang="txt" />
+
+</TabItem>
+</Tabs>

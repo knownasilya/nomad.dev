@@ -1,0 +1,45 @@
+---
+title: Photo Album Template
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+
+<CreateDrive
+  root="/templates/photo-album"
+  title="My Photo Album"
+  files={[
+    '/index.html',
+    '/index.js',
+    '/index.css'
+  ]}
+/>
+
+This template creates a simple photo album. It includes controls for the site owner to add, edit, and remove photos.
+
+## Source
+
+<Tabs>
+<TabItem label="/index.html">
+
+<ReadCode path="/templates/photo-album/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="/index.js">
+
+<ReadCode path="/templates/photo-album/index.js" lang="js" />
+
+</TabItem>
+<TabItem label="/index.css">
+
+<ReadCode path="/templates/photo-album/index.css" lang="css" />
+
+</TabItem>
+<TabItem label="LICENSE">
+
+<ReadCode path="/templates/LICENSE" lang="txt" />
+
+</TabItem>
+</Tabs>

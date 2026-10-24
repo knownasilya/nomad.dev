@@ -34,6 +34,6 @@ if (typeof nomad !== 'undefined' && typeof nomad.fs !== 'undefined') {
 } else {
   createDriveButton.textContent = 'Get Nomad to Create This Site'
   createDriveButton.addEventListener('click', e => {
-    window.open('https://nomad.pages.dev/docs/getting-started/install-nomad')
+    window.open('/docs/api/getting-started-with-nomad/')
   })
 }

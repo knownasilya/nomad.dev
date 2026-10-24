@@ -1,0 +1,63 @@
+---
+title: Multi-user Wiki Template
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+
+<CreateDrive
+  root="/templates/multiuser-wiki"
+  title="My Wiki"
+  files={[
+    '/index.html',
+    '/index.json',
+    '/ui.js',
+    '/util.js'
+  ]}
+/>
+
+This wiki is a minimal collaborative website. It maintains a list of authors (selected by the wiki owner) who set the content of the wiki.
+
+## Technical design
+
+This wiki uses a [frontend](/docs/api/developers/frontends) to virtually construct pages: `/index.html` is the app shell, declared as the manifest `fallback`, so every page path (which has no real file in this drive) serves the shell. When you visit a page, you are viewing a constructed result rather than a file that lives on this drive.
+
+Each author maintains a folder under `/nomad-wiki/{wiki-drive-key}/`. When a page is visited at some path, the wiki's frontend runs the following query:
+
+```
+/users/*/nomad-wiki/{wiki-drive-key}/{path}
+```
+
+The matching file with the highest mtime is then chosen for rendering.
+
+## Source
+
+<Tabs>
+<TabItem label="/index.html">
+
+<ReadCode path="/templates/multiuser-wiki/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="/index.json">
+
+<ReadCode path="/templates/multiuser-wiki/index.json" lang="json" />
+
+</TabItem>
+<TabItem label="/ui.js">
+
+<ReadCode path="/templates/multiuser-wiki/ui.js" lang="js" />
+
+</TabItem>
+<TabItem label="/util.js">
+
+<ReadCode path="/templates/multiuser-wiki/util.js" lang="js" />
+
+</TabItem>
+<TabItem label="LICENSE">
+
+<ReadCode path="/templates/LICENSE" lang="txt" />
+
+</TabItem>
+</Tabs>
