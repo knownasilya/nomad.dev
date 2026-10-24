@@ -1,0 +1,12 @@
+---
+// Shows a file from static/ as a highlighted code block, read at build time.
+import fs from 'node:fs'
+import path from 'node:path'
+import { Code } from '@astrojs/starlight/components'
+
+interface Props { path: string; lang: string }
+const { path: file, lang } = Astro.props
+const code = fs.readFileSync(path.join(process.cwd(), 'static', file), 'utf8')
+---
+
+<Code code={code} lang={lang} />

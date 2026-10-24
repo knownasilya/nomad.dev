@@ -1,13 +1,24 @@
 # nomad.dev — Claude guidelines
 
-This is the Hugo site for Nomad (docs + the drive-template gallery). The Nomad app itself lives in the
+This is the Astro Starlight site for Nomad (docs + the drive-template gallery). The Nomad app itself lives in the
 sibling `nomad` repo (see `nomad/CLAUDE.md`).
+
+## Site layout
+
+- Pages are Markdown in `src/content/docs/`. The folder path is the URL: `src/content/docs/docs/api/faq.md`
+  is `/docs/api/faq/`. Use `.mdx` only when a page needs a component.
+- A file name with a dot (`nomad.fs.md`) needs `slug:` in its front matter, or Astro drops the dot from the URL.
+- `static/` is the public dir (`publicDir` in `astro.config.mjs`): template files, thumbnails, images.
+- The sidebar is set in `astro.config.mjs`. Most groups `autogenerate` from a folder, so a new page in an
+  existing folder appears on its own; a new folder needs a group there.
+- Search is Starlight's built-in Pagefind index, built by `npm run build`. Run `npm run dev` to preview.
+- Write links as absolute site paths (`/docs/api/apis/nomad.fs/`), not relative `.md` paths.
 
 ## Drive templates
 
 A **template** is a starter drive a user clones with the "Create Drive From This Template" button. Each
 template has two halves: the **files** that get copied into the new drive (`static/templates/<name>/`) and a
-**docs page** that renders the create button + source (`content/docs/templates/<name>.md`).
+**docs page** that renders the create button + source (`src/content/docs/docs/templates/<name>.mdx`).
 
 Use the **forum** template as the canonical reference — it's the fullest example (an Autobase / multi-writer
 drive with a custom frontend). The **blog** template is the reference for a `walled.garden/feed`.
@@ -24,7 +35,7 @@ static/templates/forum/
 
 Key rules:
 - **`/index.html` is the app shell, declared via the manifest `fallback`** (ADR-0015 in the nomad repo;
-  docs at `content/docs/api/developers/frontends.md`). The protocol handler serves it — 200 rewrite, URL
+  docs at `src/content/docs/docs/api/developers/frontends.md`). The protocol handler serves it — 200 rewrite, URL
   unchanged — for any page navigation that misses; real files always win, so app routes must be paths
   with no real file (and no `index.*` directory index) behind them. That's why the blog's post body is
   `post.md`, not `index.md` (ADR-0009 amendment): `/posts/<slug>/` stays a natural miss, so the shell
@@ -37,37 +48,43 @@ Key rules:
 - **`index.json` `type`** identifies the drive (e.g. `walled.garden/feed` for a blog). Nomad recognises some
   types (person, feed) and surfaces chrome for them.
 
-### The docs page (`content/docs/templates/<name>.md`)
+### The docs page (`src/content/docs/docs/templates/<name>.mdx`)
 
-Front-matter (`title`, `description`) + a `{{< rawhtml >}}` block that wires up the shared create script:
+Front-matter (`title`, `description`), then the `CreateDrive` component, which renders the thumbnail and the
+create button and loads the shared create script:
 
-```html
-<button class="create-drive">Create Drive From This Template</button>
-<script>
-  const TEMPLATE_ROOT = '/templates/forum'      // where the files are served
-  const TEMPLATE_TITLE = 'My Forum'             // initial drive title
-  window.TEMPLATE_DRIVE_TYPE = 'autobase'       // 'autobase' = Collaborative Drive; omit for a plain Hyperdrive
-  window.TEMPLATE_FILES = [                      // EXPLICIT list of files to copy (paths under TEMPLATE_ROOT)
+```mdx
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+<CreateDrive
+  root="/templates/forum"     // where the files are served (static/templates/forum)
+  title="My Forum"            // initial drive title
+  collaborative               // Collaborative Drive (Autobase); omit for a plain single-writer drive
+  files={[                    // EXPLICIT list of files to copy (paths under root)
     '/index.html', '/index.json', '/app.js'
-  ]
-</script>
-<script src="/templates/index.js"></script>     // shared create-drive logic
+  ]}
+/>
 ```
 
-`static/templates/index.js` creates the drive via `nomad.fs` (ADR-0010: `nomad.hyperdrive`/`nomad.autobase`
-are gone) — `nomad.fs.createCollaborativeDrive({ collaborative: true })` when `TEMPLATE_DRIVE_TYPE ===
-'autobase'`, else `nomad.fs.createDrive(...)` (locked/single-writer) — fetches each `TEMPLATE_FILES` entry,
-writes them in, and opens the drive. Only files listed in `TEMPLATE_FILES` are copied, so
-extra files in the template dir are safe (and won't ship into user drives).
+`src/components/CreateDrive.astro` sets the `TEMPLATE_*` globals and loads `static/templates/index.js`, which
+creates the drive via `nomad.fs` (ADR-0010: `nomad.hyperdrive`/`nomad.autobase` are gone):
+`nomad.fs.createCollaborativeDrive({ collaborative: true })` for a collaborative template, else
+`nomad.fs.createDrive(...)` (locked/single-writer). It fetches each `files` entry, writes them in, and opens
+the drive. Only listed files are copied, so extra files in the template dir are safe (and won't ship into
+user drives).
 
-Below the create block, add prose and a **Source** section using `{{< tabsraw >}}` + `{{< readcode "/static/templates/<name>/<file>" "<lang>" >}}` tabs (copy forum.md's structure).
+Below the create block, add prose and a **Source** section: a `<Tabs>` with one
+`<TabItem label="/app.js"><ReadCode path="/templates/<name>/app.js" lang="js" /></TabItem>` per file. `ReadCode`
+paths are relative to `static/` (copy forum.mdx's structure).
 
 ### Listing a template (two places — one manual, one automatic)
 
-- **Gallery (manual):** add an `{{< imgcard relref="./templates/<name>" img="/templates/<name>.png" >}}` card
-  to `content/docs/templates.md`. This is hand-curated — new pages do NOT appear here automatically.
-- **Sidebar nav (automatic):** the Hugo Book theme builds the sidebar from the content tree (there is no
-  `content/menu` bundle), so a new `content/docs/templates/<name>.md` shows up on its own.
+- **Gallery (manual):** add an `<ImgCard href="/docs/templates/<name>/" img="/templates/<name>.png" />` card
+  to `src/content/docs/docs/templates.mdx`. This is hand-curated — new pages do NOT appear here automatically.
+- **Sidebar nav (automatic):** the Templates group in `astro.config.mjs` autogenerates from
+  `src/content/docs/docs/templates/`, so a new page shows up on its own.
 
 ### Thumbnail (`static/templates/<name>.png`, 800×400)
 
@@ -85,7 +102,9 @@ worked example you can copy.
 
 ### Checklist to add a template
 
-1. `static/templates/<name>/` — `index.json`, `index.html`, `ui/ui.html`, `ui/app.js`.
-2. `content/docs/templates/<name>.md` — copy `forum.md`; set `TEMPLATE_*` and the `readcode` source tabs.
-3. Add the `imgcard` to `content/docs/templates.md`.
-4. `scripts/template-thumbs/<name>.svg` → `node scripts/gen-template-thumb.mjs <name>`.
+1. `static/templates/<name>/` — `index.json`, `index.html`, `app.js`.
+2. `src/content/docs/docs/templates/<name>.mdx` — copy `forum.mdx`; set the `CreateDrive` props and the
+   `ReadCode` source tabs.
+3. Add the `ImgCard` to `src/content/docs/docs/templates.mdx`.
+4. `npm run build` and check the page.
+5. `scripts/template-thumbs/<name>.svg` → `node scripts/gen-template-thumb.mjs <name>`.

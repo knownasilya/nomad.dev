@@ -1,0 +1,40 @@
+---
+title: Microblog Feed Template
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+
+<CreateDrive
+  root="/templates/microblog-feed"
+  title="My Feed"
+  files={[
+    '/index.html',
+    '/index.js',
+    '/index.css'
+  ]}
+/>
+
+This template creates a minimal microblogging app. Users publish posts as files in the `/microblog/` folder of their profile drive. The app uses the user's address book to choose whose posts to fetch.
+
+## Source
+
+<Tabs>
+<TabItem label="/index.html">
+
+<ReadCode path="/templates/microblog-feed/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="/index.js">
+
+<ReadCode path="/templates/microblog-feed/index.js" lang="js" />
+
+</TabItem>
+<TabItem label="LICENSE">
+
+<ReadCode path="/templates/LICENSE" lang="txt" />
+
+</TabItem>
+</Tabs>

@@ -1,0 +1,35 @@
+---
+title: Video Chat Template
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+
+<CreateDrive
+  root="/templates/video-chat"
+  title="My Video Chat"
+  files={[
+    '/index.html'
+  ]}
+/>
+
+This template creates a minimal video chat between the visitors of the site. It uses the [Peersockets API](/docs/api/apis/nomad.peersockets) to set up a WebRTC video call between users. Traffic is encrypted so that only users who possess the site's URL can read it.
+
+(Note: this is a simple demo and won't work with more than 2 users.)
+
+## Source
+
+<Tabs>
+<TabItem label="/index.html">
+
+<ReadCode path="/templates/video-chat/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="LICENSE">
+
+<ReadCode path="/templates/LICENSE" lang="txt" />
+
+</TabItem>
+</Tabs>

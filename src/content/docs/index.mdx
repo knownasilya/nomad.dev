@@ -1,0 +1,47 @@
+---
+title: Nomad Developer Portal
+description: Resources for developers building on Nomad Browser.
+template: splash
+hero:
+  tagline: Templates, guides, and API docs for building peer-to-peer apps in Nomad Browser.
+  image:
+    light: ../../assets/logo-light.svg
+    dark: ../../assets/logo-dark.svg
+  actions:
+    - text: Get started
+      link: /docs/api/getting-started-with-nomad/
+      icon: right-arrow
+    - text: Browse templates
+      link: /docs/templates/
+      variant: minimal
+    - text: Nomad on GitHub
+      link: https://github.com/knownasilya/nomad
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components'
+
+<CardGrid stagger>
+  <Card title="Templates" icon="puzzle">
+    Starter drives you can clone with one click: a blog, a forum, a wiki, a chat room, and more.
+    [Browse templates](/docs/templates/)
+  </Card>
+  <Card title="APIs" icon="seti:javascript">
+    `nomad.fs`, `nomad.ai`, `nomad.shell` and the rest of the JavaScript APIs available to pages.
+    [Read the API docs](/docs/api/apis/)
+  </Card>
+  <Card title="Guides" icon="open-book">
+    From creating your first Hyperdrive to collaborative drives and the Vault.
+    [Start with the basics](/docs/api/beginner/)
+  </Card>
+  <Card title="Tutorials" icon="pencil">
+    Build a self-modifying site or a CMS frontend step by step.
+    [See the tutorials](/docs/tutorials/)
+  </Card>
+</CardGrid>
+
+## News
+
+<LinkCard title="Two new templates: Codesnip and Module" href="/posts/codesnip-and-module/" />
+<LinkCard title="Nomad.pages.dev is online" href="/posts/hello-world/" />

@@ -1,0 +1,56 @@
+---
+title: Codesnip Template
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+
+<CreateDrive
+  root="/templates/codesnip"
+  title="Codesnip"
+  files={[
+    '/index.html',
+    '/index.json',
+    '/ui.js',
+    '/ui.css',
+    '/ace/ace.js',
+    '/ace/mode-css.js',
+    '/ace/mode-html.js',
+    '/ace/mode-javascript.js'
+  ]}
+/>
+
+A codesnippet which you can use to demonstrate APIs, patterns, bugs, or other techniques.
+(Note that the code is run in an iframe and will have reduced permissions, including only readonly access to the nomad.fs API.)
+
+## Source
+
+<Tabs>
+<TabItem label="/index.html">
+
+<ReadCode path="/templates/codesnip/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="/index.json">
+
+<ReadCode path="/templates/codesnip/index.json" lang="json" />
+
+</TabItem>
+<TabItem label="/ui.js">
+
+<ReadCode path="/templates/codesnip/ui.js" lang="js" />
+
+</TabItem>
+<TabItem label="/ui.css">
+
+<ReadCode path="/templates/codesnip/ui.css" lang="css" />
+
+</TabItem>
+<TabItem label="LICENSE">
+
+<ReadCode path="/templates/LICENSE" lang="txt" />
+
+</TabItem>
+</Tabs>
