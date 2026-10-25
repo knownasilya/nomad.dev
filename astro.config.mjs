@@ -14,7 +14,7 @@ export default defineConfig({
     starlight({
       title: 'Nomad.dev',
       description: 'A collection of resources for developers using Nomad Browser',
-      logo: { light: './src/assets/logo-light.svg', dark: './src/assets/logo-dark.svg' },
+      logo: { src: './src/assets/logo.png' },
       favicon: '/logo.png',
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/knownasilya/nomad' }
@@ -23,7 +23,11 @@ export default defineConfig({
       lastUpdated: true,
       customCss: ['./src/styles/custom.css'],
       head: [
-        { tag: 'meta', attrs: { property: 'og:image', content: 'https://nomad.pages.dev/opengraph-logo.png' } }
+        { tag: 'meta', attrs: { property: 'og:image', content: 'https://nomad.pages.dev/opengraph.png' } },
+        { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
+        { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
+        { tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
+        { tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' } }
       ],
       sidebar: [
         {
