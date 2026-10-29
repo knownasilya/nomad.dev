@@ -90,8 +90,9 @@ and any number of indexers can run.
 3. The crawler builds an inverted index and serves a search API. **The unit of search is the Drive,
    described by its own manifest** — v1 does not crawl post bodies, so a good `title`/`description` is
    what makes your Drive findable.
-4. The built-in **`nomad://search`** app queries a *configurable* index endpoint, so no indexer is
-   privileged — you can point it at any crawler you trust.
+4. The built-in **`nomad://search`** app asks every index the user added, each under a name they
+   choose, alongside the browser's own crawler, so no indexer is privileged. Results from all of them
+   are merged into one list, and each result notes which index found it.
 
 Two consequences worth knowing as an author:
 
@@ -111,5 +112,6 @@ node app/tools/crawler.mjs --port 8787
 # GET /search?q=<terms>&topic=<slug>   ·   /topics   ·   /stats
 ```
 
-It holds no privileged position — it only reads what listed Drives volunteer. Run your own and point
-`nomad://search` at it.
+It holds no privileged position — it only reads what listed Drives volunteer. Run your own and add it
+to `nomad://search` as a source: open the sliders button next to the search box, give it a name and
+its address. Sources are kept on all your devices.
