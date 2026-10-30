@@ -72,6 +72,8 @@ A page's chat stays on its own Drive: the one it is served from, or `driveUrl`. 
 | `readCurrentPage()` | Read the visible text of the page that called `chat()` | On this device (not over the AI Bridge) |
 | `screenshotCurrentPage()` | Take a screenshot of that page and show it to the model | The model accepts images (`allowVision: true`), on this device |
 
+When the drive is in [Draft Mode](/docs/api/apis/nomad.fs/#draft-mode), or the chat runs over the AI Bridge (the phone's AI panel, or a page on another device), `writeDriveFile` stages the file in the drive's Draft instead of writing it live, and `readDriveFile` and `listDriveFiles` read the Draft, so the model sees its own edits. The user publishes or discards the Draft.
+
 The model can also call **your page's own tools**, the ones it registers with `document.modelContext` ([WebMCP](/docs/api/developers/webmcp)), after the user allows them once for your site.
 
 #### Tools for the user's own assistant
@@ -80,7 +82,7 @@ Some tools work with the user's own data, so only the user's own assistant gets 
 
 | Tool | What it does |
 |------|--------------|
-| `currentTab()` | The tab the user is on: `{ url, title, drive, writable }` |
+| `currentTab()` | The tab the user is on: `{ url, title, drive, writable, draft }`. `draft` is `true` when writes to that drive stage in its Draft |
 | `openTab({ url?, background?, group? })` | Open a new tab, optionally in a tab group. The group is made if it doesn't exist. Not on the phone |
 | `listNotes`, `readNote`, `writeNote` | Find, read and write the user's Notes |
 | `highlightText({ text, note? })` | Highlight text on the page in the user's tab, optionally with a Note. Not on the phone |
