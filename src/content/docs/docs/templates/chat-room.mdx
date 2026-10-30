@@ -1,0 +1,33 @@
+---
+title: Chat Room Template
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+
+<CreateDrive
+  root="/templates/chat-room"
+  title="My Chat Room"
+  files={[
+    '/index.html'
+  ]}
+/>
+
+This template creates a minimal chat room for all the visitors of the site. It uses the [Peersockets API](/docs/api/apis/nomad.peersockets) to send and receive messages. Traffic is encrypted so that only users who possess the site's URL can read it.
+
+## Source
+
+<Tabs>
+<TabItem label="/index.html">
+
+<ReadCode path="/templates/chat-room/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="LICENSE">
+
+<ReadCode path="/templates/LICENSE" lang="txt" />
+
+</TabItem>
+</Tabs>

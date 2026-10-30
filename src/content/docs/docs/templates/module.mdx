@@ -1,0 +1,95 @@
+---
+title: Module Template
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+
+<CreateDrive
+  root="/templates/module"
+  title="My Module"
+  files={[
+    '/demo/index.html',
+    '/scripts/build.js',
+    '/tests/vendor/chai.js',
+    '/tests/vendor/mocha.css',
+    '/tests/vendor/mocha.js',
+    '/tests/index.html',
+    '/tests/index.js',
+    '/index.html',
+    '/index.json',
+    '/ui.js',
+    '/ui.css',
+    '/vendor/highlight.css',
+    '/vendor/highlight.pack.js',
+    '/img/file.svg',
+    '/img/folder.svg',
+    '/index.js',
+    '/index.md'
+  ]}
+/>
+
+A module with tools for a readme, tests suite, demo, and build tools.
+Also includes webterm [page commands](/docs/api/advanced/webterm#page-commands) for running tests, build scripts, and more.
+
+## Source
+
+<Tabs>
+<TabItem label="/index.js">
+
+<ReadCode path="/templates/module/index.js" lang="js" />
+
+</TabItem>
+<TabItem label="/index.md">
+
+<ReadCode path="/templates/module/index.md" lang="md" />
+
+</TabItem>
+<TabItem label="/scripts/build.js">
+
+<ReadCode path="/templates/module/scripts/build.js" lang="js" />
+
+</TabItem>
+<TabItem label="/tests/index.js">
+
+<ReadCode path="/templates/module/tests/index.js" lang="js" />
+
+</TabItem>
+<TabItem label="/tests/index.html">
+
+<ReadCode path="/templates/module/tests/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="/demo/index.html">
+
+<ReadCode path="/templates/module/demo/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="/index.html">
+
+<ReadCode path="/templates/module/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="/index.json">
+
+<ReadCode path="/templates/module/index.json" lang="json" />
+
+</TabItem>
+<TabItem label="/ui.js">
+
+<ReadCode path="/templates/module/ui.js" lang="js" />
+
+</TabItem>
+<TabItem label="/ui.css">
+
+<ReadCode path="/templates/module/ui.css" lang="css" />
+
+</TabItem>
+<TabItem label="LICENSE">
+
+<ReadCode path="/templates/LICENSE" lang="txt" />
+
+</TabItem>
+</Tabs>

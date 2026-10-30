@@ -1,0 +1,51 @@
+---
+title: Simple CMS Template
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+
+<CreateDrive
+  root="/templates/simple-cms"
+  title="My Website"
+  files={[
+    '/index.html',
+    '/index.json',
+    '/ui.js',
+    '/ui.css'
+  ]}
+/>
+
+This template is a minimal content management system for building a site. [Read the tutorial "Building a CMS Frontend"](/docs/tutorials/cms-frontend/) to learn how it works.
+
+## Source
+
+<Tabs>
+<TabItem label="/index.html">
+
+<ReadCode path="/templates/simple-cms/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="/index.json">
+
+<ReadCode path="/templates/simple-cms/index.json" lang="json" />
+
+</TabItem>
+<TabItem label="/ui.js">
+
+<ReadCode path="/templates/simple-cms/ui.js" lang="js" />
+
+</TabItem>
+<TabItem label="/ui.css">
+
+<ReadCode path="/templates/simple-cms/ui.css" lang="css" />
+
+</TabItem>
+<TabItem label="LICENSE">
+
+<ReadCode path="/templates/LICENSE" lang="txt" />
+
+</TabItem>
+</Tabs>

@@ -1,0 +1,8 @@
+---
+interface Props { href: string; img: string; class?: string }
+const { href, img, class: className } = Astro.props
+---
+
+<a href={href} class:list={['imgcard', 'not-content', className]}>
+  <img src={img} alt="" />
+</a>

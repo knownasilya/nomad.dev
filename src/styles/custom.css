@@ -1,0 +1,97 @@
+/* Site palette, matched to the navy "N" logo (hsl 235, 62%, 22%).
+   Dark mode is the :root default in Starlight; light mode overrides it. */
+:root {
+  --sl-hue-accent: 235;
+  --sl-color-accent-low: hsl(235, 62%, 22%);
+  --sl-color-accent: hsl(235, 70%, 66%);
+  --sl-color-accent-high: hsl(235, 85%, 88%);
+  --sl-color-white: hsl(235, 30%, 97%);
+  --sl-color-gray-1: hsl(235, 30%, 92%);
+  --sl-color-gray-2: hsl(235, 14%, 76%);
+  --sl-color-gray-3: hsl(235, 10%, 57%);
+  --sl-color-gray-4: hsl(235, 14%, 37%);
+  --sl-color-gray-5: hsl(235, 24%, 24%);
+  --sl-color-gray-6: hsl(235, 36%, 15%);
+  --sl-color-black: hsl(235, 40%, 9%);
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: hsl(235, 75%, 92%);
+  --sl-color-accent: hsl(235, 60%, 45%);
+  --sl-color-accent-high: hsl(235, 62%, 22%);
+  --sl-color-white: hsl(235, 40%, 10%);
+  --sl-color-gray-1: hsl(235, 30%, 16%);
+  --sl-color-gray-2: hsl(235, 18%, 24%);
+  --sl-color-gray-3: hsl(235, 10%, 37%);
+  --sl-color-gray-4: hsl(235, 8%, 56%);
+  --sl-color-gray-5: hsl(235, 14%, 80%);
+  --sl-color-gray-6: hsl(235, 40%, 94%);
+  --sl-color-gray-7: hsl(235, 40%, 97%);
+  --sl-color-black: hsl(0, 0%, 100%);
+}
+
+/* Template pages: thumbnail + create button */
+.template-thumb {
+  display: block;
+  width: 100%;
+  margin: 0 0 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--sl-color-gray-5);
+}
+
+button.create-drive {
+  display: block;
+  color: var(--sl-color-black);
+  border: 0;
+  background: var(--sl-color-accent-high);
+  border-radius: 0.5rem;
+  padding: 0.75rem 0;
+  margin: 0 auto 1rem;
+  width: 400px;
+  max-width: 100%;
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+button.create-drive:hover {
+  box-shadow: 0 2px 6px #0006;
+}
+
+button.create-drive:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* Template gallery cards */
+.imgcard {
+  display: block;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.imgcard:hover {
+  border-color: var(--sl-color-accent);
+  box-shadow: 0 2px 8px #0003;
+}
+
+.imgcard img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.imgcard.centered {
+  max-width: 500px;
+  margin: 2rem auto;
+}
+
+.niceimg {
+  display: block;
+  margin: 2rem auto;
+  box-shadow: 0 2px 4px #0004;
+}

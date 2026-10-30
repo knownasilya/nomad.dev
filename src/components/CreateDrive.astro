@@ -1,0 +1,22 @@
+---
+// The "Create Drive From This Template" button. static/templates/index.js reads the
+// TEMPLATE_* globals and copies `files` (paths under `root`) into a new drive.
+interface Props {
+  root: string        // where the template files are served, e.g. /templates/forum
+  title: string       // the new drive's title
+  files: string[]     // explicit list of files to copy, relative to root
+  collaborative?: boolean // true = Collaborative Drive (Autobase); omit for a single-writer drive
+}
+const { root, title, files, collaborative = false } = Astro.props
+const driveType = collaborative ? 'autobase' : undefined
+---
+
+<img class="template-thumb" src={`${root}.png`} alt="" />
+<button class="create-drive">Create Drive From This Template</button>
+<script is:inline define:vars={{ root, title, files, driveType }}>
+  window.TEMPLATE_ROOT = root
+  window.TEMPLATE_TITLE = title
+  window.TEMPLATE_FILES = files
+  if (driveType) window.TEMPLATE_DRIVE_TYPE = driveType
+</script>
+<script is:inline src="/templates/index.js"></script>

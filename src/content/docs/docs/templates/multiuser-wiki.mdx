@@ -1,0 +1,69 @@
+---
+title: Multi-user Wiki Template
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+import ReadCode from '~/components/ReadCode.astro'
+import CreateDrive from '~/components/CreateDrive.astro'
+
+
+<CreateDrive
+  root="/templates/multiuser-wiki"
+  title="My Wiki"
+  files={[
+    '/index.html',
+    '/index.json',
+    '/ui.js',
+    '/util.js'
+  ]}
+/>
+
+This wiki is a minimal collaborative website. It maintains a list of authors (selected by the wiki owner) who set the content of the wiki.
+
+## Technical design
+
+This wiki uses a [frontend](/docs/api/developers/frontends) to virtually construct pages: `/index.html` is the app shell, declared as the manifest `fallback`, so every page path (which has no real file in this drive) serves the shell. When you visit a page, you are viewing a constructed result rather than a file that lives on this drive.
+
+Each author keeps their pages in **their own drive**, in a folder named `/nomad-wiki/{wiki-drive-key}/`. The wiki drive holds only the list of authors, in `/authors.json`:
+
+```json
+{ "authors": [{ "name": "alice", "url": "hyper://…/" }] }
+```
+
+Only the wiki's owner can change that list. When you visit a page, the frontend looks for the path in every author's folder:
+
+```
+{author-url}/nomad-wiki/{wiki-drive-key}/{path}
+```
+
+It shows the matching file with the newest mtime. When you save a page, it goes into your own drive. Each author owns their copy of their work, and removing an author takes their pages out of the wiki without touching their drive.
+
+## Source
+
+<Tabs>
+<TabItem label="/index.html">
+
+<ReadCode path="/templates/multiuser-wiki/index.html" lang="html" />
+
+</TabItem>
+<TabItem label="/index.json">
+
+<ReadCode path="/templates/multiuser-wiki/index.json" lang="json" />
+
+</TabItem>
+<TabItem label="/ui.js">
+
+<ReadCode path="/templates/multiuser-wiki/ui.js" lang="js" />
+
+</TabItem>
+<TabItem label="/util.js">
+
+<ReadCode path="/templates/multiuser-wiki/util.js" lang="js" />
+
+</TabItem>
+<TabItem label="LICENSE">
+
+<ReadCode path="/templates/LICENSE" lang="txt" />
+
+</TabItem>
+</Tabs>
