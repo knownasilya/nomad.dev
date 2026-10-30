@@ -16,10 +16,10 @@ One runtime is active at a time. Claude and Cursor are detected when those apps 
 - `nomad.ai.listRuntimes()` — `{ active, model, runtimes }`, where each runtime is `{ id, name, kind, detected, available, baseUrl, hasToken }` and `kind` is `"openai"`, `"claude"`, or `"cursor"`
 - `nomad.ai.listModels()` — `{ models, current, labels }` for the active runtime. `labels` maps a model to a readable name when the runtime gives one: the Claude CLI reports names such as "Opus 5.5". It is empty for other runtimes.
 
-**Per-Drive opt-in** — add an `ai` key to your Drive's `/index.json`:
+**Per-Drive system prompt** — add an `ai` key to your Drive's `/index.json`. It sets the system prompt only; the model is always the user's choice.
 
 ```json
-{ "ai": { "model": "llama3.2:3b" } }
+{ "ai": true }
 ```
 
 Or delegate to another Drive's AI Config:
@@ -28,7 +28,7 @@ Or delegate to another Drive's AI Config:
 { "ai": "hyper://abc123..." }
 ```
 
-**AI Config** — a Drive can include `/ai/system.md` (system prompt) and `/ai/tools/` (tool definitions) to customise behaviour.
+**AI Config** — a Drive can include `/ai/system.md`, the system prompt.
 
 **Resolution order**: Drive's `/index.json` → Space default → global fallback (bare inference, no system prompt).
 

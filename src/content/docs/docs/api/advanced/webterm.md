@@ -30,8 +30,7 @@ You can type `help` at any time to see a full list of available commands. Here a
   * **mv**. Move a file or folder.
   * **cp**. Copy a file or folder.
   * **mkdir**. Create a folder.
-  * **mount**. Create a mount-link.
-  * **rm**. Delete a file, folder, or mount.
+  * **rm**. Delete a file or folder.
   * **meta**. View or edit the metadata of a file.
   * **cat**. View the contents of a file.
   * **edit**. Edit a file.
