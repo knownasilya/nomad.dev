@@ -30,7 +30,7 @@ Every method also exists as a top-level, URL-first helper — e.g. `nomad.fs.rea
 
 ### Reading
 
-* **getInfo(\[opts\])** — Drive info: `{ key, url, writable, title, description, type, collaborative }`. `collaborative` is whether the drive currently accepts writer-access requests (see [Collaboration](#collaboration)).
+* **getInfo(\[opts\])** — Drive info: `{ key, url, writable, title, description, type, collaborative, writerKey }`. `collaborative` is whether the drive currently accepts writer-access requests (see [Collaboration](#collaboration)). `writerKey` is this device's writer key for the drive, the key `listWriters()` and [peersockets](/docs/api/apis/nomad.peersockets/) report for it (`null` if it has none).
 * **stat(path\[, opts\])** — `{ isFile(), isDirectory(), size, mtime, ctime, metadata }`. Real timestamps.
 * **entry(path\[, opts\])** — The raw view entry `{ key, value: { blob, metadata } }`.
 * **get(path\[, opts\])** — Read a file. `opts.encoding` is one of `utf8` (default), `binary`, `base64`, `hex`, or `json` (parses and returns the object).
@@ -50,7 +50,7 @@ var posts = await drive.query('/posts/')
 
 ### Writing
 
-* **put(path, data\[, opts\])** — Write a file. `data` may be a string, Buffer, or (with `encoding:'json'`) an object.
+* **put(path, data\[, opts\])** — Write a file. `data` may be a string, Buffer, or (with `encoding:'json'`) an object. Pass `{ inline: true }` to keep a small file (up to 4 KB) in the drive's view instead of a separate blob: peers see it sooner, since there's no blob to fetch. Larger inline writes are refused.
 * **writeFile(path, data\[, opts\])** — Alias of `put`.
 * **del(path\[, opts\])** / **unlink(path\[, opts\])** — Delete a file.
 * **mkdir(path\[, opts\])** / **rmdir(path\[, opts\])** — Create / remove a directory.
@@ -62,6 +62,7 @@ await drive.writeFile('/notes.txt', 'hello')
 await drive.put('/data.json', { hi: true }, { encoding: 'json' })
 await drive.rename('/notes.txt', '/notes-2.txt')
 await drive.del('/data.json')
+await drive.writeFile('/state.json', JSON.stringify(state), { inline: true })
 ```
 
 Writes require the drive to be writable — a Hyperdrive you own, or an Autobase drive you are a writer of.
@@ -83,7 +84,7 @@ nomad.fs.watch('hyper://abc123../', () => rerender())
 
 These are top-level `nomad.fs` methods. `createDrive`/`createCollaborativeDrive`/`forkDrive` return a scoped **FsDrive**.
 
-* **nomad.fs.createDrive(\[opts\])** — Create a new drive. `opts`: `{ title, description, collaborative }`. Locked / single-writer unless `collaborative: true`.
+* **nomad.fs.createDrive(\[opts\])** — Create a new drive. `opts`: `{ title, description, collaborative, template }`. Locked / single-writer unless `collaborative: true`. `template` is a built-in starting point: `'blank'` (the default) or `'document'`, a [Document drive](/docs/api/developers/document-drives/) several people edit at the same time (collaborative unless you pass `collaborative: false`).
 * **nomad.fs.createCollaborativeDrive(\[opts\])** — Same as `createDrive` but defaults to accepting writers; equivalent to `createDrive({ ..., collaborative: true })`.
 * **nomad.fs.forkDrive(url\[, opts\])** — Fork an existing drive into a new one.
 * **nomad.fs.configure(url, settings\[, opts\])** — Update the drive manifest (`title`, `description`, `type`, `thumb`, `links`) and/or `collaborative` (see below). Also on the scoped handle as `drive.configure(settings)`.
@@ -93,6 +94,8 @@ These are top-level `nomad.fs` methods. `createDrive`/`createCollaborativeDrive`
 // Every new drive is a multi-writer-capable Autobase, but "collaborative" is a policy flag.
 var drive = await nomad.fs.createDrive({ title: 'Notes' })          // locked (single-writer)
 await nomad.fs.configure(drive.url, { collaborative: true })        // unlock later — SAME URL
+
+var doc = await nomad.fs.createDrive({ title: 'Team plan', template: 'document' })
 ```
 
 ### Collaboration

@@ -91,12 +91,36 @@ peerEvents.addEventListener('leave', e => {
 
 ## `Topic` Instance
 
+### "join" and "leave" events
+
+Emitted when a peer joins or leaves this topic (unlike `watch()`, which reports every connection). A
+page that joins a topic another tab already has open gets a "join" for each peer already there.
+
+* **peerId** String. The peer's identifier.
+
+### "writer" event
+
+Emitted when a peer proves it is a current writer of this drive. It signs a challenge bound to the
+connection and the topic with its writer key, and Nomad checks that key against the drive's writer
+set, so the proof can't be forged or replayed. From then on, that peer's messages carry its
+`writerKey`. Use it to accept changes only from writers, as a [Document drive](/docs/api/developers/document-drives/) does.
+
+* **peerId** String. The peer's identifier.
+* **writerKey** String. The peer's writer key, as `listWriters()` reports it.
+
+```javascript
+topic.addEventListener('writer', e => {
+  console.log(e.peerId, 'is writer', e.writerKey)
+})
+```
+
 ### "message" event
 
 Emitted when a peer sends you a message on the topic.
 
-* **peerId** Number. The sending peer's identifier.
+* **peerId** String. The sending peer's identifier.
 * **message** Uint8Array. The message content.
+* **writerKey** String or null. The sender's writer key once it has proved it (see "writer"), else `null`.
 
 ```javascript
 topic.addEventListener('message', e => {
@@ -108,7 +132,7 @@ topic.addEventListener('message', e => {
 
 Sends a message to the specified peer.
 
-* **peerId** Number. The target peer's identifier.
+* **peerId** String. The target peer's identifier.
 * **message** Uint8Array. The message content.
 * Returns **Void**.
 
@@ -132,7 +156,7 @@ topic.close()
 
 Emitted when a new peer connects. When `watch()` is called, any existing connections will be emitted as join events.
 
-* **peerId** Number. The connecting peer's identifier.
+* **peerId** String. The connecting peer's identifier.
 
 ```javascript
 peerEvents.addEventListener('join', e => {
@@ -144,7 +168,7 @@ peerEvents.addEventListener('join', e => {
 
 Emitted when a peer disconnects.
 
-* **peerId** Number. The disconnecting peer's identifier.
+* **peerId** String. The disconnecting peer's identifier.
 
 ```javascript
 peerEvents.addEventListener('leave', e => {
