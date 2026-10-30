@@ -59,7 +59,7 @@ for await (const chunk of nomad.ai.chat(messages, {
 
 ### Built-in tools
 
-During `nomad.ai.chat()` the model can use Nomad's built-in tools. The model finds a tool and calls it itself, and your page only sees the reply text. Pass `tools: false` to turn them off. Use `onToolEvent` to follow writes.
+During `nomad.ai.chat()` the model can use Nomad's built-in tools. The model finds a tool and calls it itself, and your page only sees the reply text. Pass `tools: false` to turn them off. Use [`onToolEvent`](#following-tool-calls) to follow tool calls and writes.
 
 A page's chat stays on its own Drive: the one it is served from, or `driveUrl`. These are the tools it gets:
 
@@ -90,5 +90,29 @@ Some tools work with the user's own data, so only the user's own assistant gets 
 | `followFeed`, `unfollowFeed`, `markPostsRead` | Change what the user follows and has read in Reader |
 
 The user's own assistant can also pass a `drive` to `readDriveFile`, `listDriveFiles` and `writeDriveFile`. A `drive` is one of the user's names for a drive, or a `hyper://` URL. The Notes and Reader tools ask the user for permission to read or change that data.
+
+#### Following tool calls
+
+`onToolEvent(e)` fires for each tool call the model makes, so your page can show what the assistant is doing. Each call sends a `start` event and then an `end` event with the same `id`. A call that a running `execute` makes names that call as `parentId`, so it starts and ends inside it. The shape follows [AG-UI](https://docs.ag-ui.com/concepts/events)'s `TOOL_CALL_START` and `TOOL_CALL_END`.
+
+| `e.phase` | Fields | When |
+|-----------|--------|------|
+| `start` | `id`, `parentId?`, `name`, `summary` | A tool call starts. `summary` says what it does in plain words |
+| `end` | `id`, `error?` | That call finished. `error` is set when it failed |
+| `write` | `drive`, `path`, `priorContent`, `draft` | `writeDriveFile` changed a file. `priorContent` is `null` for a new file |
+| `screenshot` | `imageDataUrl` | `screenshotCurrentPage` took a picture of the page |
+| `note` | `summary` | Something the user should know, such as page tools that were not allowed |
+
+```js
+const running = new Map()
+for await (const chunk of nomad.ai.chat(messages, {
+  onToolEvent (e) {
+    if (e.phase === 'start') running.set(e.id, e.summary)
+    if (e.phase === 'end') running.delete(e.id)
+  }
+})) {
+  output.textContent += chunk
+}
+```
 
 `nomad.ai.listTools()` returns what a page's chat can reach right now. `capabilities` lists the tools above that this page gets. `page` lists your WebMCP tools.
