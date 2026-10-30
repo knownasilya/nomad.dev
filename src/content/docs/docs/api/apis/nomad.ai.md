@@ -89,6 +89,8 @@ Some tools work with the user's own data, so only the user's own assistant gets 
 | `listReaderPosts`, `readReaderPost` | Read posts from the feeds the user follows in Reader |
 | `followFeed`, `unfollowFeed`, `markPostsRead` | Change what the user follows and has read in Reader |
 
+The AI Sidebar also gets tools that **use the page** in the user's tab, with real clicks and keys the user watches: `snapshotPage()` lists the page's controls with a `ref` each, and `clickElement({ ref })`, `typeText({ ref, text, clear?, submit? })`, `pressKey({ key })`, `selectOption({ ref, value })` and `scrollPage({ direction?, ref? })` act on them. `clickAt({ x, y })` clicks a point in a screenshot, for a model that sees images. The first action on a site asks the user, and a yes lasts 30 days for that site. The AI can't type into password, payment or file fields, and a click that buys, sends, posts or deletes asks the user first. The user can press Stop or Esc, or just click in the page, to take over. The phone's AI panel and programs on this computer don't get these tools. If your page registers [WebMCP](/docs/api/developers/webmcp) tools, the assistant uses those instead.
+
 The user's own assistant can also pass a `drive` to `readDriveFile`, `listDriveFiles` and `writeDriveFile`. A `drive` is one of the user's names for a drive, or a `hyper://` URL. The Notes and Reader tools ask the user for permission to read or change that data.
 
 #### Following tool calls
