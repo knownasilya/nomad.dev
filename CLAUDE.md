@@ -12,6 +12,9 @@ sibling `nomad` repo (see `nomad/CLAUDE.md`).
 - The sidebar is set in `astro.config.mjs`. Most groups `autogenerate` from a folder, so a new page in an
   existing folder appears on its own; a new folder needs a group there.
 - Search is Starlight's built-in Pagefind index, built by `npm run build`. Run `npm run dev` to preview.
+- News posts live in `src/content/docs/posts/` with a `date` in front matter. The homepage's News section
+  (`src/components/LatestNews.astro`) lists the newest five on its own; the `posts/index.md` list and the
+  News group in `astro.config.mjs` are by hand.
 - Write links as absolute site paths (`/docs/api/apis/nomad.fs/`), not relative `.md` paths.
 
 ## Drive templates
