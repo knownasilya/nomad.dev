@@ -7,7 +7,7 @@ description: Write skills that teach your AI how you want a kind of task done, a
 title: "Nomad 1.31: skills for your AI"
 ---
 
-Everything below is in [Nomad 1.31](https://github.com/knownasilya/nomad/releases/tag/v1.31.0), on desktop and Android. Your app updates itself, or you can download it from the release page.
+Everything below is in [Nomad 1.31.1](https://github.com/knownasilya/nomad/releases/tag/v1.31.1), on desktop and Android. Your app updates itself, or you can download it from the release page.
 
 ## Skills
 
