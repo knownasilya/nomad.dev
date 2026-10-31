@@ -4,17 +4,19 @@ description: Local AI API for Drives — streaming chat powered by an OpenAI-com
 slug: docs/api/apis/nomad.ai
 ---
 
-`nomad.ai` gives any Drive page access to a local AI agent. The model runs in whichever runtime is active in Nomad settings: Claude or Cursor when those apps are installed, or a named OpenAI-compatible server (Ollama, LM Studio, or any other `/v1` API).
+`nomad.ai` gives any Drive page access to a local AI agent. The model runs in whichever runtime is active on Nomad's AI page (`nomad://ai/setup`): Claude or Cursor when those apps are installed, or a named OpenAI-compatible server (Ollama, LM Studio, or any other `/v1` API).
 
 ## Configuration
 
-**Global settings** (Nomad → Settings → AI):
+**Global settings** (the AI page, `nomad://ai/setup`, in the browser menu under **AI**; it used to be Settings → AI):
 
 One runtime is active at a time. Claude and Cursor are detected when those apps are installed on the computer. Several named OpenAI-compatible servers can be saved (Ollama, LM Studio, or any `/v1` API); you choose which one is active, and which model it uses.
 
 - `ai_default_model` — model for the active runtime
 - `nomad.ai.listRuntimes()` — `{ active, model, runtimes }`, where each runtime is `{ id, name, kind, detected, available, baseUrl, hasToken }` and `kind` is `"openai"`, `"claude"`, or `"cursor"`
 - `nomad.ai.listModels()` — `{ models, current, labels }` for the active runtime. `labels` maps a model to a readable name when the runtime gives one: the Claude CLI reports names such as "Opus 5.5". It is empty for other runtimes.
+
+The AI page also lists the AI sidebar's past chats (search, rename, delete, or reopen one in the sidebar) and what the user's assistant remembers about them. Those memories go only to the user's own assistant: the AI sidebar, the phone's AI panel and AI Jobs. A page's `nomad.ai.chat()` never sees them.
 
 **Per-Drive opt-in** — add an `ai` key to your Drive's `/index.json`:
 
