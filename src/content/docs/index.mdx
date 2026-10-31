@@ -19,7 +19,8 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components'
+import { Card, CardGrid } from '@astrojs/starlight/components'
+import LatestNews from '~/components/LatestNews.astro'
 
 <CardGrid stagger>
   <Card title="Templates" icon="puzzle">
@@ -42,5 +43,4 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components'
 
 ## News
 
-<LinkCard title="Two new templates: Codesnip and Module" href="/posts/codesnip-and-module/" />
-<LinkCard title="Nomad.pages.dev is online" href="/posts/hello-world/" />
+<LatestNews limit={5} />

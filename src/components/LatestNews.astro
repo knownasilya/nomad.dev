@@ -1,0 +1,29 @@
+---
+// The newest news posts (src/content/docs/posts/), newest first.
+import { getCollection } from 'astro:content'
+import { LinkCard } from '@astrojs/starlight/components'
+
+interface Props {
+  limit?: number
+}
+
+const { limit = 5 } = Astro.props
+
+const posts = (await getCollection('docs', ({ id, data }) => id.startsWith('posts/') && data.date))
+  .sort((a, b) => b.data.date!.getTime() - a.data.date!.getTime())
+  .slice(0, limit)
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
+---
+
+{
+  posts.map(post => (
+    <LinkCard
+      title={post.data.title}
+      href={`/${post.id}/`}
+      description={[formatDate(post.data.date!), post.data.description].filter(Boolean).join(' · ')}
+    />
+  ))
+}
+<p><a href="/posts/">All news &raquo;</a></p>
