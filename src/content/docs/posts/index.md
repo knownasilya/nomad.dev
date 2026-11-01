@@ -3,6 +3,7 @@ title: News
 description: Developer news for Nomad Browser.
 ---
 
+- [Nomad 1.32: topics for your notes](/posts/whats-new-in-1-32/) (November 1, 2026)
 - [Nomad 1.31: skills for your AI](/posts/whats-new-in-1-31/) (October 31, 2026)
 - [Nomad 1.30: a Reader that saves anything, an AI page, and secrets](/posts/whats-new-in-1-30/) (October 31, 2026)
 - [Nomad 1.29: pinned tiles, Send now, and approving the AI's plan](/posts/whats-new-in-1-29/) (October 31, 2026)
