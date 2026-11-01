@@ -86,7 +86,7 @@ Some tools work with the user's own data, so only the user's own assistant gets 
 |------|--------------|
 | `currentTab()` | The tab the user is on: `{ url, title, drive, writable, draft }`. `draft` is `true` when writes to that drive stage in its Draft |
 | `openTab({ url?, background?, group? })` | Open a new tab, optionally in a tab group. The group is made if it doesn't exist. Not on the phone |
-| `listNotes`, `readNote`, `writeNote` | Find, read and write the user's Notes |
+| `listNotes`, `readNote`, `writeNote` | Find, read and write the user's Notes and their topics. `listNotes` takes a `topic`; `writeNote` takes `topics` |
 | `highlightText({ text, note? })` | Highlight text on the page in the user's tab, optionally with a Note. Not on the phone |
 | `listReaderPosts`, `readReaderPost` | Read posts from the feeds the user follows in Reader |
 | `followFeed`, `unfollowFeed`, `markPostsRead` | Change what the user follows and has read in Reader |
