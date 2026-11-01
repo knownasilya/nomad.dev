@@ -95,6 +95,8 @@ The AI Sidebar also gets tools that **use the page** in the user's tab, with rea
 
 The user's own assistant can also pass a `drive` to `readDriveFile`, `listDriveFiles` and `writeDriveFile`. A `drive` is one of the user's names for a drive, or a `hyper://` URL. The Notes and Reader tools ask the user for permission to read or change that data.
 
+When the assistant makes or changes something, it links to it in its answer. Notes, Jobs and Mods come back from their tools with a `url` (`nomad://notes/<id>`, `nomad://library/jobs?id=<id>`, `nomad://library/mods?id=<id>`), a file write ends with the file's `hyper://` URL, and a Highlight gives its `link`. In the AI Sidebar a click opens the link in a new tab. On the phone a Note, a Job or Reader opens on its own screen, a page opens in a new tab, and for a Mod or a memory the phone says where it is on the computer. A `nomad://` link opens only when it is one of these pages, and without any other query, so a link the model was talked into writing can't change anything when it opens.
+
 #### Following tool calls
 
 `onToolEvent(e)` fires for each tool call the model makes, so your page can show what the assistant is doing. Each call sends a `start` event and then an `end` event with the same `id`. A call that a running `execute` makes names that call as `parentId`, so it starts and ends inside it. The shape follows [AG-UI](https://docs.ag-ui.com/concepts/events)'s `TOOL_CALL_START` and `TOOL_CALL_END`.
