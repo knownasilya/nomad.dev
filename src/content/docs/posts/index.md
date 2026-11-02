@@ -3,6 +3,7 @@ title: News
 description: Developer news for Nomad Browser.
 ---
 
+- [Nomad 1.35: Personas on your phone](/posts/whats-new-in-1-35/) (November 2, 2026)
 - [Nomad 1.34: log in with a Persona](/posts/whats-new-in-1-34/) (November 2, 2026)
 - [Nomad 1.33: better search, links from your AI, and a calmer canvas](/posts/whats-new-in-1-33/) (November 2, 2026)
 - [Nomad 1.32: topics for your notes](/posts/whats-new-in-1-32/) (November 1, 2026)
