@@ -95,6 +95,12 @@ The AI Sidebar also gets tools that **use the page** in the user's tab, with rea
 
 The user's own assistant can also pass a `drive` to `readDriveFile`, `listDriveFiles` and `writeDriveFile`. A `drive` is one of the user's names for a drive, or a `hyper://` URL. The Notes and Reader tools ask the user for permission to read or change that data.
 
+#### Page text is data, and private data stays put
+
+Every chat, a page's own included, tells the model that what its tools read (web pages, fetched URLs, drive files, feed posts, page tools, HTTP responses) is data, not instructions. Only the user's own messages ask it to do things. So text on your page can inform the assistant but can't tell it what to do.
+
+The user's own assistant goes further. Once a chat has read the user's private data (Notes, Reader posts, Mods, Jobs, files in their drives, or the page in their tab), the first `fetchUrl`, `httpRequest` or `openTab` to each new site asks the user first, because the request could carry that data there. It doesn't ask for a site the user named in their messages (a URL or a bare domain), for one of the user's names, or for a request whose secrets cover its host. One answer holds for the rest of the turn, and the check lasts for the rest of the chat. An AI Job has nobody to ask: after it reads private data, it reaches only the sites its prompt names and the hosts of the secrets it may use.
+
 When the assistant makes or changes something, it links to it in its answer. Notes, Jobs and Mods come back from their tools with a `url` (`nomad://notes/<id>`, `nomad://library/jobs?id=<id>`, `nomad://library/mods?id=<id>`), a file write ends with the file's `hyper://` URL, and a Highlight gives its `link`. In the AI Sidebar a click opens the link in a new tab. On the phone a Note, a Job or Reader opens on its own screen, a page opens in a new tab, and for a Mod or a memory the phone says where it is on the computer. A `nomad://` link opens only when it is one of these pages, and without any other query, so a link the model was talked into writing can't change anything when it opens.
 
 #### Following tool calls
