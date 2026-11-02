@@ -103,6 +103,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             { label: 'All posts', slug: 'posts' },
+            'posts/whats-new-in-1-37',
             'posts/whats-new-in-1-36',
             'posts/whats-new-in-1-35',
             'posts/whats-new-in-1-34',
