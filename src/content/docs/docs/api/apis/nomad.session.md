@@ -15,8 +15,9 @@ The prompt is the only way a Session is made. There is no silent path, so call `
 - **Always:** the Session's `id`. Without anything else, the site knows it's the same visitor each time, and nothing more.
 - **`profile`:** the Persona's profile drive URL, its name and its picture.
 - **`modifyDrive`:** write files in the Persona's own profile drive. It needs `profile`.
+- **`email`:** the Persona's email address. It stands on its own: a site can ask for it with or without `profile`. Nomad doesn't verify the address, so send your own confirmation code if you need to know it's real. A Persona with no email gives none, even when the user leaves the box checked.
 
-The user can uncheck what you ask for, so a partial grant is normal. Check `session.perms` before you use the profile.
+The user can uncheck what you ask for, so a partial grant is normal. Check `session.perms` before you use the profile or the email.
 
 A page can never list the user's Personas, and two sites can't tell they saw the same Persona: each gets its own `id`.
 
@@ -27,7 +28,7 @@ A page can never list the user's Personas, and two sites can't tell they saw the
 Show the login prompt.
 
 * **opts** Object.
-  * **perms** Array&lt;String&gt;. What to ask for: `'profile'` and/or `'modifyDrive'`. Leave it out to ask only for the `id`.
+  * **perms** Array&lt;String&gt;. What to ask for: `'profile'`, `'modifyDrive'` and/or `'email'`. Leave it out to ask only for the `id`.
   * **maxAge** Number. Seconds until the Session ends. By default it doesn't end until the user logs out.
 * Returns **Promise&lt;Session&gt;**.
 
@@ -70,7 +71,7 @@ await nomad.session.revoke()
 
 ### Event: change
 
-Fires when the Session ends or changes: after `revoke()`, when the user logs out in the site-info panel or My Library, changes or deletes the Space's Persona, or does any of that on another device.
+Fires when the Session ends or changes: after `revoke()`, when the user logs out in the site-info panel or My Library, changes or deletes the Space's Persona, changes the Persona's email, or does any of that on another device.
 
 * **session** Session|null. The new Session, or `null` once the user is logged out.
 
@@ -84,11 +85,12 @@ nomad.session.addEventListener('change', (e) => {
 ## The Session object
 
 * **id** String. Random, made for your site, this Persona and this Space.
-* **perms** Array&lt;String&gt;. What the user granted: `'profile'`, `'modifyDrive'`, both or neither.
+* **perms** Array&lt;String&gt;. What the user granted: any of `'profile'`, `'modifyDrive'` and `'email'`, or none.
 * **profile** Object. Only with `'profile'`.
   * **url** String. The Persona's profile drive, like `hyper://…/`.
   * **title** String. The Persona's name.
   * **thumb** String. The picture's path in that drive, like `/thumb.png`, when there is one.
+* **email** String. Only with `'email'`, when the Persona has one.
 * **createdAt** String. When the user logged in (ISO 8601).
 * **expiresAt** String. When the Session ends, if you passed `maxAge`.
 
@@ -103,6 +105,18 @@ function showUser(session) {
   if (thumb) avatarEl.src = new URL(thumb, url).href
 }
 ```
+
+## Asking for an email
+
+```javascript
+const session = await nomad.session.requestLogin({ perms: ['email'] })
+if (session.email) {
+  // Not verified by Nomad: send a code before you rely on it.
+  await sendConfirmationCode(session.email)
+}
+```
+
+The email lives on the user's own devices, not in their profile drive, and a site sees it only after the user says yes. One address given to two sites lets them tell it's the same person, and the prompt says so.
 
 ## Notes
 
