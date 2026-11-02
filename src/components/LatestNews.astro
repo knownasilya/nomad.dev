@@ -1,5 +1,7 @@
 ---
-// The newest news posts (src/content/docs/posts/), newest first.
+// The newest news posts (src/content/docs/posts/), newest first. Posts on the same day
+// (several releases can ship at once) sort by file name, comparing numbers as numbers,
+// so whats-new-in-1-36 comes before whats-new-in-1-35 (and 1-100 before 1-99).
 import { getCollection } from 'astro:content'
 import { LinkCard } from '@astrojs/starlight/components'
 
@@ -10,7 +12,11 @@ interface Props {
 const { limit = 5 } = Astro.props
 
 const posts = (await getCollection('docs', ({ id, data }) => id.startsWith('posts/') && data.date))
-  .sort((a, b) => b.data.date!.getTime() - a.data.date!.getTime())
+  .sort(
+    (a, b) =>
+      b.data.date!.getTime() - a.data.date!.getTime() ||
+      b.id.localeCompare(a.id, 'en', { numeric: true })
+  )
   .slice(0, limit)
 
 const formatDate = (date: Date) =>
