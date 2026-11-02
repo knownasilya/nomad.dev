@@ -3,6 +3,7 @@ title: News
 description: Developer news for Nomad Browser.
 ---
 
+- [Nomad 1.36: Jobs that use the web, and your AI makes drives](/posts/whats-new-in-1-36/) (November 2, 2026)
 - [Nomad 1.35: Personas on your phone](/posts/whats-new-in-1-35/) (November 2, 2026)
 - [Nomad 1.34: log in with a Persona](/posts/whats-new-in-1-34/) (November 2, 2026)
 - [Nomad 1.33: better search, links from your AI, and a calmer canvas](/posts/whats-new-in-1-33/) (November 2, 2026)
