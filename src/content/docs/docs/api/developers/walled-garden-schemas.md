@@ -25,6 +25,24 @@ See the [Profile Drives guide](/docs/api/developers/profile-drives/) for full do
 }
 ```
 
+A profile whose owner can receive [Messages](/docs/api/advanced/messages/) also has an `inbox`. Nomad writes it; don't edit it by hand.
+
+```json
+"inbox": {
+  "v": 1,
+  "sign": "<64 hex characters>",
+  "box": "<64 hex characters>",
+  "mailboxes": ["<64 hex characters>"]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `v` | `1` | ✓ | The inbox format version |
+| `sign` | 32-byte hex | ✓ | The Persona's Ed25519 key. Every message it sends is signed with it. |
+| `box` | 32-byte hex | | The key messages are sealed to. Only published when anyone may write. |
+| `mailboxes` | Array of 32-byte hex, at most 8 | | One address per device that answers the inbox. Only published when anyone may write. |
+
 ---
 
 ## post
@@ -116,6 +134,35 @@ A reply to a post or any URL-addressable resource.
 | `createdAt` | ISO 8601 datetime | ✓ |
 | `replyTo` | URL of the parent comment | |
 | `updatedAt` | ISO 8601 datetime | |
+
+---
+
+## message
+
+A direct message from one Persona to another. It travels encrypted to the recipient's inbox and is kept in each side's Vault, never in a drive. See [Messages](/docs/api/advanced/messages/).
+
+```json
+{
+  "type": "walled.garden/message",
+  "id": "ggcxnymh7njpezs65bmzhcrwuu",
+  "from": "hyper://<sender's profile key>/",
+  "to": "hyper://<recipient's profile key>/",
+  "createdAt": "2026-11-03T12:00:00.000Z",
+  "text": "Hi! Are you coming on Saturday?"
+}
+```
+
+| Field | Type | Required |
+|-------|------|----------|
+| `type` | `"walled.garden/message"` | ✓ |
+| `id` | String, 16–40 characters (16 random bytes, base32) | ✓ |
+| `from` | URL of the sender's profile drive | ✓ |
+| `to` | URL of the recipient's profile drive | ✓ |
+| `createdAt` | ISO 8601 datetime | ✓ |
+| `text` | Plain text, 1–8000 characters | ✓ |
+| `inReplyTo` | The `id` of another message in the conversation | |
+
+Text only: no HTML, images or attachments, so reading a message never loads anything. No other fields are allowed.
 
 ---
 
