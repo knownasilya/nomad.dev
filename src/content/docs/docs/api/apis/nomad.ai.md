@@ -71,10 +71,12 @@ A page's chat stays on its own Drive: the one it is served from, or `driveUrl`. 
 | `listDriveFiles({ path })` | List a directory in the Drive | Always |
 | `fetchUrl({ url })` | Fetch the text of an `http`/`https` URL | Always |
 | `writeDriveFile({ path, content })` | Write a text file to the Drive. Asks the user for permission to change the Drive | Unless `allowWrite: false` |
-| `readCurrentPage()` | Read the visible text of the page that called `chat()` | On this device (not over the AI Bridge) |
+| `readCurrentPage({ offset? })` | Read the visible text of the page that called `chat()`. A long page comes in parts (see below) | On this device (not over the AI Bridge) |
 | `screenshotCurrentPage()` | Take a screenshot of that page and show it to the model | The model accepts images (`allowVision: true`), on this device |
 
 When the drive is in [Draft Mode](/docs/api/apis/nomad.fs/#draft-mode), or the chat runs over the AI Bridge (the phone's AI panel, or a page on another device), `writeDriveFile` stages the file in the drive's Draft instead of writing it live, and `readDriveFile` and `listDriveFiles` read the Draft, so the model sees its own edits. The user publishes or discards the Draft.
+
+**Long text comes in parts.** `readCurrentPage`, `readNote`, `readReaderPost` and a Job's `openPage` give at most 20,000 characters at a time, so one long page or Note can't fill the model's context. A part that isn't the whole text says which characters it holds and where the next one starts: `readNote`, `readReaderPost` and `openPage` add `offset`, `length`, `nextOffset` (until the last part) and a `part` note to their result, and `readCurrentPage` puts the note after the text. The model reads on by calling the same tool again with `offset` set to that number. Before it rewrites a long Note with `writeNote`, which replaces the whole Note, it reads every part.
 
 The model can also call **your page's own tools**, the ones it registers with `document.modelContext` ([WebMCP](/docs/api/developers/webmcp)), after the user allows them once for your site.
 
@@ -87,9 +89,9 @@ Some tools work with the user's own data, so only the user's own assistant gets 
 | `currentTab()` | The tab the user is on: `{ url, title, drive, writable, draft }`. `draft` is `true` when writes to that drive stage in its Draft |
 | `openTab({ url?, background?, group? })` | Open a new tab, optionally in a tab group. The group is made if it doesn't exist. Not on the phone |
 | `createDrive({ title, description?, template?, collaborative? })` | Make a new drive in the user's library, as the Create Drive dialog does. `template` is `"blank"` (the default) or `"document"`. Asks the user once a turn. The assistant can then write the drive's files without asking again. An AI Job can make drives only when the user ticks "Make new drives" for it |
-| `listNotes`, `readNote`, `writeNote` | Find, read and write the user's Notes and their topics. `listNotes` takes a `topic`; `writeNote` takes `topics` |
+| `listNotes`, `readNote`, `writeNote` | Find, read and write the user's Notes and their topics. `listNotes` takes a `topic`; `readNote` takes an `offset` for a long Note (see below); `writeNote` takes `topics` |
 | `highlightText({ text, note? })` | Highlight text on the page in the user's tab, optionally with a Note. Not on the phone |
-| `listReaderPosts`, `readReaderPost` | Read posts from the feeds the user follows in Reader |
+| `listReaderPosts`, `readReaderPost` | Read posts from the feeds the user follows in Reader. `readReaderPost` takes an `offset` for a long post |
 | `followFeed`, `unfollowFeed`, `markPostsRead` | Change what the user follows and has read in Reader |
 
 The AI Sidebar also gets tools that **use the page** in the user's tab, with real clicks and keys the user watches: `snapshotPage()` lists the page's controls with a `ref` each, and `clickElement({ ref })`, `typeText({ ref, text, clear?, submit? })`, `pressKey({ key })`, `selectOption({ ref, value })` and `scrollPage({ direction?, ref? })` act on them. `clickAt({ x, y })` clicks a point in a screenshot, for a model that sees images. The first action on a site asks the user, and a yes lasts 30 days for that site. The AI can't type into password, payment or file fields, and a click that buys, sends, posts or deletes asks the user first. Before several of those, the assistant can show a plan with `planPageActions({ goal, steps: [{ ref, note }] })`, and one approval covers the clicks it lists. The user can press Stop or Esc, or just click in the page, to take over. The phone's AI panel and programs on this computer don't get these tools. If your page registers [WebMCP](/docs/api/developers/webmcp) tools, the assistant uses those instead.
