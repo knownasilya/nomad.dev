@@ -3,6 +3,7 @@ title: News
 description: Developer news for Nomad Browser.
 ---
 
+- [Nomad 1.41: live editing in Notes](/posts/whats-new-in-1-41/) (November 4, 2026)
 - [Nomad 1.40: see what your AI sends, and sites you trust for 3 months](/posts/whats-new-in-1-40/) (November 4, 2026)
 - [Nomad 1.39: Messages between Personas, and Jobs you can watch](/posts/whats-new-in-1-39/) (November 3, 2026)
 - [Nomad 1.38: a sidebar that keeps its pins, and buttons that explain themselves](/posts/whats-new-in-1-38/) (November 2, 2026)
