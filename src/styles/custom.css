@@ -95,3 +95,14 @@ button.create-drive:disabled {
   margin: 2rem auto;
   box-shadow: 0 2px 4px #0004;
 }
+
+/* Homepage showcase video */
+.showcase-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 0 0 2rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--sl-color-gray-5);
+  background: hsl(235, 40%, 9%);
+}
