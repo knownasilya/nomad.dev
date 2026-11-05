@@ -22,6 +22,17 @@ hero:
 import { Card, CardGrid } from '@astrojs/starlight/components'
 import LatestNews from '~/components/LatestNews.astro'
 
+<video
+  class="showcase-video"
+  controls
+  playsinline
+  preload="none"
+  poster="/video/nomad-showcase-poster.jpg"
+  aria-label="Nomad on desktop and phone: browsing, the built-in AI, Notes, Reader, AI Jobs and Messages"
+>
+  <source src="/video/nomad-showcase.mp4" type="video/mp4" />
+</video>
+
 <CardGrid stagger>
   <Card title="Templates" icon="puzzle">
     Starter drives you can clone with one click: a blog, a forum, a wiki, a chat room, and more.
