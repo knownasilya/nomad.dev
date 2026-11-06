@@ -112,6 +112,66 @@ A **blog** is a feed whose items are posts: each post is a directory under `item
 
 ---
 
+## calendar
+
+Marks a drive as a **calendar**. Nomad's Calendar (`nomad://calendar` and the phone's Calendar screen) can follow one beside iCal feeds: paste the drive's `hyper://` address in **Follow**, or use **Follow in Calendar** in the site info panel. Its events show on the follower's calendar, read-only, and update a few minutes after the drive changes. Lives in `/index.json`.
+
+```json
+{
+  "type": "walled.garden/calendar",
+  "title": "Otters Swim Club",
+  "description": "Training, galas and socials.",
+  "color": "#0ea5e9",
+  "eventsPath": "/events/"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | `"walled.garden/calendar"` | ✓ | Identifies this drive as a calendar |
+| `title` | String (max 280) | ✓ | The calendar's name; followers see it beside each event |
+| `description` | String (max 1000) | | What the calendar is for |
+| `color` | `#rrggbb` | | The color followers see its events in |
+| `eventsPath` | String | | Directory holding the events (default `/events/`) |
+
+### calendar-event
+
+One event of a calendar drive: one `.json` file in `eventsPath`, such as `/events/winter-gala.json`. The file's name is the event's id, so keep it when you change the event.
+
+```json
+{
+  "type": "walled.garden/calendar-event",
+  "title": "Swim training",
+  "start": "2026-11-02T17:00",
+  "end": "2026-11-02T18:00",
+  "location": "Leisure centre",
+  "repeat": { "freq": "weekly", "byDay": [1, 4], "until": "2026-12-17" },
+  "exclude": ["2026-11-05T17:00"]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | `"walled.garden/calendar-event"` | ✓ | Identifies the record |
+| `title` | String (max 200) | ✓ | What's on |
+| `start` | `YYYY-MM-DD` or `YYYY-MM-DDTHH:mm` | ✓ | A day for an all-day event, a day and time otherwise |
+| `end` | Same format | | The last day of an all-day event, or when a timed one ends |
+| `allDay` | Boolean | | Defaults to whether `start` is a day without a time |
+| `location` | String (max 200) | | Where |
+| `notes` | String (max 2000) | | More about it |
+| `repeat.freq` | `daily` \| `weekly` \| `monthly` \| `yearly` | | How it repeats |
+| `repeat.interval` | Integer 1–99 | | Every how many days, weeks, months or years (default 1) |
+| `repeat.until` | `YYYY-MM-DD` | | The last day it can happen on |
+| `repeat.count` | Integer 1–1000 | | How many times it happens |
+| `repeat.byDay` | Array of 0–6 | | For a weekly repeat, the days (Sunday is 0) |
+| `exclude` | Array of times | | Times of a repeat that don't happen |
+| `status` | `confirmed` \| `tentative` \| `cancelled` | | `cancelled` takes it off the calendar |
+| `createdAt`, `updatedAt` | ISO 8601 datetime | | When it was made and last changed |
+
+Times have no time zone: `18:00` is 6pm for everyone who follows the calendar, and a weekly event stays at 6pm across a clock change.
+
+---
+
 ## comment
 
 A reply to a post or any URL-addressable resource.

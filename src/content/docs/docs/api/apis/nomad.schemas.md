@@ -42,12 +42,15 @@ nomad.schemas.list()
 // [
 //   'walled.garden/person',
 //   'walled.garden/post',
-//   'walled.garden/comment',
-//   'walled.garden/status',
+//   'walled.garden/feed',
 //   'walled.garden/bookmark',
+//   'walled.garden/comment',
 //   'walled.garden/follows',
 //   'walled.garden/reaction',
+//   'walled.garden/status',
 //   'walled.garden/vote',
-//   'walled.garden/writer-keys'
+//   'walled.garden/message',
+//   'walled.garden/calendar',
+//   'walled.garden/calendar-event'
 // ]
 ```
