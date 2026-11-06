@@ -66,7 +66,7 @@ Someone who can edit the Space doesn't need to ask: their Devices are added to i
 
 ## Leave or remove someone
 
-- **Leave:** choose **Leave** at the bottom of **My Library → Sharing**. The Space goes from all your Devices. If you're the only owner, make someone else an owner first.
+- **Leave:** choose **Leave** at the bottom of **My Library → Sharing**, or **Leave space** in the Space's edit form in the Spaces menu or the phone's Space switcher ([Managing Your Spaces](/docs/api/beginner/managing-your-spaces/)). The Space goes from all your Devices. If you're the only owner, make someone else an owner first.
 - **Remove someone:** an owner chooses the × next to their name.
 
 Removing someone stops their changes. It can't take back what they already synced: they keep what they have, and can still read the drives the Space listed. If that matters, move those drives to a new Space and invite the others again.
