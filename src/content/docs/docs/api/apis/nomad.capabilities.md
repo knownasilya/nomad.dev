@@ -14,6 +14,10 @@ A hyperdrive capability URL uses a special `.cap` pseudo-TLD. They are formed as
 
 Capability URLs are local and stored in-memory. They will be "destroyed" when the browser restarts. They are not networked and therefore cannot be shared with other users. They are able to map to a key and a drive-version, but cannot map to subfolders or files.
 
+A capability URL gives **read access only**. Through [`nomad.fs`](/docs/api/apis/nomad.fs/) you can read with it (`getInfo`, `stat`, `get`, `readFile`, `list`, `readdir`, `diff`, `watch`) on any drive, single-writer or collaborative. Writes, writer management, Drafts and other whole-drive calls through a capability are refused. `getInfo` on a capability reports the capability URL as its `key` and `url`, and `writable: false`, so the drive's real key stays hidden.
+
+Only the page (origin) that created a capability can modify or delete it.
+
 ## API
 
 ### nomad.capabilities.create(targetUrl)
