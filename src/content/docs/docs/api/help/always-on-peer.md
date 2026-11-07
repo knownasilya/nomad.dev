@@ -10,7 +10,7 @@ devices that are never online at the same time never sync.
 An **always-on Peer** fixes that. It's a Nomad with no windows that you run on a machine that stays
 on: a NAS, a home server, a Raspberry Pi, or a small VPS. It keeps a full copy of your Spaces and
 serves it, so your devices sync through it and the people you share a Space with can reach your
-family album, calendar and notes at any hour.
+Assets, calendar and notes at any hour.
 
 ## What a Peer can and can't do
 
