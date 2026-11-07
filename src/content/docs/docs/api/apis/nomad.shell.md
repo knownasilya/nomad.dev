@@ -17,7 +17,7 @@ await nomad.shell.drivePropertiesDialog(drive.url)
 
 ### nomad.shell.selectFileDialog(\[opts\])
 
-Create a dialog for selecting files or folders.
+Create a dialog for selecting files or folders. A web page gets read-only [capability URLs](/docs/api/apis/nomad.capabilities/) for what the user picks, never the drive's own URL. See [What a page gets](#what-a-page-gets).
 
 * **opts** Object
   * **title** String. The title of the selection dialog.
@@ -30,10 +30,10 @@ Create a dialog for selecting files or folders.
     * **writable** Boolean. If true, only accept writable files. If false, only accept unwritable files.
   * **allowMultiple** Boolean. If true, allow multiple files to be selected.
   * **disallowCreate** Boolean. If true, require the selected file to exist.
-  * **capability** Boolean. If true, return [capability URLs](/docs/api/apis/nomad.capabilities/) for what the user picks instead of the drives' own URLs. See [A private picker](#a-private-picker).
+  * **capability** Boolean. Only matters for a `nomad://` page, which otherwise gets the drives' own URLs. A web page always gets capability URLs.
 * Returns **Promise&lt;Array&lt;Object&gt;&gt;**
   * **path** String. The path of the selected file or folder.
-  * **origin** String. The URL of the hyperdrive that contains the file or folder (with `capability`, the capability's root, `hyper://<token>.cap/`).
+  * **origin** String. The capability's root, `hyper://<token>.cap/` (for a `nomad://` page, the URL of the hyperdrive that contains the file or folder).
   * **url** String. The URL of the file or folder.
 
 ```javascript
@@ -48,26 +48,26 @@ var files = await nomad.shell.selectFileDialog({
   disallowCreate: true
 })
 files[0].path   // => '/imgs/foo.png'
-files[0].origin // => 'hyper://1234..56/'
-files[0].url    // => 'hyper://1234..56/imgs/foo.png'
+files[0].origin // => 'hyper://4pz..q7.cap/'
+files[0].url    // => 'hyper://4pz..q7.cap/imgs/foo.png'
 ```
 
-#### A private picker
+#### What a page gets
 
-With `capability: true`, the page never learns which drive a file came from. Each result's `url` is a capability URL for only the file or folder the user picked:
+The page never learns which drive a file came from. Each result's `url` is a capability URL for only the file or folder the user picked:
 
 - The page can **read** it with [`nomad.fs`](/docs/api/apis/nomad.fs/), and nothing else in that drive. A folder covers everything inside it.
 - It can't write, change who can write, or see the drive's key. `getInfo` reports the capability instead.
 - It can come from the user's private drive (`hyper://private/`), which pages otherwise can't read. The whole private drive can't be picked.
-- It is kept across restarts. It lasts until the user removes it in the site's **Permissions** (under "Files this site can read"), or the page calls `nomad.capabilities.delete(url)`.
+- It is kept across restarts. It lasts until the user removes it in the site's **Permissions** (under "Shared with this site"), or the page calls `nomad.capabilities.delete(url)`.
+- To change a file, ask for a drive with [`selectDriveDialog`](#nomadshellselectdrivedialogopts) and `writable: true`.
 - Picking the same item again gives the same URL back. `nomad.capabilities.list()` lists the ones the page has.
 
 ```javascript
 var [file] = await nomad.shell.selectFileDialog({
   title: 'Pick a note to import',
   select: ['file'],
-  filters: { extensions: ['md'] },
-  capability: true
+  filters: { extensions: ['md'] }
 })
 file.url // => 'hyper://4pz..q7.cap/notes/groceries.md'
 var text = await nomad.fs.readFile(file.url)
@@ -118,6 +118,8 @@ Create a dialog for selecting a hyperdrive from the user's library.
 * Returns **Promise&lt;String|Array&lt;String&gt;&gt;**
 
 If a `.template` is specified, `.writable` is not `false`, and no drives in the user's library matches the filtering criteria, the modal will automatically jump to the "create drive" flow.
+
+When a web page asks, the dialog warns the user that the site will keep the drive's address, which can't be taken back. Unless the page asked for `writable: true`, the user can tick **Share read-only instead**. The page then gets a whole-drive [capability URL](/docs/api/apis/nomad.capabilities/) (`hyper://<token>.cap/`) in place of the drive's URL: it reads the drive with `nomad.fs`, can't write to it, and loses it when the user removes it in the site's Permissions. A page that needs the real URL should handle both.
 
 ```javascript
 var driveUrl = await nomad.shell.selectDriveDialog({

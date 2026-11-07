@@ -14,7 +14,7 @@ A hyperdrive capability URL uses a special `.cap` pseudo-TLD. They are formed as
 
 Capability URLs are local to this computer. They are not networked and therefore cannot be shared with other users. The ones a page makes with `create()` are stored in-memory and will be "destroyed" when the browser restarts; they map to a key and a drive-version, not to subfolders or files.
 
-A capability can also cover **one file or folder** instead of a whole drive. The page gets one of those when the user picks something in [`nomad.shell.selectFileDialog({ capability: true })`](/docs/api/apis/nomad.shell/#a-private-picker). A picked capability keeps the item's own path in its URL (`hyper://<token>.cap/notes/a.md`), reads outside what it covers are refused, and it can reach the user's private drive. Unlike the ones a page makes, picked capabilities are kept across restarts, until the user removes them in the site's Permissions or the page deletes them.
+A capability can also cover **one file or folder** instead of a whole drive. A web page gets one of those whenever the user picks something in [`nomad.shell.selectFileDialog`](/docs/api/apis/nomad.shell/#what-a-page-gets), and a whole-drive one when the user chooses "Share read-only instead" in [`selectDriveDialog`](/docs/api/apis/nomad.shell/#nomadshellselectdrivedialogopts). A picked capability keeps the item's own path in its URL (`hyper://<token>.cap/notes/a.md`), reads outside what it covers are refused, and it can reach the user's private drive. Unlike the ones a page makes, picked capabilities are kept across restarts, until the user removes them in the site's Permissions or the page deletes them.
 
 A capability URL gives **read access only**. Through [`nomad.fs`](/docs/api/apis/nomad.fs/) you can read with it (`getInfo`, `stat`, `get`, `readFile`, `list`, `readdir`, plus `diff` and `watch` for a whole-drive one) on any drive, single-writer or collaborative. Writes, writer management, Drafts and other whole-drive calls through a capability are refused. `getInfo` on a capability reports the capability URL as its `key` and `url`, and `writable: false`, so the drive's real key stays hidden.
 
@@ -65,7 +65,7 @@ List this page's capabilities: the ones it made and the files and folders the us
 * Returns **Promise&lt;Array&lt;Object&gt;&gt;**
   * **url** String. The capability URL.
   * **path** String. What it covers: `/` for a whole drive, `/dir/` for a folder, `/file` for one file.
-  * **picked** Boolean. True when the user picked it in the file picker.
+  * **picked** Boolean. True when the user shared it (the file picker, or the drive dialog's read-only share).
   * **title** String. The picked item's name.
   * **createdAt** Number. When it was made (ms).
 
