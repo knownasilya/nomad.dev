@@ -7,7 +7,7 @@ A **vouch** is how people say "I know this person" offline: *I've had them over 
 
 ## What a vouch is, and what it isn't
 
-A vouch says one thing: the person who gave it has had this person over at home. It can carry a short note.
+A vouch says one thing: the person who gave it has had this person over at home. It always carries a short note: a few words from the host about the guest.
 
 It **isn't** proof that an account belongs to a real person. A group of made-up accounts can vouch for each other as much as they like, and one person can run two Personas. What a vouch does prove is narrower and honest: *someone you already trust says so.* That's why Nomad shows a vouch by who gave it, and never adds vouches up into a score, a badge or "verified".
 
@@ -16,7 +16,7 @@ A vouch has no place, no dates of visits and no count, so it can never help anyo
 ## Give a vouch
 
 1. Open the other person's profile drive, open the site info panel and choose **Vouch for them**. Or go to **My Library → Personas → Vouches** and choose **Give a vouch**, then paste their profile address or the message link they gave you.
-2. Pick the Persona it comes from and add a note if you like.
+2. Pick the Persona it comes from and write a few words about them. A vouch needs a note.
 3. Choose **Send vouch**.
 
 The form says what giving means: *they can show this to sites and on their profile, with your name on it.* So only vouch for someone you're happy to be named next to.

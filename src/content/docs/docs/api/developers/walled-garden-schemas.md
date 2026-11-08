@@ -253,7 +253,7 @@ One profile drive (the **host**) says it has had another (the **guest**) over at
 | `kind` | `"hosted"`, the only kind | ✓ |
 | `host` | URL of the host's profile drive | ✓ |
 | `guest` | URL of the guest's profile drive (not the host's) | ✓ |
-| `note` | Plain text, 1–280 characters, shown and never rendered | |
+| `note` | Plain text in the host's words, 1–280 characters and not blank, shown and never rendered | ✓ |
 | `issuedAt` | ISO 8601 datetime | ✓ |
 | `expiresAt` | ISO 8601 datetime, at most a year after `issuedAt` | ✓ |
 
