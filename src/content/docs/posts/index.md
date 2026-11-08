@@ -3,6 +3,7 @@ title: News
 description: Developer news for Nomad Browser.
 ---
 
+- [Nomad 1.46: invite links, household contacts, and reminders](/posts/whats-new-in-1-46/) (November 8, 2026)
 - [Nomad 1.45: manage your Spaces, and calendar drives](/posts/whats-new-in-1-45/) (November 6, 2026)
 - [Nomad 1.44: a family calendar, a family album, and an always-on Peer](/posts/whats-new-in-1-44/) (November 6, 2026)
 - [Nomad 1.43: a shared home](/posts/whats-new-in-1-43/) (November 6, 2026)
