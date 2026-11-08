@@ -219,10 +219,85 @@ A direct message from one Persona to another. It travels encrypted to the recipi
 | `from` | URL of the sender's profile drive | ✓ |
 | `to` | URL of the recipient's profile drive | ✓ |
 | `createdAt` | ISO 8601 datetime | ✓ |
-| `text` | Plain text, 1–8000 characters | ✓ |
+| `text` | Plain text, up to 8000 characters. Empty only when the message carries a `vouch` | ✓ |
 | `inReplyTo` | The `id` of another message in the conversation | |
+| `vouch` | A [vouch](#vouch) the sender gives the recipient: its `host` is `from` and its `guest` is `to` | |
 
 Text only: no HTML, images or attachments, so reading a message never loads anything. No other fields are allowed.
+
+---
+
+## vouch
+
+One profile drive (the **host**) says it has had another (the **guest**) over at home. It travels to the guest inside a [message](#message), shows nowhere until the guest accepts it, and the guest decides who sees it. See [Vouches](/docs/api/advanced/vouches/).
+
+```json
+{
+  "type": "walled.garden/vouch",
+  "v": 1,
+  "id": "aaaqeayeaudaocajbifqydiob4",
+  "kind": "hosted",
+  "host": "hyper://<host's profile key>/",
+  "guest": "hyper://<guest's profile key>/",
+  "note": "Lovely to have you for dinner",
+  "issuedAt": "2026-11-08T12:00:00.000Z",
+  "expiresAt": "2027-11-08T12:00:00.000Z"
+}
+```
+
+| Field | Type | Required |
+|-------|------|----------|
+| `type` | `"walled.garden/vouch"` | ✓ |
+| `v` | `1` | ✓ |
+| `id` | 16–40 characters, `a`–`z` and `2`–`7` (16 random bytes, base32) | ✓ |
+| `kind` | `"hosted"`, the only kind | ✓ |
+| `host` | URL of the host's profile drive | ✓ |
+| `guest` | URL of the guest's profile drive (not the host's) | ✓ |
+| `note` | Plain text, 1–280 characters, shown and never rendered | |
+| `issuedAt` | ISO 8601 datetime | ✓ |
+| `expiresAt` | ISO 8601 datetime, at most a year after `issuedAt` | ✓ |
+
+There are no counts, ratings, places or visit dates, and no other fields are allowed.
+
+### Checking a vouch
+
+A vouch is valid while its host still stands behind it and `expiresAt` hasn't passed. The host stands behind it by listing its hash in their own profile drive, at `/.data/walled.garden/vouches-given.json`:
+
+```json
+{ "type": "walled.garden/vouch-index", "v": 1, "hashes": ["89f918a5359a350c0db78a2a85b5fed98f06519e4772df4b5768531d66323d32"] }
+```
+
+The hash is the lowercase hex SHA-256 of the vouch's **canonical JSON**: the record as JSON with no spaces and the object keys sorted, encoded as UTF-8. The example vouch above hashes to the value in the example list. To check one:
+
+1. Check the record against the table above, and that `expiresAt` is still in the future.
+2. Read `host`'s `vouches-given.json`. A hash missing from the list means the host withdrew it. If you can't read the drive, say you couldn't check, never that it's valid.
+3. Weigh it by whether you know the host. A vouch says "the writers of the host's profile drive say so". It isn't proof that either account is a real person, so never count vouches into a score.
+
+```javascript
+const canonical = (v) =>
+  v === null || typeof v !== 'object' ? JSON.stringify(v)
+  : Array.isArray(v) ? `[${v.map(canonical).join(',')}]`
+  : `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${canonical(v[k])}`).join(',')}}`
+
+async function isValid (vouch) {
+  if (Date.parse(vouch.expiresAt) <= Date.now()) return false
+  const bytes = new TextEncoder().encode(canonical(vouch))
+  const hash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))]
+    .map((b) => b.toString(16).padStart(2, '0')).join('')
+  const list = await nomad.fs.drive(vouch.host)
+    .get('/.data/walled.garden/vouches-given.json', 'json')
+    .catch(() => null) // no list, or the drive can't be read: don't count it
+  return list?.type === 'walled.garden/vouch-index' && list.hashes.includes(hash)
+}
+```
+
+### A profile's vouches
+
+A guest who shows vouches on their profile lists them at `/.data/walled.garden/vouches.json` in their profile drive. Keep only the ones whose `guest` is that drive: a profile can't show a vouch for someone else.
+
+```json
+{ "type": "walled.garden/vouches", "v": 1, "items": [ { "type": "walled.garden/vouch", "…": "…" } ] }
+```
 
 ---
 
