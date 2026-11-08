@@ -68,7 +68,7 @@ Requires permission from the user.
   * **url** String. The pane's current location.
 
 ```javascript
-var pane = await nomad.panes.create('https://nomad.dev', {attach: true})
+var pane = await nomad.panes.create('https://nomad.pages.dev', {attach: true})
 console.log(pane.id) // some number
 console.log(pane.url) // the current address of the pane
 ```
@@ -82,7 +82,7 @@ Navigates the pane to the given URL. The given pane must be attached.
 * Returns **Promise&lt;Void&gt;**.
 
 ```javascript
-await nomad.panes.navigate(pane.id, 'https://nomad.dev')
+await nomad.panes.navigate(pane.id, 'https://nomad.pages.dev')
 ```
 
 ### nomad.panes.focus(paneId)
@@ -207,7 +207,7 @@ This example app can help you familiarize with the panes API.
   <body>
     <h1>nomad.panes API Demo</h1>
     <button id="create">Create Attached Pane</button>
-    <button id="nav1" class="requires-attached" disabled>Navigate pane to nomad.dev</button>
+    <button id="nav1" class="requires-attached" disabled>Navigate pane to nomad.pages.dev</button>
     <button id="nav2" class="requires-attached" disabled>Navigate pane to example.com</button>
     <button id="exec" class="requires-attached" disabled>Execute JS in pane</button>
     <button id="inject" class="requires-attached" disabled>Inject CSS in pane</button>
@@ -225,7 +225,7 @@ This example app can help you familiarize with the panes API.
       })
       const on = (el, evt, fn) => el.addEventListener(evt, fn)
       on(create, 'click', e => nomad.panes.create('https://example.com', {attach: true}))
-      on(nav1, 'click', e => nomad.panes.navigate(nomad.panes.getAttachedPane().id, 'https://nomad.dev'))
+      on(nav1, 'click', e => nomad.panes.navigate(nomad.panes.getAttachedPane().id, 'https://nomad.pages.dev'))
       on(nav2, 'click', e => nomad.panes.navigate(nomad.panes.getAttachedPane().id, 'https://example.com'))
       on(exec, 'click', e => nomad.panes.executeJavaScript(nomad.panes.getAttachedPane().id, 'alert("hello from " + location.toString())'))
       on(inject, 'click', e => nomad.panes.injectCss(nomad.panes.getAttachedPane().id, 'body { color: red !important; }'))
