@@ -16,7 +16,7 @@ Messages are plain text, up to 8,000 characters. Links show as links, but nothin
 
 Writing to someone makes them a contact of that Persona, so their answer goes straight to your inbox.
 
-A message can also carry a [vouch](/docs/api/advanced/vouches/), when someone says they've had you over. It shows as a card in the conversation; accept or decline it in **Personas**.
+A message can also carry a [vouch](/docs/api/advanced/vouches/), when someone vouches for you (they've had you over). It shows as a card in the conversation; accept or decline it in **Personas**.
 
 ## Choose who can write to you
 

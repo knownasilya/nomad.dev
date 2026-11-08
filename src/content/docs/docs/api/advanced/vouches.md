@@ -15,7 +15,7 @@ A vouch has no place, no dates of visits and no count, so it can never help anyo
 
 ## Give a vouch
 
-1. Open the other person's profile drive, open the site info panel and choose **I've had them over**. Or go to **My Library → Personas → Vouches** and choose **Give a vouch**, then paste their profile address or the message link they gave you.
+1. Open the other person's profile drive, open the site info panel and choose **Vouch for them**. Or go to **My Library → Personas → Vouches** and choose **Give a vouch**, then paste their profile address or the message link they gave you.
 2. Pick the Persona it comes from and add a note if you like.
 3. Choose **Send vouch**.
 
@@ -50,9 +50,9 @@ Showing a vouch shows who gave it. You can remove one at any time; if it was on 
 
 ## Seeing someone's vouches
 
-On a profile drive's site info panel, **Who has had them over** lists the vouches that profile shows:
+On a profile drive's site info panel, **Who vouched for them** lists the vouches that profile shows:
 
-- Vouches from people **you know** (your contacts, your names for drives, and drives you follow in Reader) are shown by name: *Maya has had Sam over.*
+- Vouches from people **you know** (your contacts, your names for drives, and drives you follow in Reader) are shown by name: *Maya vouched for Sam.*
 - The rest fold into one line, like *2 more from people you don't know*. Open it to see their names, pictures and drive keys.
 
 Withdrawn and expired vouches aren't shown at all. One whose giver's drive can't be reached right now says *couldn't check*.
