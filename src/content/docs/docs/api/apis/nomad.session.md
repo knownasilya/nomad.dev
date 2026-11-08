@@ -16,6 +16,7 @@ The prompt is the only way a Session is made. There is no silent path, so call `
 - **`profile`:** the Persona's profile drive URL, its name and its picture.
 - **`modifyDrive`:** write files in the Persona's own profile drive. It needs `profile`.
 - **`email`:** the Persona's email address. It stands on its own: a site can ask for it with or without `profile`. Nomad doesn't verify the address, so send your own confirmation code if you need to know it's real. A Persona with no email gives none, even when the user leaves the box checked.
+- **`vouches`:** the [vouches](/docs/api/advanced/vouches/) the user picks to show you: records that say someone has had them over at home. Every vouch starts unticked in the prompt, so getting none is normal. It needs `profile`, and asking for it asks for `profile` too.
 
 The user can uncheck what you ask for, so a partial grant is normal. Check `session.perms` before you use the profile or the email.
 
@@ -28,7 +29,7 @@ A page can never list the user's Personas, and two sites can't tell they saw the
 Show the login prompt.
 
 * **opts** Object.
-  * **perms** Array&lt;String&gt;. What to ask for: `'profile'`, `'modifyDrive'` and/or `'email'`. Leave it out to ask only for the `id`.
+  * **perms** Array&lt;String&gt;. What to ask for: `'profile'`, `'modifyDrive'`, `'email'` and/or `'vouches'`. Leave it out to ask only for the `id`.
   * **maxAge** Number. Seconds until the Session ends. By default it doesn't end until the user logs out.
 * Returns **Promise&lt;Session&gt;**.
 
@@ -85,12 +86,13 @@ nomad.session.addEventListener('change', (e) => {
 ## The Session object
 
 * **id** String. Random, made for your site, this Persona and this Space.
-* **perms** Array&lt;String&gt;. What the user granted: any of `'profile'`, `'modifyDrive'` and `'email'`, or none.
+* **perms** Array&lt;String&gt;. What the user granted: any of `'profile'`, `'modifyDrive'`, `'email'` and `'vouches'`, or none.
 * **profile** Object. Only with `'profile'`.
   * **url** String. The Persona's profile drive, like `hyper://…/`.
   * **title** String. The Persona's name.
   * **thumb** String. The picture's path in that drive, like `/thumb.png`, when there is one.
 * **email** String. Only with `'email'`, when the Persona has one.
+* **vouches** Array&lt;Object&gt;. Only with `'vouches'`: the [`walled.garden/vouch`](/docs/api/developers/walled-garden-schemas/#vouch) records the user ticked. Each one's `guest` is `profile.url`. Check each yourself before you trust it.
 * **createdAt** String. When the user logged in (ISO 8601).
 * **expiresAt** String. When the Session ends, if you passed `maxAge`.
 
@@ -117,6 +119,19 @@ if (session.email) {
 ```
 
 The email lives on the user's own devices, not in their profile drive, and a site sees it only after the user says yes. One address given to two sites lets them tell it's the same person, and the prompt says so.
+
+## Asking for vouches
+
+A vouch says one thing: someone has had this person over at home. It's the host's word, not proof that an account is a real person. Check each one against its host's drive, and weigh it by whether you know the host.
+
+```javascript
+const session = await nomad.session.requestLogin({ perms: ['profile', 'vouches'] })
+for (const vouch of session.vouches || []) {
+  if (await isValid(vouch)) showVouch(vouch.host, vouch.note)
+}
+```
+
+`isValid` is the check in [Checking a vouch](/docs/api/developers/walled-garden-schemas/#checking-a-vouch). Don't make vouches a condition for using your site: most people have none, and the user decides which to show.
 
 ## Notes
 
