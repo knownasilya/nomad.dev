@@ -51,6 +51,8 @@ The phone now plays movies and shows PDFs and books too. Pinch the list to zoom,
 
 Add Nomad's search bar to your home screen. Tap it and Nomad opens a new tab, ready to type. The chip names the Space your search opens in, and tapping it switches Spaces. The robot opens the AI. Make the widget two rows tall and you get a chip for each Space, so one tap searches right in that Space. It follows your phone's light or dark setting. **Settings → Add the search widget** places one for you.
 
+![Nomad's search widget on an Android home screen, in light and dark: Search or enter address with the AI robot, and chips for the Personal, Home and Work Spaces](/posts/whats-new-in-1-47/search-widget.webp)
+
 ## Your AI on the phone remembers your answers
 
 When your AI asks for something on the phone, the prompt can now last longer than one answer, as it does on your computer. Tick **Don't ask again on** a site, and it won't ask again there. When your AI wants to send something to a site after reading your private data, **Allow for 3 months** works on the phone too. These choices are kept with the rest of your settings: change them in site info or on `nomad://ai/sites` on your computer. A Deny you keep there holds on the phone as well.
