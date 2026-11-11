@@ -3,6 +3,7 @@ title: News
 description: Developer news for Nomad Browser.
 ---
 
+- [Nomad 1.49: web pages in Assets, and pages your AI draws](/posts/whats-new-in-1-49/) (November 11, 2026)
 - [Nomad 1.48: see which AI chat made it, and your chats on the phone](/posts/whats-new-in-1-48/) (November 10, 2026)
 - [Nomad 1.47: a home dashboard, and Assets for movies and books](/posts/whats-new-in-1-47/) (November 9, 2026)
 - [Nomad 1.46: invite links, household contacts, and reminders](/posts/whats-new-in-1-46/) (November 8, 2026)
