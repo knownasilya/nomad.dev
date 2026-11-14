@@ -3,6 +3,7 @@ title: News
 description: Developer news for Nomad Browser.
 ---
 
+- [Nomad 1.52: version history and search for your drives](/posts/whats-new-in-1-52/) (November 14, 2026)
 - [Nomad 1.51: see each step your AI took](/posts/whats-new-in-1-51/) (November 13, 2026)
 - [Nomad 1.50: a home page your AI can draw](/posts/whats-new-in-1-50/) (November 12, 2026)
 - [Nomad 1.49: web pages in Assets, and pages your AI draws](/posts/whats-new-in-1-49/) (November 11, 2026)
