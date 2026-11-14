@@ -23,6 +23,11 @@ A **template** is a starter drive a user clones with the "Create Drive From This
 template has two halves: the **files** that get copied into the new drive (`static/templates/<name>/`) and a
 **docs page** that renders the create button + source (`src/content/docs/docs/templates/<name>.mdx`).
 
+**Built into Nomad too:** blog, forum, simple-cms (Nomad calls it Website) and photo-album are also
+built into the Nomad app (`nomad/app/drive-templates/`), so Create Drive and the phone start them
+without this site. After changing any of their files here, run `npm run sync:drive-templates` and then
+`npm run build:phone-templates` in `nomad`, and commit the copies there.
+
 Use the **forum** template as the canonical reference — it's the fullest example (an Autobase / multi-writer
 drive with a custom frontend). The **blog** template is the reference for a `walled.garden/feed`.
 

@@ -84,7 +84,7 @@ nomad.fs.watch('hyper://abc123../', () => rerender())
 
 These are top-level `nomad.fs` methods. `createDrive`/`createCollaborativeDrive`/`forkDrive` return a scoped **FsDrive**.
 
-* **nomad.fs.createDrive(\[opts\])** — Create a new drive. `opts`: `{ title, description, collaborative, template }`. Locked / single-writer unless `collaborative: true`. `template` is a built-in starting point: `'blank'` (the default) or `'document'`, a [Document drive](/docs/api/developers/document-drives/) several people edit at the same time (collaborative unless you pass `collaborative: false`).
+* **nomad.fs.createDrive(\[opts\])** — Create a new drive. `opts`: `{ title, description, collaborative, template }`. Locked / single-writer unless `collaborative: true`. `template` is a built-in starting point: `'blank'` (the default); `'document'`, a [Document drive](/docs/api/developers/document-drives/) several people edit at the same time; or one of the gallery's apps, `'blog'`, `'website'`, `'photo-album'` or `'forum'` (the [Blog](/docs/templates/blog/), [Simple CMS](/docs/templates/simple-cms/), [Photo Album](/docs/templates/photo-album/) and [Forum](/docs/templates/forum/) templates). Document, Blog and Forum are collaborative unless you pass `collaborative: false`.
 * **nomad.fs.createCollaborativeDrive(\[opts\])** — Same as `createDrive` but defaults to accepting writers; equivalent to `createDrive({ ..., collaborative: true })`.
 * **nomad.fs.forkDrive(url\[, opts\])** — Fork an existing drive into a new one.
 * **nomad.fs.configure(url, settings\[, opts\])** — Update the drive manifest (`title`, `description`, `type`, `thumb`, `links`) and/or `collaborative` (see below). Also on the scoped handle as `drive.configure(settings)`.
@@ -109,8 +109,8 @@ writers is a policy flag, `collaborative`, **locked by default**:
 
 **Writer management** (owner-side unless noted; also available on the scoped `drive` handle):
 
-* **createInvite(url\[, opts\])** — Returns an invite URL to share. Unlocks the drive.
-* **claimInvite(inviteUrl\[, opts\])** — Recipient redeems an invite to request write access.
+* **createInvite(url\[, opts\])** — Returns an invite link to share, `hyper://<key>/?invite=<token>`, and unlocks the drive. Whoever claims it is added as a writer at once by any device that writes the drive, with no approval step. A link works once and for 7 days; `opts`: `{ multiUse, days }` (1 to 30). The drive keeps only a hash of the token, and the owner can cancel a link from site info's Editors tab.
+* **claimInvite(inviteUrl\[, opts\])** — Recipient accepts an invite link. Resolves to `{ writerKey, writable }` once the request is sent; the recipient can write as soon as one of the drive's writers is online. `opts`: `{ profileUrl }`, shown to the drive's editors.
 * **requestAccess(url\[, opts\])** — Ask an already-collaborative drive for write access.
 * **listRequests(url)** — Pending requests `[{ writerKey, profileUrl }]`.
 * **watchRequests(url\[, onChanged\])** — `EventTarget` emitting `changed` when a request arrives.
