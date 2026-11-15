@@ -8,7 +8,10 @@ Webterm is a web-based terminal environment that ships with Nomad. It is superfi
 
 ## Basic usage
 
-To open the terminal, press `Ctrl+~` or click on the "Terminal" button on the toolbar of the browser.
+To open the terminal, press `Ctrl` + `` ` `` (the Control key, on a Mac too), or choose **Developer → Toggle
+Terminal** in the app menu. On a page of a drive you can edit, pressing `~` opens it too, as long as you
+aren't typing in a field. The terminal opens under the page and starts in that page's drive. Press the same
+keys again to close it.
 
 The terminal uses a command syntax that's similar to "bash" in Unix.
 
@@ -16,7 +19,8 @@ The terminal uses a command syntax that's similar to "bash" in Unix.
 command [-s|--switch {param}] {param1} {param2}
 ```
 
-At this stage, there is no piping or sub-invocations. All commands translate to JavaScript functions which can be created using the [nomad.terminal API](/docs/api/apis/nomad.terminal).
+You can run several commands on one line with `;` (or `&&`, to stop when one fails) and write a command's
+output to a file with `>` or `>>`. There is no piping or sub-invocations. All commands translate to JavaScript functions which can be created using the [nomad.terminal API](/docs/api/apis/nomad.terminal).
 
 ## Builtin commands
 
