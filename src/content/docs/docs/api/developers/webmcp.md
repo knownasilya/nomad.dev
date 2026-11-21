@@ -48,13 +48,13 @@ class instances and functions do not survive.
 
 ## What the assistant sees
 
-When the current page has registered tools, they are offered to the model with a `page_` prefix — a
-tool named `add_todo` appears to the assistant as `page_add_todo`. The assistant calls them exactly
-like the built-in Drive tools; the result comes back from your `execute`.
+When the current page has registered tools, the model finds them with its `search` tool, in the
+`page` domain (a tool named `add_todo` is the entity `page:add_todo`). It runs one inside its
+`execute` tool as `nomad.page.add_todo(params)`; the result comes back from your `execute`.
 
-The tools reach the assistant through the in-page chat (a Drive with `"chatBubble": true` in its
-`index.json`). They are **not** sent over the AI Bridge to a remote device — page tools resolve only
-when inference runs on the same device as the page.
+The tools reach the AI Sidebar while the page is the tab you are on, the page's own
+`nomad.ai.chat()`, and programs that use Nomad's local MCP. They are **not** sent over the AI Bridge
+to a remote device — page tools resolve only when inference runs on the same device as the page.
 
 ## Permission
 
@@ -127,5 +127,5 @@ picked up), `webmcpTools permission` (the per-origin decision), `invokePageTool`
 | `registerTool` throws `SecurityError` | page is not origin-keyed (`originAgentCluster` false) — Nomad shims this for `hyper://`; on other origins serve `Origin-Agent-Cluster: ?1` |
 | `status.hasCore` false | the polyfill did not install — check the page is a secure context and the main frame |
 | `publishTools … tools=[]` but the page called `registerTool` | the call threw (see the page console) or `toolchange` did not fire |
-| `resolvePageTools skipped` in the log | the chat set `driveUrl` (editor/explorer sidebar) or ran on the remote AI Bridge — page tools are local, chat-bubble only |
-| model calls `writeDriveFile` instead of `page_*` | the page tools never reached the turn — check `resolvePageTools` shows them |
+| `resolvePageTools skipped` in the log | the chat passed a `driveUrl`, or ran over the AI Bridge — page tools work only on the device that shows the page |
+| model calls `writeDriveFile` instead of the page's tool | the page tools never reached the turn — check `resolvePageTools` shows them |

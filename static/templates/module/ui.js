@@ -90,10 +90,9 @@ class ModuleDirectoryView extends HTMLElement {
     var listing = h('div', {class: 'listing'})
     for (let entry of entries) {
       let isDir = entry.stat.isDirectory()
-      let isMount = !!entry.stat.mount
-      let href = isMount ? `hyper://${entry.stat.mount.key}` : `./${entry.name}${isDir ? '/' : ''}`
+      let href = `./${entry.name}${isDir ? '/' : ''}`
       listing.append(h('div', {class: 'entry'},
-        h('img', {class: 'icon', src: `/img/${isMount ? 'mount' : isDir ? 'folder' : 'file'}.svg`}),
+        h('img', {class: 'icon', src: `/img/${isDir ? 'folder' : 'file'}.svg`}),
         h('a', {href}, entry.name),
         h('small', {}, formatBytes(entry.stat.size))
       ))

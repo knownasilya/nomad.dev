@@ -18,10 +18,10 @@ One runtime is active at a time. Claude and Cursor are detected when those apps 
 
 The AI page also lists the AI sidebar's past chats (search, rename, delete, or reopen one in the sidebar) and what the user's assistant remembers about them. Those memories go only to the user's own assistant: the AI sidebar, the phone's AI panel and AI Jobs. A page's `nomad.ai.chat()` never sees them.
 
-**Per-Drive opt-in** — add an `ai` key to your Drive's `/index.json`:
+**Per-Drive system prompt** — add an `ai` key to your Drive's `/index.json`. It sets the system prompt only; the model is always the user's choice.
 
 ```json
-{ "ai": { "model": "llama3.2:3b" } }
+{ "ai": true }
 ```
 
 Or delegate to another Drive's AI Config:
@@ -30,7 +30,7 @@ Or delegate to another Drive's AI Config:
 { "ai": "hyper://abc123..." }
 ```
 
-**AI Config** — a Drive can include `/ai/system.md` (system prompt) and `/ai/tools/` (tool definitions) to customise behaviour.
+**AI Config** — a Drive can include `/ai/system.md`, the system prompt.
 
 **Resolution order**: Drive's `/index.json` → Space default → global fallback (bare inference, no system prompt).
 

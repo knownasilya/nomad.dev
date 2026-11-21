@@ -12,6 +12,7 @@
         --muted: #8a8a8e;
         --line: #e5e5ea;
         --accent: #0a84ff;
+        --danger: #d70015;
         color-scheme: light dark;
       }
       @media (prefers-color-scheme: dark) {
@@ -21,6 +22,7 @@
           --ink: #f2f2f7;
           --muted: #98989f;
           --line: #3a3a3c;
+          --danger: #ff6961;
         }
       }
       * {
@@ -47,6 +49,38 @@
         color: var(--muted);
         font-size: 13px;
         margin: 0 0 20px;
+      }
+      .tape {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        margin-bottom: 16px;
+        background: var(--card);
+        border-radius: 10px;
+        box-shadow: 0 0 0 1px var(--line);
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .tape strong {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .tape button {
+        flex: none;
+        padding: 2px 4px;
+        background: transparent;
+        color: var(--accent);
+        font-size: 13px;
+      }
+      .status {
+        margin: -8px 0 16px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .status.error {
+        color: var(--danger);
       }
       form {
         display: flex;
@@ -139,6 +173,14 @@
       li:hover .del {
         opacity: 1;
       }
+      li .tag {
+        flex: none;
+        padding: 0 6px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--muted);
+        font-size: 12px;
+      }
       .empty {
         padding: 28px 14px;
         text-align: center;
@@ -163,8 +205,15 @@
     <main>
       <h1>Todo</h1>
       <p class="sub">
-        Add tasks below — or ask the assistant (chat bubble, bottom-right) to manage the list for you.
+        Add tasks below — or open the AI Sidebar (the robot icon in the address bar) and ask it to
+        manage the list for you.
       </p>
+
+      <div class="tape" id="tape" hidden>
+        <span id="tape-label"></span>
+        <button id="tape-btn" type="button"></button>
+      </div>
+      <p class="status" id="status" hidden></p>
 
       <form id="add-form">
         <input id="add-input" type="text" placeholder="What needs doing?" autocomplete="off" />
@@ -186,50 +235,213 @@
     </main>
 
     <script>
-      // --- storage -----------------------------------------------------------
-      const KEY = "todo:" + location.origin;
-      /** @type {{id:string,text:string,done:boolean}[]} */
-      let tasks = load();
-      let filter = "all";
+      // --- storage: a drive you insert, or this browser ---------------------
+      // Like a cassette in a player: this page is the player, and your tasks can live in a drive
+      // you choose (the tape). Then the list goes where that drive goes, to your other devices
+      // too. With no drive inserted, the list stays in this browser (localStorage).
+      //
+      // In the drive, the list is the file /todos.json. Any JSON works if it holds a list of items
+      // that each have a string `name` and a string `status`. The list can be the whole file or
+      // one field of it, and this page keeps every other field when it saves. A status of "done",
+      // "completed", "complete" or "closed" counts as done. This convention is made up for this
+      // demo; it is not a schema Nomad knows. A list this page starts looks like this:
+      //   { "type": "nomad-demo/todo-list",
+      //     "tasks": [{ "id": "k3j9x1a", "name": "Buy milk", "status": "todo", "createdAt": "<ISO date>" }] }
+      const TAPE_FILE = "/todos.json";
+      const LOCAL_KEY = "todo:" + location.origin;
+      const TAPE_KEY = "todo-tape:" + location.origin;
+      const DONE = ["done", "completed", "complete", "closed"];
+      const LIST_FIELDS = ["tasks", "items", "todos"]; // looked at first, in this order
+      const canUseDrives = !!(window.nomad && nomad.fs && nomad.shell);
 
-      function load() {
-        try {
-          return JSON.parse(localStorage.getItem(KEY)) || [];
-        } catch {
-          return [];
+      const newDoc = () => ({ type: "nomad-demo/todo-list", tasks: [] });
+      /** The whole file as read. Saving writes it back with the list put in again. */
+      let doc = newDoc();
+      /** The field of `doc` that holds the list, or null when the file is the list itself. */
+      let listField = "tasks";
+      /** @type {{name:string,status:string,[field:string]:any}[]} */
+      let tasks = [];
+      let filter = "all";
+      /** The inserted drive, or null. @type {null | {url:string,title:string,watcher:any,lastWritten:string,pending:number}} */
+      let tape = null;
+      let saving = Promise.resolve();
+
+      const uid = () => Math.random().toString(36).slice(2, 9);
+      const isTask = (t) => !!t && typeof t.name === "string" && typeof t.status === "string";
+      const isDone = (t) => DONE.includes(t.status.toLowerCase());
+
+      // Find the list in parsed JSON: { doc, listField, tasks }, or null when it holds none.
+      function readList(json) {
+        if (Array.isArray(json)) {
+          return json.every(isTask) ? { doc: json, listField: null, tasks: json } : null;
         }
+        if (!json || typeof json !== "object") return null;
+        for (const field of [...LIST_FIELDS, ...Object.keys(json)]) {
+          const list = json[field];
+          if (!Array.isArray(list) || !list.every(isTask)) continue;
+          if (!list.length && !LIST_FIELDS.includes(field)) continue; // an empty array proves nothing
+          return { doc: json, listField: field, tasks: list };
+        }
+        return null;
       }
-      function save() {
+      function setList(found) {
+        doc = found.doc;
+        listField = found.listField;
+        tasks = found.tasks;
+      }
+      const toJSON = () =>
+        JSON.stringify(listField === null ? tasks : { ...doc, [listField]: tasks }, null, 2);
+
+      function loadLocal() {
+        let json = null;
         try {
-          localStorage.setItem(KEY, JSON.stringify(tasks));
+          json = JSON.parse(localStorage.getItem(LOCAL_KEY));
+        } catch {}
+        // Older versions of this page kept [{ id, text, done }] here.
+        if (Array.isArray(json) && json.length && json.every((t) => t && typeof t.text === "string")) {
+          const tasks = json.map((t) => ({ id: t.id || uid(), name: t.text, status: t.done ? "done" : "todo" }));
+          json = { ...newDoc(), tasks };
+        }
+        return readList(json) || readList(newDoc());
+      }
+
+      // The list on a drive, or null for a blank drive (no /todos.json yet). Throws when the
+      // drive's /todos.json holds no list, so this page never writes over it.
+      async function readTape(drive) {
+        const st = await drive.stat(TAPE_FILE).catch(() => null);
+        if (!st) return null;
+        let found = null;
+        try {
+          found = readList(JSON.parse(await drive.readFile(TAPE_FILE)));
+        } catch {}
+        if (!found) throw new Error(`its ${TAPE_FILE} has no list of items with a name and a status`);
+        return found;
+      }
+
+      function save() {
+        if (!tape) {
+          try {
+            localStorage.setItem(LOCAL_KEY, toJSON());
+          } catch {}
+          return;
+        }
+        // Writes go out one at a time, in order. The first one asks you once for permission to
+        // write to the drive, unless it is this page's own drive.
+        const t = tape;
+        const json = toJSON();
+        t.pending++;
+        saving = saving
+          .then(() => nomad.fs.drive(t.url).writeFile(TAPE_FILE, json))
+          .then(() => {
+            t.lastWritten = json;
+            showStatus("");
+          })
+          .catch((e) => showStatus(`Could not save to ${t.title}: ${e.message}`, true))
+          .finally(() => t.pending--);
+      }
+
+      // Insert a drive. A blank drive starts with the list you have now.
+      async function useDrive(url) {
+        const drive = nomad.fs.drive(url);
+        const info = await drive.getInfo();
+        const found = await readTape(drive);
+        tape = { url, title: info.title || "Untitled drive", watcher: null, lastWritten: "", pending: 0 };
+        if (found) setList(found);
+        else save();
+        try {
+          tape.watcher = drive.watch(TAPE_FILE, onTapeChanged);
+        } catch {}
+        localStorage.setItem(TAPE_KEY, url);
+        render();
+      }
+
+      // /todos.json changed: on another device, in another app, or by our own save.
+      async function onTapeChanged() {
+        const t = tape;
+        if (!t || t.pending) return; // our own save is still landing; the newest list here wins
+        try {
+          const text = await nomad.fs.drive(t.url).readFile(TAPE_FILE);
+          if (tape !== t || text === t.lastWritten) return;
+          const found = readList(JSON.parse(text));
+          if (!found) return;
+          t.lastWritten = text;
+          setList(found);
+          render();
         } catch {}
       }
-      const uid = () => Math.random().toString(36).slice(2, 9);
+
+      async function insert() {
+        let url;
+        try {
+          url = await nomad.shell.selectDriveDialog({
+            title: "Choose a drive for your tasks",
+            buttonLabel: "Use this drive",
+            writable: true,
+            tag: "todo",
+          });
+        } catch {
+          return; // the picker was closed
+        }
+        try {
+          await useDrive(url);
+          showStatus("");
+        } catch (e) {
+          showStatus(`Can't use that drive: ${e.message}`, true);
+        }
+      }
+
+      // Take the drive out. The list goes back to the one in this browser.
+      function eject() {
+        if (tape && tape.watcher) tape.watcher.close();
+        tape = null;
+        localStorage.removeItem(TAPE_KEY);
+        setList(loadLocal());
+        showStatus("");
+        render();
+      }
+
+      async function boot() {
+        const url = canUseDrives && localStorage.getItem(TAPE_KEY);
+        if (url) {
+          try {
+            return await useDrive(url);
+          } catch (e) {
+            localStorage.removeItem(TAPE_KEY);
+            showStatus(`Could not open your tasks drive (${e.message}), so the list is back in this browser.`, true);
+          }
+        }
+        setList(loadLocal());
+        render();
+      }
 
       // --- mutations (shared by the UI and the WebMCP tools) ----------------
-      function addTask(text) {
-        text = String(text || "").trim();
-        if (!text) throw new Error("Task text is required");
-        const task = { id: uid(), text, done: false };
+      function addTask(name) {
+        name = String(name || "").trim();
+        if (!name) throw new Error("Task text is required");
+        const task = { id: uid(), name, status: "todo", createdAt: new Date().toISOString() };
         tasks.push(task);
         save();
         render();
         return task;
       }
+      // A task by id or name (exact, then partial). The UI passes the task itself.
       function findTask(ref) {
-        ref = String(ref || "").trim();
-        if (!ref) return null;
+        if (tasks.includes(ref)) return ref;
+        const key = String(ref || "").trim();
+        const low = key.toLowerCase();
+        if (!key) return null;
         return (
-          tasks.find((t) => t.id === ref) ||
-          tasks.find((t) => t.text.toLowerCase() === ref.toLowerCase()) ||
-          tasks.find((t) => t.text.toLowerCase().includes(ref.toLowerCase())) ||
+          tasks.find((t) => t.id === key) ||
+          tasks.find((t) => t.name.toLowerCase() === low) ||
+          tasks.find((t) => t.name.toLowerCase().includes(low)) ||
           null
         );
       }
+      // Change the status only when done-ness changes, so a list that says "completed" keeps it.
       function setDone(ref, done) {
         const t = findTask(ref);
         if (!t) throw new Error(`No task matching "${ref}"`);
-        t.done = done;
+        if (isDone(t) !== done) t.status = done ? "done" : "todo";
         save();
         render();
         return t;
@@ -237,14 +449,14 @@
       function removeTask(ref) {
         const t = findTask(ref);
         if (!t) throw new Error(`No task matching "${ref}"`);
-        tasks = tasks.filter((x) => x !== t);
+        tasks.splice(tasks.indexOf(t), 1);
         save();
         render();
         return t;
       }
       function clearCompleted() {
-        const n = tasks.filter((t) => t.done).length;
-        tasks = tasks.filter((t) => !t.done);
+        const n = tasks.filter(isDone).length;
+        for (let i = tasks.length - 1; i >= 0; i--) if (isDone(tasks[i])) tasks.splice(i, 1);
         save();
         render();
         return n;
@@ -254,10 +466,38 @@
       const list = document.getElementById("list");
       const countEl = document.getElementById("count");
       const clearBtn = document.getElementById("clear-done");
+      const tapeEl = document.getElementById("tape");
+      const tapeLabel = document.getElementById("tape-label");
+      const tapeBtn = document.getElementById("tape-btn");
+      const statusEl = document.getElementById("status");
+
+      function showStatus(text, isError = false) {
+        statusEl.textContent = text;
+        statusEl.hidden = !text;
+        statusEl.classList.toggle("error", isError);
+      }
+
+      function renderTape() {
+        tapeEl.hidden = !canUseDrives;
+        tapeLabel.textContent = "";
+        if (tape) {
+          const name = document.createElement("strong");
+          name.textContent = tape.title;
+          tapeLabel.append("Saved in the drive ", name);
+          tapeBtn.textContent = "Eject";
+        } else {
+          tapeLabel.textContent = "Saved in this browser only";
+          tapeBtn.textContent = "Use a drive";
+        }
+      }
+
+      // A status other than "todo" or done, like "in progress", shows as a label.
+      const otherStatus = (t) => (!isDone(t) && t.status.toLowerCase() !== "todo" ? t.status : "");
 
       function render() {
+        renderTape();
         const shown = tasks.filter((t) =>
-          filter === "all" ? true : filter === "done" ? t.done : !t.done
+          filter === "all" ? true : filter === "done" ? isDone(t) : !isDone(t)
         );
         list.innerHTML = "";
         if (!shown.length) {
@@ -268,30 +508,38 @@
         }
         for (const t of shown) {
           const li = document.createElement("li");
-          li.className = t.done ? "done" : "";
+          li.className = isDone(t) ? "done" : "";
 
           const cb = document.createElement("input");
           cb.type = "checkbox";
-          cb.checked = t.done;
-          cb.addEventListener("change", () => setDone(t.id, cb.checked));
+          cb.checked = isDone(t);
+          cb.addEventListener("change", () => setDone(t, cb.checked));
 
           const span = document.createElement("span");
           span.className = "text";
-          span.textContent = t.text;
+          span.textContent = t.name;
+          li.append(cb, span);
+
+          if (otherStatus(t)) {
+            const tag = document.createElement("span");
+            tag.className = "tag";
+            tag.textContent = otherStatus(t);
+            li.append(tag);
+          }
 
           const del = document.createElement("button");
           del.className = "del";
           del.type = "button";
           del.textContent = "×";
           del.title = "Delete";
-          del.addEventListener("click", () => removeTask(t.id));
+          del.addEventListener("click", () => removeTask(t));
 
-          li.append(cb, span, del);
+          li.append(del);
           list.append(li);
         }
-        const left = tasks.filter((t) => !t.done).length;
+        const left = tasks.filter((t) => !isDone(t)).length;
         countEl.textContent = `${left} left · ${tasks.length} total`;
-        clearBtn.hidden = !tasks.some((t) => t.done);
+        clearBtn.hidden = !tasks.some(isDone);
       }
 
       document.getElementById("add-form").addEventListener("submit", (e) => {
@@ -311,13 +559,15 @@
         render();
       });
       clearBtn.addEventListener("click", clearCompleted);
-      render();
+      tapeBtn.addEventListener("click", () => (tape ? eject() : insert()));
+      boot();
 
       // --- WebMCP: expose the list to the AI assistant ---------------------
       // https://nomad.pages.dev/docs/api/developers/webmcp
       const mc = document.modelContext; // (navigator.modelContext is a deprecated alias)
       const ok = (text) => ({ content: [{ type: "text", text }] });
-      const summary = (t) => `${t.done ? "[x]" : "[ ]"} ${t.text}`;
+      const summary = (t) =>
+        `${isDone(t) ? "[x]" : "[ ]"} ${t.name}${otherStatus(t) ? ` (${otherStatus(t)})` : ""}`;
 
       mc.registerTool({
         name: "add_task",
@@ -327,7 +577,7 @@
           properties: { text: { type: "string", description: "The task to add" } },
           required: ["text"],
         },
-        execute: ({ text }) => ok(`Added: ${addTask(text).text}`),
+        execute: ({ text }) => ok(`Added: ${addTask(text).name}`),
       });
 
       mc.registerTool({
@@ -341,7 +591,7 @@
         },
         execute: ({ status = "all" }) => {
           const rows = tasks.filter((t) =>
-            status === "done" ? t.done : status === "active" ? !t.done : true
+            status === "done" ? isDone(t) : status === "active" ? !isDone(t) : true
           );
           return ok(rows.length ? rows.map(summary).join("\n") : "(no tasks)");
         },
@@ -355,7 +605,7 @@
           properties: { task: { type: "string", description: "Task text or id" } },
           required: ["task"],
         },
-        execute: ({ task }) => ok(`Completed: ${setDone(task, true).text}`),
+        execute: ({ task }) => ok(`Completed: ${setDone(task, true).name}`),
       });
 
       mc.registerTool({
@@ -366,7 +616,7 @@
           properties: { task: { type: "string", description: "Task text or id" } },
           required: ["task"],
         },
-        execute: ({ task }) => ok(`Reopened: ${setDone(task, false).text}`),
+        execute: ({ task }) => ok(`Reopened: ${setDone(task, false).name}`),
       });
 
       mc.registerTool({
@@ -377,7 +627,7 @@
           properties: { task: { type: "string", description: "Task text or id" } },
           required: ["task"],
         },
-        execute: ({ task }) => ok(`Removed: ${removeTask(task).text}`),
+        execute: ({ task }) => ok(`Removed: ${removeTask(task).name}`),
       });
 
       mc.registerTool({
