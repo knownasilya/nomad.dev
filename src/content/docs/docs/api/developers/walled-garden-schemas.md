@@ -25,6 +25,24 @@ See the [Profile Drives guide](/docs/api/developers/profile-drives/) for full do
 }
 ```
 
+A profile whose owner can receive [Messages](/docs/api/advanced/messages/) also has an `inbox`. Nomad writes it; don't edit it by hand.
+
+```json
+"inbox": {
+  "v": 1,
+  "sign": "<64 hex characters>",
+  "box": "<64 hex characters>",
+  "mailboxes": ["<64 hex characters>"]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `v` | `1` | ✓ | The inbox format version |
+| `sign` | 32-byte hex | ✓ | The Persona's Ed25519 key. Every message it sends is signed with it. |
+| `box` | 32-byte hex | | The key messages are sealed to. Only published when anyone may write. |
+| `mailboxes` | Array of 32-byte hex, at most 8 | | One address per device that answers the inbox. Only published when anyone may write. |
+
 ---
 
 ## post
@@ -94,6 +112,66 @@ A **blog** is a feed whose items are posts: each post is a directory under `item
 
 ---
 
+## calendar
+
+Marks a drive as a **calendar**. Nomad's Calendar (`nomad://calendar` and the phone's Calendar screen) can follow one beside iCal feeds: paste the drive's `hyper://` address in **Follow**, or use **Follow in Calendar** in the site info panel. Its events show on the follower's calendar, read-only, and update a few minutes after the drive changes. Lives in `/index.json`.
+
+```json
+{
+  "type": "walled.garden/calendar",
+  "title": "Otters Swim Club",
+  "description": "Training, galas and socials.",
+  "color": "#0ea5e9",
+  "eventsPath": "/events/"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | `"walled.garden/calendar"` | ✓ | Identifies this drive as a calendar |
+| `title` | String (max 280) | ✓ | The calendar's name; followers see it beside each event |
+| `description` | String (max 1000) | | What the calendar is for |
+| `color` | `#rrggbb` | | The color followers see its events in |
+| `eventsPath` | String | | Directory holding the events (default `/events/`) |
+
+### calendar-event
+
+One event of a calendar drive: one `.json` file in `eventsPath`, such as `/events/winter-gala.json`. The file's name is the event's id, so keep it when you change the event.
+
+```json
+{
+  "type": "walled.garden/calendar-event",
+  "title": "Swim training",
+  "start": "2026-11-02T17:00",
+  "end": "2026-11-02T18:00",
+  "location": "Leisure centre",
+  "repeat": { "freq": "weekly", "byDay": [1, 4], "until": "2026-12-17" },
+  "exclude": ["2026-11-05T17:00"]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | `"walled.garden/calendar-event"` | ✓ | Identifies the record |
+| `title` | String (max 200) | ✓ | What's on |
+| `start` | `YYYY-MM-DD` or `YYYY-MM-DDTHH:mm` | ✓ | A day for an all-day event, a day and time otherwise |
+| `end` | Same format | | The last day of an all-day event, or when a timed one ends |
+| `allDay` | Boolean | | Defaults to whether `start` is a day without a time |
+| `location` | String (max 200) | | Where |
+| `notes` | String (max 2000) | | More about it |
+| `repeat.freq` | `daily` \| `weekly` \| `monthly` \| `yearly` | | How it repeats |
+| `repeat.interval` | Integer 1–99 | | Every how many days, weeks, months or years (default 1) |
+| `repeat.until` | `YYYY-MM-DD` | | The last day it can happen on |
+| `repeat.count` | Integer 1–1000 | | How many times it happens |
+| `repeat.byDay` | Array of 0–6 | | For a weekly repeat, the days (Sunday is 0) |
+| `exclude` | Array of times | | Times of a repeat that don't happen |
+| `status` | `confirmed` \| `tentative` \| `cancelled` | | `cancelled` takes it off the calendar |
+| `createdAt`, `updatedAt` | ISO 8601 datetime | | When it was made and last changed |
+
+Times have no time zone: `18:00` is 6pm for everyone who follows the calendar, and a weekly event stays at 6pm across a clock change.
+
+---
+
 ## comment
 
 A reply to a post or any URL-addressable resource.
@@ -116,6 +194,110 @@ A reply to a post or any URL-addressable resource.
 | `createdAt` | ISO 8601 datetime | ✓ |
 | `replyTo` | URL of the parent comment | |
 | `updatedAt` | ISO 8601 datetime | |
+
+---
+
+## message
+
+A direct message from one Persona to another. It travels encrypted to the recipient's inbox and is kept in each side's Vault, never in a drive. See [Messages](/docs/api/advanced/messages/).
+
+```json
+{
+  "type": "walled.garden/message",
+  "id": "ggcxnymh7njpezs65bmzhcrwuu",
+  "from": "hyper://<sender's profile key>/",
+  "to": "hyper://<recipient's profile key>/",
+  "createdAt": "2026-11-03T12:00:00.000Z",
+  "text": "Hi! Are you coming on Saturday?"
+}
+```
+
+| Field | Type | Required |
+|-------|------|----------|
+| `type` | `"walled.garden/message"` | ✓ |
+| `id` | String, 16–40 characters (16 random bytes, base32) | ✓ |
+| `from` | URL of the sender's profile drive | ✓ |
+| `to` | URL of the recipient's profile drive | ✓ |
+| `createdAt` | ISO 8601 datetime | ✓ |
+| `text` | Plain text, up to 8000 characters. Empty only when the message carries a `vouch` | ✓ |
+| `inReplyTo` | The `id` of another message in the conversation | |
+| `vouch` | A [vouch](#vouch) the sender gives the recipient: its `host` is `from` and its `guest` is `to` | |
+
+Text only: no HTML, images or attachments, so reading a message never loads anything. No other fields are allowed.
+
+---
+
+## vouch
+
+One profile drive (the **host**) says it has had another (the **guest**) over at home. It travels to the guest inside a [message](#message), shows nowhere until the guest accepts it, and the guest decides who sees it. See [Vouches](/docs/api/advanced/vouches/).
+
+```json
+{
+  "type": "walled.garden/vouch",
+  "v": 1,
+  "id": "aaaqeayeaudaocajbifqydiob4",
+  "kind": "hosted",
+  "host": "hyper://<host's profile key>/",
+  "guest": "hyper://<guest's profile key>/",
+  "note": "Lovely to have you for dinner",
+  "issuedAt": "2026-11-08T12:00:00.000Z",
+  "expiresAt": "2027-11-08T12:00:00.000Z"
+}
+```
+
+| Field | Type | Required |
+|-------|------|----------|
+| `type` | `"walled.garden/vouch"` | ✓ |
+| `v` | `1` | ✓ |
+| `id` | 16–40 characters, `a`–`z` and `2`–`7` (16 random bytes, base32) | ✓ |
+| `kind` | `"hosted"`, the only kind | ✓ |
+| `host` | URL of the host's profile drive | ✓ |
+| `guest` | URL of the guest's profile drive (not the host's) | ✓ |
+| `note` | Plain text in the host's words, 1–280 characters and not blank, shown and never rendered | ✓ |
+| `issuedAt` | ISO 8601 datetime | ✓ |
+| `expiresAt` | ISO 8601 datetime, at most a year after `issuedAt` | ✓ |
+
+There are no counts, ratings, places or visit dates, and no other fields are allowed.
+
+### Checking a vouch
+
+A vouch is valid while its host still stands behind it and `expiresAt` hasn't passed. The host stands behind it by listing its hash in their own profile drive, at `/.data/walled.garden/vouches-given.json`:
+
+```json
+{ "type": "walled.garden/vouch-index", "v": 1, "hashes": ["89f918a5359a350c0db78a2a85b5fed98f06519e4772df4b5768531d66323d32"] }
+```
+
+The hash is the lowercase hex SHA-256 of the vouch's **canonical JSON**: the record as JSON with no spaces and the object keys sorted, encoded as UTF-8. The example vouch above hashes to the value in the example list. To check one:
+
+1. Check the record against the table above, and that `expiresAt` is still in the future.
+2. Read `host`'s `vouches-given.json`. A hash missing from the list means the host withdrew it. If you can't read the drive, say you couldn't check, never that it's valid.
+3. Weigh it by whether you know the host. A vouch says "the writers of the host's profile drive say so". It isn't proof that either account is a real person, so never count vouches into a score.
+
+```javascript
+const canonical = (v) =>
+  v === null || typeof v !== 'object' ? JSON.stringify(v)
+  : Array.isArray(v) ? `[${v.map(canonical).join(',')}]`
+  : `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${canonical(v[k])}`).join(',')}}`
+
+async function isValid (vouch) {
+  if (Date.parse(vouch.expiresAt) <= Date.now()) return false
+  const bytes = new TextEncoder().encode(canonical(vouch))
+  const hash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))]
+    .map((b) => b.toString(16).padStart(2, '0')).join('')
+  const list = await nomad.fs.drive(vouch.host)
+    .get('/.data/walled.garden/vouches-given.json', 'json')
+    .catch(() => null) // no list, or the drive can't be read: don't count it
+  return list?.type === 'walled.garden/vouch-index' && list.hashes.includes(hash)
+}
+```
+
+### A profile's vouches
+
+A guest who shows vouches on their profile lists them at `/.data/walled.garden/vouches.json` in their profile drive. Keep only the ones whose `guest` is that drive: a profile can't show a vouch for someone else.
+
+```json
+{ "type": "walled.garden/vouches", "v": 1, "items": [ { "type": "walled.garden/vouch", "…": "…" } ] }
+```
 
 ---
 

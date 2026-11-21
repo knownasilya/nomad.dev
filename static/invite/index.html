@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <title>You're invited to Nomad</title>
+    <link rel="icon" href="/logo.png" />
+    <link rel="stylesheet" href="/invite/invite.css" />
+    <!--
+      The invite is in this page's URL fragment, which the browser never sends to the server.
+      Anything running here could read it, so this page loads nothing from another origin: no
+      analytics, no fonts, no third-party scripts (ADR-0040 §3, and the CSP in /_headers).
+    -->
+    <script type="module" src="/invite/invite.js"></script>
+  </head>
+  <body>
+    <main class="card" aria-live="polite">
+      <a class="brand" href="/"><img src="/logo.png" alt="" width="28" height="28" /> Nomad</a>
+
+      <section id="reading">
+        <h1>Reading your invite…</h1>
+      </section>
+
+      <section id="invite" hidden>
+        <h1 id="title"></h1>
+        <p id="role" class="role"></p>
+        <p id="check" class="check"></p>
+        <p id="expires" class="muted"></p>
+
+        <div class="what">
+          <p>
+            <strong>Nomad</strong> is a web browser with no servers behind it. Your files, notes and
+            shared Spaces live on your own devices and sync directly between them and the people you
+            share with.
+          </p>
+          <p><a href="/">More about Nomad</a></p>
+        </div>
+
+        <h2>Already have Nomad?</h2>
+        <p><a id="open" class="button primary" href="#">Open the invite in Nomad</a></p>
+
+        <h2>New to Nomad?</h2>
+        <p class="muted" id="steps">
+          Download it, open it, then come back to this page and choose Open the invite in Nomad. Or paste
+          this link under My Library → Sharing → Join a shared Space.
+        </p>
+        <div class="downloads" id="downloads">
+          <a class="button" data-platform="mac" href="https://github.com/knownasilya/nomad/releases/latest">Download for macOS</a>
+          <a class="button" data-platform="linux" href="https://github.com/knownasilya/nomad/releases/latest">Download for Linux</a>
+          <a class="button" data-platform="android" href="https://github.com/knownasilya/nomad/releases/latest">Download for Android (APK)</a>
+        </div>
+        <p class="muted" id="ios" hidden>Nomad isn't on iPhone yet. Open this link on a computer or an Android phone.</p>
+        <p class="copied" id="copied" hidden>The invite link is copied, for after you install.</p>
+        <p><button id="copy" class="link" type="button">Copy the invite link</button></p>
+      </section>
+
+      <section id="problem" hidden>
+        <h1 id="problem-title">This invite can't be read</h1>
+        <p id="problem-text" class="muted"></p>
+        <p><a href="/">What's Nomad?</a></p>
+      </section>
+    </main>
+  </body>
+</html>

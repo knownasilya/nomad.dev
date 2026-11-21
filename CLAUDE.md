@@ -12,6 +12,9 @@ sibling `nomad` repo (see `nomad/CLAUDE.md`).
 - The sidebar is set in `astro.config.mjs`. Most groups `autogenerate` from a folder, so a new page in an
   existing folder appears on its own; a new folder needs a group there.
 - Search is Starlight's built-in Pagefind index, built by `npm run build`. Run `npm run dev` to preview.
+- News posts live in `src/content/docs/posts/` with a `date` in front matter. The homepage's News section
+  (`src/components/LatestNews.astro`) lists the newest five on its own; the `posts/index.md` list and the
+  News group in `astro.config.mjs` are by hand.
 - Write links as absolute site paths (`/docs/api/apis/nomad.fs/`), not relative `.md` paths.
 
 ## Drive templates
@@ -19,6 +22,11 @@ sibling `nomad` repo (see `nomad/CLAUDE.md`).
 A **template** is a starter drive a user clones with the "Create Drive From This Template" button. Each
 template has two halves: the **files** that get copied into the new drive (`static/templates/<name>/`) and a
 **docs page** that renders the create button + source (`src/content/docs/docs/templates/<name>.mdx`).
+
+**Built into Nomad too:** blog, forum, simple-cms (Nomad calls it Website) and photo-album are also
+built into the Nomad app (`nomad/app/drive-templates/`), so Create Drive and the phone start them
+without this site. After changing any of their files here, run `npm run sync:drive-templates` and then
+`npm run build:phone-templates` in `nomad`, and commit the copies there.
 
 Use the **forum** template as the canonical reference — it's the fullest example (an Autobase / multi-writer
 drive with a custom frontend). The **blog** template is the reference for a `walled.garden/feed`.

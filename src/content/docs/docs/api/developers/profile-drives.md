@@ -35,6 +35,7 @@ A Profile Drive's `/index.json` must include at minimum a `type` and `title`:
 | `description` | String (max 1000) | | Short bio |
 | `thumb` | String | | Path to avatar image (e.g. `"thumb.png"`) |
 | `links` | Array of `{ label, href }` | | Social links |
+| `inbox` | Object | | Written by Nomad when the owner can receive [Messages](/docs/api/advanced/messages/). See [the person schema](/docs/api/developers/walled-garden-schemas/#person). |
 
 ---
 
